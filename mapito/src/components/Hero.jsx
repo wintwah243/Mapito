@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaRocket, FaLightbulb, FaCode, FaTools, FaCheckCircle } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import { jsPDF } from "jspdf";
 
 const Hero = () => {
     const [goal, setGoal] = useState('');
@@ -44,14 +45,34 @@ const Hero = () => {
         setLoading(false);
     };
 
+    
     const handleDownload = () => {
-        const element = document.createElement("a");
-        const file = new Blob([roadmap.join('\n\n')], { type: 'text/plain' });
-        element.href = URL.createObjectURL(file);
-        element.download = `${goal || "roadmap"}.txt`;
-        document.body.appendChild(element);
-        element.click();
+        const doc = new jsPDF();
+    
+        // Title
+        doc.setFontSize(18);
+        doc.text(goal || "My Roadmap", 10, 20);
+    
+        // Body
+        doc.setFontSize(12);
+        let yPosition = 30;
+        roadmap.forEach((step, index) => {
+            // Clean unwanted characters
+            const cleanStep = step.replace(/[*#-]/g, '').trim();
+    
+            doc.text(`${index + 1}. ${cleanStep}`, 10, yPosition);
+            yPosition += 10;
+            
+            if (yPosition > 280) { 
+                doc.addPage();
+                yPosition = 20;
+            }
+        });
+    
+        // Save PDF
+        doc.save(`${goal || "roadmap"}.pdf`);
     };
+
 
     return (
         <section id='hero'>
