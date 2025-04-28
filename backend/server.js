@@ -11,10 +11,8 @@ const port = process.env.PORT || 8000;
 app.use(cors());
 app.use(express.json());
 
-// Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// API route
 app.post('/api/generate-roadmap', async (req, res) => {
   const { goal } = req.body;
 
@@ -28,7 +26,7 @@ app.post('/api/generate-roadmap', async (req, res) => {
     const prompt = `
       You are a career roadmap expert.
       Generate a clear and beginner-friendly learning roadmap for someone who wants to become a "${goal}".
-      Break it down into stages or milestones.
+      Break it down into stages or milestones and make as short and clear as possible.
       Use simple language.
     `;
 
@@ -38,12 +36,11 @@ app.post('/api/generate-roadmap', async (req, res) => {
 
     res.json({ roadmap: roadmapText });
   } catch (error) {
-    console.error('Error generating roadmap:', error);
+    console.error('Error while generating roadmap:', error);
     res.status(500).json({ error: 'Failed to generate roadmap' });
   }
 });
 
-// Start server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
