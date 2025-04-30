@@ -20,7 +20,7 @@ import CodeCompiler from './components/CodeCompiler'
 import PasswordReset from './Auth/PasswordReset'
 import ForgotPassword from './Auth/ForgotPassword'
 import UserInfo from './Auth/UserInfo'
-import AboutUs from './components/Aboutus'
+import AboutUs from './components/AboutUs'
 
 const Home = () => (
   <>
