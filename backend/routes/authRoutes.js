@@ -80,7 +80,7 @@ router.post("/sendpasswordlink", async(req, res) => {
             from: process.env.EMAIL_USER || "wahwint72@gmail.com",
             to: email,
             subject: "Password Reset Request",
-            text: `Please click this link to reset your password: ${process.env.FRONTEND_URL || 'http://localhost:5173'}/forgotpassword/${userfind._id}/${token}`
+            text: `Please click this link to reset your password: ${process.env.FRONTEND_URL || 'https://mapito-df8g.onrender.com'}/forgotpassword/${userfind._id}/${token}`
         };
 
         console.log("Sending email...");
@@ -328,7 +328,7 @@ router.get("/google/callback", passport.authenticate("google", {
         { expiresIn: "7d" }
     );
 
-    res.redirect(`http://localhost:5173/google-auth?token=${token}`);
+    res.redirect(`https://mapito-df8g.onrender.com/google-auth?token=${token}`);
 });
 
 export default router;
