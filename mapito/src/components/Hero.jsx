@@ -3,11 +3,13 @@ import { FaRocket, FaLightbulb, FaCode, FaTools, FaCheckCircle } from 'react-ico
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { jsPDF } from "jspdf";
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
     const [goal, setGoal] = useState('');
     const [roadmap, setRoadmap] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const icons = [
         <FaRocket className="text-white" />,
@@ -18,6 +20,15 @@ const Hero = () => {
     ];
 
     const handleGenerate = async () => {
+        // Check if there's a token in localStorage or sessionStorage
+        const token = localStorage.getItem('token'); 
+        
+        if (!token) {
+            // If no token is found, redirect to signup page
+            navigate('/signup'); 
+            return;
+        }
+
         if (!goal.trim()) return;
         setLoading(true);
 
@@ -26,6 +37,7 @@ const Hero = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, 
                 },
                 body: JSON.stringify({ goal }),
             });
@@ -45,19 +57,16 @@ const Hero = () => {
         setLoading(false);
     };
 
-    
     const handleDownload = () => {
         const doc = new jsPDF();
     
-        // Title
         doc.setFontSize(18);
         doc.text(goal || "My Roadmap", 10, 20);
     
-        // Body
         doc.setFontSize(12);
         let yPosition = 30;
         roadmap.forEach((step, index) => {
-            // Clean unwanted characters
+            
             const cleanStep = step.replace(/[*#-]/g, '').trim();
     
             doc.text(`${index + 1}. ${cleanStep}`, 10, yPosition);
@@ -69,15 +78,13 @@ const Hero = () => {
             }
         });
     
-        // Save PDF
         doc.save(`${goal || "roadmap"}.pdf`);
     };
-
 
     return (
         <section id='hero'>
             <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-white">
-                <h1 className="text-4xl font-bold text-center mb-6">Plan your Roadmap with <span className='text-indigo-700'>Mapito</span></h1>
+                <h1 className="text-4xl font-bold text-center mb-6">Plan your Roadmap with <span className='text-indigo-700'>AI</span></h1>
                 <p className="text-lg text-gray-600 mb-6 text-center max-w-2xl">
                     Mapito empowers individuals to transform complex visions into structured, actionable roadmaps, providing clarity, direction, and a powerful foundation for achieving meaningful goals.
                 </p>
@@ -92,7 +99,7 @@ const Hero = () => {
                     />
                     <button
                         onClick={handleGenerate}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-md p-3 font-semibold"
+                        className="bg-gray-900 hover:bg-indigo-700 text-white rounded-md p-3 font-semibold"
                         disabled={loading}
                     >
                         {loading ? 'Generating...' : 'Generate'}
@@ -110,7 +117,6 @@ const Hero = () => {
                                 Download
                             </button>
                         </div>
-
 
                         <div className="relative border-l-4 border-indigo-300 ml-6">
                             {roadmap.map((step, index) => (
