@@ -2,7 +2,8 @@ import React from 'react'
 import {
   BrowserRouter as Router,
   Routes,
-  Route
+  Route,
+  Navigate,
 } from 'react-router-dom'
 import Hero from './components/Hero'
 import Intro from './components/Intro'
