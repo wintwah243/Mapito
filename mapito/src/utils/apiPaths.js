@@ -1,5 +1,5 @@
 
-export const BASE_URL = "http://localhost:8000";
+export const BASE_URL = "https://mapito.onrender.com";
 
 export const API_PATHS = {
     AUTH: {
