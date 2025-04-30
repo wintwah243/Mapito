@@ -1,0 +1,15 @@
+
+export const BASE_URL = "http://localhost:8000";
+
+export const API_PATHS = {
+    AUTH: {
+        LOGIN: "/api/auth/login",
+        REGISTER: "/api/auth/register",
+        GET_USER_INFO: "/api/auth/getUser",
+        UPDATE_PROFILE: "/api/auth/update-profile",        
+        UPDATE_PROFILE_PIC: "/api/auth/update-profile-pic", 
+    },
+    IMAGE: {
+        UPLOAD_IMAGE: "/api/auth/upload-image"
+    },
+};
