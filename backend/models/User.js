@@ -21,6 +21,9 @@ const UserSchema = new mongoose.Schema({
             return !this.googleId; 
         },
     },
+    bio: {
+        type: String,
+    },
     profileImageUrl: {
         type: String,
         default: null,
