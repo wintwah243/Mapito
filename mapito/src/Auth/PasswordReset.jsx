@@ -47,7 +47,7 @@ const PasswordReset = () => {
         toast.success("Password reset link sent!");
         setTimeout(() => {
           navigate('/login');
-        }, 3000);
+        }, 9000);
       } else {
         throw new Error(res.data.message || "Failed to send reset link");
       }
