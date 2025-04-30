@@ -21,6 +21,7 @@ import AboutUs from './components/Aboutus'
 import PasswordReset from './Auth/PasswordReset'
 import ForgotPassword from './Auth/ForgotPassword'
 import UserInfo from './Auth/UserInfo'
+import AboutUs from './components/Aboutus'
 
 const Home = () => (
   <>
