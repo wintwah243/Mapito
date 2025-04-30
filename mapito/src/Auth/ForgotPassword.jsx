@@ -18,7 +18,7 @@ const ForgotPassword = () => {
   // Verify token validity
   const userValid = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/api/auth/forgotpassword/${id}/${token}`, {
+      const res = await fetch(`https://mapito.onrender.com/api/auth/forgotpassword/${id}/${token}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json"
@@ -59,7 +59,7 @@ const ForgotPassword = () => {
     }
 
     try {
-      const res = await fetch(`http://localhost:8000/api/auth/${id}/${token}`, {
+      const res = await fetch(`https://mapito.onrender.com/api/auth/${id}/${token}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
