@@ -4,7 +4,7 @@
 - Download roapmap
 - Take quizzesssss
 - Chat with AI assistant chatbot
-- Run in Code Editor
+- Solve Problems and Run in Code Editor
 - Reset Password with Nodemailer
 - Google Login
 - Update profile info (name, bio, profile pic)
