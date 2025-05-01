@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaCode, FaRobot, FaGraduationCap, FaLightbulb, FaChartLine } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
 const LandingAboutus = () => {
 
@@ -33,6 +34,7 @@ const LandingAboutus = () => {
 
   return (
     <>
+    <Navbar />
     <div className="mt-9 min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="relative py-20 bg-white text-white">
