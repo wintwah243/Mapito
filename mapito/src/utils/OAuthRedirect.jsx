@@ -17,7 +17,7 @@ const OAuthRedirect = () => {
         .get("/auth/user", { withCredentials: true })
         .then((res) => {
           updateUser(res.data);
-          navigate("/");
+          navigate("/home");
         })
         .catch(() => {
           navigate("/login");
