@@ -61,13 +61,13 @@ const App = () => {
 };
 
 const RequireAuth = ({ children }) => {
-  const isAuthenticated = !!localStorage.getItem("token");
-
-  if (!isAuthenticated) {
+  const token = localStorage.getItem("token");
+  if (!token) {
     return <Navigate to="/login" replace />;
   }
 
   return children;
 };
+
 
 export default App
