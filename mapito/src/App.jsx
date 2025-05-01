@@ -22,6 +22,7 @@ import ForgotPassword from './Auth/ForgotPassword'
 import UserInfo from './Auth/UserInfo'
 import AboutUs from './components/AboutUs'
 import LandingPage from './Landing/LandingPage'
+import LandingAboutus from './Landing/LandingAboutus'
 
 const Home = () => (
 <>
@@ -50,6 +51,7 @@ return (
 <Route path="/password-reset" element={<PasswordReset />} />
 <Route path="/forgotpassword/:id/:token" element={<ForgotPassword />} />
 <Route path='userinfo' element={<UserInfo />} />
+<Route path="/landingaboutus" element={<LandingAboutus />}/>
 </Routes>
 </Router>
 </UserProvider>
