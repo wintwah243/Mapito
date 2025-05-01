@@ -36,7 +36,7 @@ const SignUp = () => {
       .then((res) => {
         console.log("OAuth user fetched:", res.data);
         updateUser(res.data); // or res.data.user if needed
-        navigate("/", { replace: true });
+        navigate("/home", { replace: true });
       })
       .catch((err) => {
         console.error("Failed to fetch user:", err);
@@ -85,7 +85,7 @@ const SignUp = () => {
         localStorage.setItem("fullName", user.fullName);
         localStorage.setItem("profilePic", user.profileImageUrl);
         updateUser(user);
-        navigate("/");
+        navigate("/home");
       }
     } catch (error) {
       if (error.response && error.response.data.message) {
