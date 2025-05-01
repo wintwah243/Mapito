@@ -15,7 +15,7 @@ const GoogleAuthCallback = () => {
         const token = params.get("token");
 
         if (token) {
-            localStorage.setItem("token", token); // Save the token to localStorage
+            localStorage.setItem("token", token); 
 
             axiosInstance.get(API_PATHS.AUTH.GET_USER_INFO, {
                 headers: {
@@ -30,7 +30,7 @@ const GoogleAuthCallback = () => {
                     localStorage.setItem("profilePic", picture); 
 
                     updateUser(res.data); 
-                    navigate("/", { replace: true });
+                    navigate("/home", { replace: true });
                 })
                 .catch((err) => {
                     console.error("Error fetching user info:", err);
