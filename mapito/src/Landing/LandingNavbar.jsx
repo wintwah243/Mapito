@@ -24,7 +24,7 @@ export default function LandingNavbar() {
         <Link to="/" className="hover:text-indigo-600 transition-all duration-300">Home</Link>
 
         <button
-      onClick={() => navigate("/aboutus")}
+      onClick={() => navigate("/landingaboutus")}
       className="hover:text-indigo-600 transition-all duration-300"
         >
       About us
@@ -92,7 +92,7 @@ export default function LandingNavbar() {
           <button
            onClick={() => {
            toggleMenu();
-           navigate("/aboutus");
+           navigate("/landingaboutus");
             }}
             className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3 w-full text-left"
            >
