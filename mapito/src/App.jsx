@@ -2,8 +2,8 @@ import React from 'react'
 import {
 BrowserRouter as Router,
 Routes,
-Route,
-Navigate
+  Route,
+  Navigate
 } from 'react-router-dom'
 import Hero from './components/Hero'
 import Intro from './components/Intro'
@@ -21,6 +21,7 @@ import PasswordReset from './Auth/PasswordReset'
 import ForgotPassword from './Auth/ForgotPassword'
 import UserInfo from './Auth/UserInfo'
 import AboutUs from './components/AboutUs'
+import LandingPage from './Landing/LandingPage'
 
 const Home = () => (
 <>
@@ -38,7 +39,8 @@ return (
 <UserProvider>
 <Router>
 <Routes>
-<Route path="/" element={<RequireAuth><Home /></RequireAuth>} />
+<Route path='/' element={<LandingPage />} />
+<Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
 <Route path="/login" element={<Login />} />
 <Route path="signup" element={<SignUp />} />
 <Route path="/google-auth" element={<GoogleAuthCallback />} />
