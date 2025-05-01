@@ -73,10 +73,10 @@ export default function Navbar() {
           }}
           className="cursor-pointer hover:text-indigo-600 transition-all duration-300"
         >
-          Take quiz
+          Quiz
         </button>
         <Link to="/code" className="hover:text-indigo-600 transition-all duration-300">
-          Run code
+          Code
         </Link>
       </div>
 
@@ -152,10 +152,10 @@ export default function Navbar() {
             }}
             className="text-gray-700 hover:text-indigo-600 font-semibold cursor-pointer"
           >
-            Take quiz
+            Quiz
           </button>
           <Link to="/code" onClick={toggleMenu} className="text-gray-700 hover:text-indigo-600 font-semibold">
-            Run code
+            Code
           </Link>
           {isAuthenticated ? (
             <div className="flex flex-col items-center gap-3">
