@@ -22,7 +22,11 @@ export default function LandingNavbar() {
       {/* Desktop Links */}
       <div className="hidden md:flex gap-8 text-gray-700 font-semibold">
         <Link to="/" className="hover:text-indigo-600 transition-all duration-300">Home</Link>
+
+        <button onclick={() => navigate("/aboutus")}>
         <Link to="/aboutus" className="hover:text-indigo-600 transition-all duration-300">About us</Link>
+        </button>
+        
         <button
           onClick={() => navigate("/signup")}
           className="cursor-pointer hover:text-indigo-600 transition-all duration-300"
@@ -80,11 +84,13 @@ export default function LandingNavbar() {
             <FaHome size={20} className="text-gray-600" />
             Home
           </Link>
-
+   
+          <button onclick={() => navigate("/aboutus")}>
           <Link to="/aboutus" onClick={toggleMenu} className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3">
             <FaInfoCircle size={20} className="text-gray-600" />
             About us
           </Link>
+          </button>
 
           <button
             onClick={() => {
