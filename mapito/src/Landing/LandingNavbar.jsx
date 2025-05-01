@@ -23,18 +23,16 @@ export default function LandingNavbar() {
       <div className="hidden md:flex gap-8 text-gray-700 font-semibold">
         <Link to="/" className="hover:text-indigo-600 transition-all duration-300">Home</Link>
 
-        <button onclick={() => navigate("/aboutus")}>
         <Link to="/aboutus" className="hover:text-indigo-600 transition-all duration-300">About us</Link>
-        </button>
         
         <button
           onClick={() => navigate("/signup")}
           className="cursor-pointer hover:text-indigo-600 transition-all duration-300"
         >
-          Take quiz
+          Quizzes
         </button>
-        <button onClick={() => navigate("/signup")}>
-        <Link to="/code" className="hover:text-indigo-600 transition-all duration-300">Run code</Link>
+        <button onClick={() => navigate("/signup")} className="hover:text-indigo-600 transition-all duration-300">
+           Problems
         </button>
       </div>
 
@@ -85,12 +83,12 @@ export default function LandingNavbar() {
             Home
           </Link>
    
-          <button onclick={() => navigate("/aboutus")}>
+         
           <Link to="/aboutus" onClick={toggleMenu} className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3">
             <FaInfoCircle size={20} className="text-gray-600" />
             About us
           </Link>
-          </button>
+         
 
           <button
             onClick={() => {
@@ -100,7 +98,7 @@ export default function LandingNavbar() {
             className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
           >
             <FaClipboardList size={20} className="text-gray-600" />
-            Take quiz
+            Quizzes
           </button>
 
 
@@ -108,11 +106,11 @@ export default function LandingNavbar() {
                 onClick={() => {
                     toggleMenu();
                     navigate("/signup");
-                }}>
-          <Link to="/code" onClick={toggleMenu} className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3">
+                }}
+              className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
+              >
             <FaCode size={20} className="text-gray-600" />
-            Run code
-          </Link>
+            Problems
           </button>
           
           <Link
