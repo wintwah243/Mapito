@@ -30,7 +30,7 @@ const Login = () => {
       .then((res) => {
         console.log("OAuth user fetched:", res.data);
         updateUser(res.data);
-        navigate("/", { replace: true });
+        navigate("/home", { replace: true });
       })
       .catch((err) => {
         console.error("Failed to fetch user:", err);
@@ -68,7 +68,7 @@ const Login = () => {
         localStorage.setItem("fullName", user.fullName);
         localStorage.setItem("profilePic", user.profileImageUrl);
         updateUser(user);
-        navigate("/");
+        navigate("/home");
       }
     } catch (error) {
       if (error.response?.data?.message) {
