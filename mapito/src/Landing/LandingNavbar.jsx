@@ -23,7 +23,12 @@ export default function LandingNavbar() {
       <div className="hidden md:flex gap-8 text-gray-700 font-semibold">
         <Link to="/" className="hover:text-indigo-600 transition-all duration-300">Home</Link>
 
-        <Link to="/aboutus" className="hover:text-indigo-600 transition-all duration-300">About us</Link>
+        <button
+      onClick={() => navigate("/aboutus")}
+      className="hover:text-indigo-600 transition-all duration-300"
+        >
+      About us
+    </button>
         
         <button
           onClick={() => navigate("/signup")}
@@ -84,10 +89,16 @@ export default function LandingNavbar() {
           </Link>
    
          
-          <Link to="/aboutus" onClick={toggleMenu} className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3">
-            <FaInfoCircle size={20} className="text-gray-600" />
-            About us
-          </Link>
+          <button
+           onClick={() => {
+           toggleMenu();
+           navigate("/aboutus");
+            }}
+            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3 w-full text-left"
+           >
+          <FaInfoCircle size={20} className="text-gray-600" />
+         About us
+        </button>
          
 
           <button
