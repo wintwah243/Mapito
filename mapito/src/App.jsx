@@ -33,21 +33,12 @@ const Home = () => (
   </>
 );
 
-const PublicHome = () => (
-  <>
-    <Navbar />
-    <Intro /> 
-    <Footer />
-  </>
-);
-
 const App = () => {
   return (
     <UserProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<PublicRoute><PublicHome /></PublicRoute>} />
-          <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/google-auth" element={<GoogleAuthCallback />} />
@@ -67,17 +58,7 @@ const RequireAuth = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem("token");
 
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-};
-
-const PublicRoute = ({ children }) => {
-  const isAuthenticated = !!localStorage.getItem("token");
-
-  if (isAuthenticated) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
