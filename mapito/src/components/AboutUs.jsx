@@ -33,7 +33,7 @@ const AboutUs = () => {
   ];
 
   const handleGoback = () => {
-        navigate('/');
+        navigate('/home');
   }
 
   return (
