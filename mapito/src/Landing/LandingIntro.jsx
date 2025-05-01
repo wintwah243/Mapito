@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import AI from '../assets/images/robot.png';
 import { Link } from "react-router-dom";
+import Bot from "../components/Bot";
 
 export default function LandingIntro() {
     const handleLearnMore = () => {
@@ -71,6 +72,11 @@ export default function LandingIntro() {
                     transition={{ duration: 1, delay: 0.5 }}
                 />
             </motion.div>
+
+            {/* For the Bot Component */}
+            <div className="absolute bottom-0 right-0 z-20">
+                <Bot />
+            </div>
         </section>
     );
 }
