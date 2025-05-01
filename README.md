@@ -1,4 +1,3 @@
-WIP ----- Files are not fully commited YET.
 
 **Features**
 - Generate roadmap presented in a linear branching visual format with AI
@@ -8,4 +7,6 @@ WIP ----- Files are not fully commited YET.
 - Run in Code Editor
 - Reset Password with Nodemailer
 - Google Login
-- Update profile info
+- Update profile info (name, bio, profile pic)
+- Password Hashing
+- User Profile Pic Upload with Cloudinary
