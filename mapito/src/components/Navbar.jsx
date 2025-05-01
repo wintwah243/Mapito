@@ -57,7 +57,7 @@ export default function Navbar() {
 
       {/* Desktop Links */}
       <div className="hidden md:flex gap-8 text-gray-700 font-semibold">
-        <Link to="/" className="hover:text-indigo-600 transition-all duration-300">
+        <Link to="/home" className="hover:text-indigo-600 transition-all duration-300">
           Home
         </Link>
         <Link to="/aboutus" className="hover:text-indigo-600 transition-all duration-300">
@@ -135,7 +135,7 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="absolute top-16 left-0 w-full bg-white flex flex-col items-center gap-6 py-6 shadow-md z-40">
-          <Link to="/" onClick={toggleMenu} className="text-gray-700 hover:text-indigo-600 font-semibold">
+          <Link to="/home" onClick={toggleMenu} className="text-gray-700 hover:text-indigo-600 font-semibold">
             Home
           </Link>
           <Link to="/aboutus" onClick={toggleMenu} className="text-gray-700 hover:text-indigo-600 font-semibold">
