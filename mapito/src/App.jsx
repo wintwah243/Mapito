@@ -35,34 +35,39 @@ const Home = () => (
 );
 
 const App = () => {
-return (
-<UserProvider>
-<Router>
-<Routes>
-<Route path="/" element={<RequireAuth><Home /></RequireAuth>} />
-<Route path="/login" element={<Login />} />
-<Route path="signup" element={<SignUp />} />
-<Route path="/google-auth" element={<GoogleAuthCallback />} />
-<Route path="/quiz" element={<Quiz />} />
-<Route path="/code" element={<CodeCompiler />} />
-<Route path='/aboutus' element={<AboutUs />} />
-<Route path="/password-reset" element={<PasswordReset />} />
-<Route path="/forgotpassword/:id/:token" element={<ForgotPassword />} />
-<Route path='userinfo' element={<UserInfo />} />
-</Routes>
-</Router>
-</UserProvider>
-)
+  return (
+    <UserProvider>
+      <Router>
+        <Routes>
+          {/* Public route */}
+          <Route path="/" element={<Home />} />
+
+          {/* Authenticated routes */}
+          <Route path="/quiz" element={<RequireAuth><Quiz /></RequireAuth>} />
+          <Route path="/code" element={<RequireAuth><CodeCompiler /></RequireAuth>} />
+          <Route path="/userinfo" element={<RequireAuth><UserInfo /></RequireAuth>} />
+
+          {/* Authentication-related routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="signup" element={<SignUp />} />
+          <Route path="/google-auth" element={<GoogleAuthCallback />} />
+          <Route path="/password-reset" element={<PasswordReset />} />
+          <Route path="/forgotpassword/:id/:token" element={<ForgotPassword />} />
+          <Route path='/aboutus' element={<AboutUs />} />
+        </Routes>
+      </Router>
+    </UserProvider>
+  );
 };
 
 const RequireAuth = ({ children }) => {
-const isAuthenticated = !!localStorage.getItem("token");
+  const isAuthenticated = !!localStorage.getItem("token");
 
-if (!isAuthenticated) {
-return <Navigate to="/login" replace />;
-}
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
-return children;
+  return children;
 };
 
 export default App
