@@ -1,10 +1,11 @@
 
 **Features**
 - Generate roadmap presented in a linear branching visual format with AI
-- Download roapmap
+- Download roapmap with PDF file
 - Take quizzesssss
 - Chat with AI assistant chatbot
 - Solve Problems and Run in Code Editor
+- Test (or play) Typing Speed game For Fun with WPM calculation
 - Reset Password with Nodemailer
 - Google Login
 - Update profile info (name, bio, profile pic)
