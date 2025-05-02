@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import CharAvatar from "../utils/CharAvatar";
-import { FaHome, FaInfoCircle, FaClipboardList, FaCode, FaKeyboard } from 'react-icons/fa';
+import { FaHome, FaInfoCircle, FaClipboardList, FaCode, FaKeyboard, FaStickyNote, FaUserFriends  } from 'react-icons/fa';
+import { ChevronDown } from "lucide-react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,6 +39,29 @@ export default function Navbar() {
     navigate("/login");
   };
 
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropdownOpen(false);
+    }
+  };
+
+  document.addEventListener('mousedown', handleClickOutside);
+  return () => document.removeEventListener('mousedown', handleClickOutside);
+}, []);
+
+const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
+  <button
+    onClick={() => navigate(isAuthenticated ? to : "/signup")}
+    className="flex items-center w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+  >
+    <span className="mr-3 text-gray-400">{icon}</span>
+    <span>{text}</span>
+  </button>
+);
+
   return (
     <motion.nav
       initial={{ opacity: 0, y: -20 }}
@@ -51,37 +75,61 @@ export default function Navbar() {
       {/* Desktop Links */}
       <div className="hidden md:flex gap-8 text-gray-700 font-semibold">
         <Link to="/home" className="hover:text-indigo-600 transition-all duration-300">Home</Link>
-
         <Link to="/aboutus" className="hover:text-indigo-600 transition-all duration-300">About us</Link>
-        <button
-          onClick={() => {
-            if (isAuthenticated) navigate("/quiz");
-            else navigate("/signup");
-          }}
-          className="cursor-pointer hover:text-indigo-600 transition-all duration-300"
-        >
-          Quizzes
-        </button>
 
-        <button
-          onClick={() => {
-            if (isAuthenticated) navigate("/code");
-            else navigate("/signup");
-          }}
-          className="cursor-pointer hover:text-indigo-600 transition-all duration-300"
-        >
-          Problems
-        </button>
+        {/* Resources Dropdown - Improved Version */}
+        <div className="relative group" onMouseLeave={() => setDropdownOpen(false)}>
+          <button
+            className="flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            aria-expanded={dropdownOpen}
+            aria-haspopup="true"
+          >
+            <span>Resources</span>
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
+            />
+          </button>
 
-        <button
-          onClick={() => {
-            if (isAuthenticated) navigate("/typing-test");
-            else navigate("/signup");
-          }}
-          className="cursor-pointer hover:text-indigo-600 transition-all duration-300"
-        >
-          Typing test
-        </button>
+          {/* Dropdown Menu */}
+          {dropdownOpen && (
+            <div
+              className="absolute left-0 mt-1 w-56 bg-white border border-gray-200 rounded-lg shadow-xl z-50 py-2"
+              ref={dropdownRef}
+            >
+              <NavDropdownItem
+                to="/quiz"
+                isAuthenticated={isAuthenticated}
+                text="Quizzes"
+                icon={<FaClipboardList className="w-5 h-5" />}
+              />
+              <NavDropdownItem
+                to="/code"
+                isAuthenticated={isAuthenticated}
+                text="Problems"
+                icon={<FaCode className="w-5 h-5" />}
+              />
+              <NavDropdownItem
+                to="/typing-test"
+                isAuthenticated={isAuthenticated}
+                text="TypeTest"
+                icon={<FaKeyboard className="w-5 h-5" />}
+              />
+              <NavDropdownItem
+                to="/summarize"
+                isAuthenticated={isAuthenticated}
+                text="QuickNotes"
+                icon={<FaStickyNote className="w-5 h-5" />}
+              />
+              <NavDropdownItem
+                to="/mock-interview"
+                isAuthenticated={isAuthenticated}
+                text="Mock Interview"
+                icon={<FaUserFriends className="w-5 h-5" />}
+              />
+            </div>
+          )}
+        </div>
 
       </div>
 
@@ -192,6 +240,28 @@ export default function Navbar() {
           >
             <FaKeyboard size={20} className="text-gray-600" />
             Typing test
+          </button>
+
+          <button
+            onClick={() => {
+              toggleMenu();
+              isAuthenticated ? navigate("/summarize") : navigate("/signup");
+            }}
+            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
+          >
+            <FaKeyboard size={20} className="text-gray-600" />
+            QuickNotes
+          </button>
+
+          <button
+            onClick={() => {
+              toggleMenu();
+              isAuthenticated ? navigate("/mock-interview") : navigate("/signup");
+            }}
+            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
+          >
+            <FaKeyboard size={20} className="text-gray-600" />
+            Mock Interview
           </button>
           
           {isAuthenticated ? (
