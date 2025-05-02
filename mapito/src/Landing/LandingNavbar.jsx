@@ -40,9 +40,8 @@ export default function LandingNavbar() {
         <button onClick={() => navigate("/signup")} className="hover:text-indigo-600 transition-all duration-300">
            Problems
         </button>
-      </div>
 
-      <button onClick={() => navigate("/signup")} className="hover:text-indigo-600 transition-all duration-300">
+        <button onClick={() => navigate("/signup")} className="hover:text-indigo-600 transition-all duration-300">
            Typing test
         </button>
       </div>
