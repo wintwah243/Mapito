@@ -92,7 +92,7 @@ app.use("/uploads", express.static(path.join(__dirname,"uploads")));
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// API route
+// API route for roadmap
 app.post('/api/generate-roadmap', async (req, res) => {
   const { goal } = req.body;
 
@@ -118,6 +118,61 @@ app.post('/api/generate-roadmap', async (req, res) => {
   } catch (error) {
     console.error('Error generating roadmap:', error);
     res.status(500).json({ error: 'Failed to generate roadmap' });
+  }
+});
+
+//api route for ai mock interview
+app.post('/api/mock-interview', async (req, res) => {
+  const { role, answer, history } = req.body;
+
+  const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
+
+  const prompt = `
+You are a mock interviewer for the role of ${role}.
+${history ? `Here is the conversation so far:\n${history}` : ''}
+${answer ? `Candidate's latest answer: "${answer}". Give feedback and ask the next question.` : 'Start the interview by asking the first question.'}
+  `;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const nextMessage = response.text();
+
+    res.json({ message: nextMessage });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to generate interview content' });
+  }
+});
+
+
+
+//api route for summarize note
+app.post('/api/summarize-note', async (req, res) => {
+  const { note } = req.body;
+
+  if (!note) {
+    return res.status(400).json({ error: 'Note is required' });
+  }
+
+  try {
+    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
+
+    const prompt = `
+      You are a helpful assistant.
+      Summarize the following note in a short and clear paragraph:
+      ---
+      ${note}
+    `;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const summary = response.text();
+
+    res.json({ summary });
+  } catch (error) {
+    console.error('Error summarizing note:', error);
+    res.status(500).json({ error: 'Failed to summarize note' });
   }
 });
 
