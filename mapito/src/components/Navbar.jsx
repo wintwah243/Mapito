@@ -11,6 +11,7 @@ export default function Navbar() {
   const [userName, setUserName] = useState("");
   const [profilePic, setProfilePic] = useState("");
   const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useState(true);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
