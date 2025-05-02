@@ -79,7 +79,7 @@ function MockInterview() {
       if (videoEnabled) await initWebcam();
       initSpeechRecognition();
       
-      const res = await fetch('http://localhost:8000/api/mock-interview', {
+      const res = await fetch('https://mapito.onrender.com/api/mock-interview', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role })
