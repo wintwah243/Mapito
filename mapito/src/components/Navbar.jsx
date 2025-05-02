@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import CharAvatar from "../utils/CharAvatar";
-import { FaHome, FaInfoCircle, FaClipboardList, FaCode } from 'react-icons/fa';
+import { FaHome, FaInfoCircle, FaClipboardList, FaCode, FaKeyboard } from 'react-icons/fa';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -71,6 +71,16 @@ export default function Navbar() {
           className="cursor-pointer hover:text-indigo-600 transition-all duration-300"
         >
           Problems
+        </button>
+
+        <button
+          onClick={() => {
+            if (isAuthenticated) navigate("/typing-test");
+            else navigate("/signup");
+          }}
+          className="cursor-pointer hover:text-indigo-600 transition-all duration-300"
+        >
+          Typing test
         </button>
 
       </div>
@@ -171,6 +181,17 @@ export default function Navbar() {
           >
             <FaCode size={20} className="text-gray-600" />
             Problems
+          </button>
+
+          <button
+            onClick={() => {
+              toggleMenu();
+              isAuthenticated ? navigate("/typing-test") : navigate("/signup");
+            }}
+            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
+          >
+            <FaKeyboard size={20} className="text-gray-600" />
+            Typing test
           </button>
           
           {isAuthenticated ? (
