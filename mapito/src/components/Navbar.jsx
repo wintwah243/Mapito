@@ -74,14 +74,14 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
       <div className="text-2xl font-bold text-gray-900 cursor-pointer">Mapito</div>
 
       {/* Desktop Links */}
-      <div className="hidden md:flex gap-8 text-gray-700 font-semibold">
-        <Link to="/home" className="hover:text-indigo-600 transition-all duration-300">Home</Link>
-        <Link to="/aboutus" className="hover:text-indigo-600 transition-all duration-300">About us</Link>
+      <div className="hidden md:flex items-center gap-8 text-gray-700 font-semibold">
+        <Link to="/home" className="hover:text-indigo-600 transition-all duration-300 py-2">Home</Link>
+        <Link to="/aboutus" className="hover:text-indigo-600 transition-all duration-300 py-2">About us</Link>
 
         {/* Resources Dropdown - Improved Version */}
         <div className="relative group" onMouseLeave={() => setDropdownOpen(false)}>
           <button
-            className="flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="flex items-center gap-1 hover:text-indigo-600 transition-all duration-300 py-2"
             onClick={() => setDropdownOpen(!dropdownOpen)}
             aria-expanded={dropdownOpen}
             aria-haspopup="true"
