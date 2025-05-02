@@ -23,6 +23,7 @@ import UserInfo from './Auth/UserInfo'
 import AboutUs from './components/AboutUs'
 import LandingPage from './Landing/LandingPage'
 import LandingAboutus from './Landing/LandingAboutus'
+import TypingTest from './components/TypingTest'
 
 const Home = () => (
 <>
@@ -52,6 +53,7 @@ return (
 <Route path="/forgotpassword/:id/:token" element={<ForgotPassword />} />
 <Route path='userinfo' element={<UserInfo />} />
 <Route path="/landingaboutus" element={<LandingAboutus />}/>
+<Route path="/typing-test" element={<TypingTest />} />
 </Routes>
 </Router>
 </UserProvider>
