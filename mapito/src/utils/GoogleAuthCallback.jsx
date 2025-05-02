@@ -31,7 +31,7 @@ const GoogleAuthCallback = () => {
                     localStorage.setItem("profilePic", picture); 
 
                     updateUser(res.data); 
-                    navigate("/", { replace: true });
+                    navigate("/home", { replace: true });
                 })
                 .catch((err) => {
                     console.error("Error fetching user info:", err);
