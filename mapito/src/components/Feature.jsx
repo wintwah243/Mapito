@@ -8,25 +8,25 @@ const steps = [
     id: 1,
     title: 'Generate Your Roadmap',
     description: 'Use AI to create a personalized learning path tailored to your goals.',
-    icon: <FaCogs size={24} className="text-white" />
+    icon: <FaCogs size={24}/>
   },
   {
     id: 2,
     title: 'Take Skill Quizzes',
     description: 'Validate your knowledge and track progress with interactive quizzes.',
-    icon: <FaClipboardList size={24} className="text-white" />
+    icon: <FaClipboardList size={24} />
   },
   {
     id: 3,
     title: 'Chat With AI Assistant',
     description: 'Ask questions and get instant support from Mapito’s smart chatbot.',
-    icon: <FaCalendarCheck size={24} className="text-white" />
+    icon: <FaCalendarCheck size={24}/>
   },
   {
     id: 4,
     title: 'Practice in Code Editor',
     description: 'Write and run code directly in your browser to sharpen your skills.',
-    icon: <FaCheckCircle size={24} className="text-white" />
+    icon: <FaCheckCircle size={24}/>
   }
 ];
 
@@ -40,7 +40,7 @@ const Feature = () => {
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-2">Our Working Process</h2>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto text-center">
           {steps.map((step, index) => (
             <motion.div
               key={step.id}
@@ -55,7 +55,7 @@ const Feature = () => {
               )}
 
               <div className="relative z-10">
-                <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center text-white font-semibold mb-4 shadow-lg">
+              <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center text-white font-semibold mb-4 shadow-lg flex-shrink-0 mx-auto">
                   {step.icon}
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">{step.title}</h3>
