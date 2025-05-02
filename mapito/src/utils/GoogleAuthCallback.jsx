@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import axiosInstance from './axiosInstance';
 import { API_PATHS } from './apiPaths';
 import { UserContext } from './UserContext';
+import { motion } from 'framer-motion';
 
 const GoogleAuthCallback = () => {
     const navigate = useNavigate();
@@ -15,7 +16,7 @@ const GoogleAuthCallback = () => {
         const token = params.get("token");
 
         if (token) {
-            localStorage.setItem("token", token); 
+            localStorage.setItem("token", token); // Save the token to localStorage
 
             axiosInstance.get(API_PATHS.AUTH.GET_USER_INFO, {
                 headers: {
@@ -30,7 +31,7 @@ const GoogleAuthCallback = () => {
                     localStorage.setItem("profilePic", picture); 
 
                     updateUser(res.data); 
-                    navigate("/home", { replace: true });
+                    navigate("/", { replace: true });
                 })
                 .catch((err) => {
                     console.error("Error fetching user info:", err);
@@ -40,7 +41,28 @@ const GoogleAuthCallback = () => {
     }, [navigate, updateUser]);
 
     return (
-        <div>Loading...</div>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+            <motion.div
+                animate={{
+                    scale: [1, 1.2, 1],
+                    rotate: [0, 180, 360],
+                }}
+                transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "linear"
+                }}
+                className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full"
+            />
+            <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="mt-4 text-lg font-medium text-gray-700"
+            >
+                Signing you in...
+            </motion.p>
+        </div>
     );
 };
 
