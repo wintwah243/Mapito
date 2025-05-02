@@ -17,7 +17,7 @@ function SummarizeNote() {
     setSummary('');
 
     try {
-      const res = await fetch('http://localhost:8000/api/summarize-note', {
+      const res = await fetch('https://mapito.onrender.com/api/summarize-note', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
