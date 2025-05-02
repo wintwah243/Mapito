@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { FaHome, FaInfoCircle, FaClipboardList, FaCode } from 'react-icons/fa';
+import { FaHome, FaInfoCircle, FaClipboardList, FaCode, FaKeyboard } from 'react-icons/fa';
 
 export default function LandingNavbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,8 +36,14 @@ export default function LandingNavbar() {
         >
           Quizzes
         </button>
+        
         <button onClick={() => navigate("/signup")} className="hover:text-indigo-600 transition-all duration-300">
            Problems
+        </button>
+      </div>
+
+      <button onClick={() => navigate("/signup")} className="hover:text-indigo-600 transition-all duration-300">
+           Typing test
         </button>
       </div>
 
@@ -122,6 +128,17 @@ export default function LandingNavbar() {
               >
             <FaCode size={20} className="text-gray-600" />
             Problems
+          </button>
+
+          <button
+                onClick={() => {
+                    toggleMenu();
+                    navigate("/signup");
+                }}
+              className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
+              >
+            <FaKeyboard size={20} className="text-gray-600" />
+            Typing test
           </button>
           
           <Link
