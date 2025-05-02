@@ -24,6 +24,8 @@ import AboutUs from './components/AboutUs'
 import LandingPage from './Landing/LandingPage'
 import LandingAboutus from './Landing/LandingAboutus'
 import TypingTest from './components/TypingTest'
+import SummarizeNote from './components/SummarizeNote'
+import MockInterview from './components/MockInterview'
 
 const Home = () => (
 <>
@@ -54,6 +56,8 @@ return (
 <Route path='userinfo' element={<UserInfo />} />
 <Route path="/landingaboutus" element={<LandingAboutus />}/>
 <Route path="/typing-test" element={<TypingTest />} />
+<Route path='summarize' element={<SummarizeNote />} />
+<Route path='mock-interview' element={<MockInterview />} />
 </Routes>
 </Router>
 </UserProvider>
