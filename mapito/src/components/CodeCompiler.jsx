@@ -34,10 +34,10 @@ const CodeCompiler = () => {
   const runCode = async () => {
     setOutput("Running tests...");
     const results = [];
-
+  
     for (const testCase of selectedQuestion.testCases) {
       let fullCode = "";
-
+  
       if (language === "javascript") {
         fullCode = `${code}\nconsole.log(greet("${testCase.input}"));`;
       } else if (language === "python") {
@@ -49,7 +49,7 @@ const CodeCompiler = () => {
         );
         fullCode = mainCode;
       }
-
+  
       try {
         const submission = await axios.post(
           "https://judge0-ce.p.rapidapi.com/submissions",
@@ -60,55 +60,72 @@ const CodeCompiler = () => {
           {
             headers: {
               "content-type": "application/json",
-              "X-RapidAPI-Key": "599386d3famshadd98fda4fff721p1825e5jsnfeda3c9d0c49",
+              "X-RapidAPI-Key": import.meta.env.VITE_JUDGE0_API,
               "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
             },
           }
         );
-
+  
         const token = submission.data.token;
-        await new Promise((res) => setTimeout(res, 2000));
-
+        await new Promise((res) => setTimeout(res, 2000)); // Wait for Judge0 to process
+  
         const result = await axios.get(
           `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
           {
             headers: {
-              "X-RapidAPI-Key": "599386d3famshadd98fda4fff721p1825e5jsnfeda3c9d0c49",
+              "X-RapidAPI-Key": import.meta.env.VITE_JUDGE0_API,
               "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
             },
           }
         );
-
-        const userOutput = result.data.stdout?.trim();
-        const expected = testCase.expectedOutput;
-        const pass = userOutput === expected;
-
+  
+        // Improved output handling
+        let userOutput = result.data.stdout || "";
+        if (typeof userOutput !== "string") {
+          userOutput = String(userOutput);
+        }
+        userOutput = userOutput.trim();
+        
+        let expectedOutput = testCase.expectedOutput;
+        if (typeof expectedOutput !== "string") {
+          expectedOutput = String(expectedOutput);
+        }
+        expectedOutput = expectedOutput.trim();
+  
+        // Normalize line endings and remove any extra whitespace
+        const normalize = (str) => str.replace(/\r\n/g, '\n').replace(/\s+/g, ' ').trim();
+        const normalizedUserOutput = normalize(userOutput);
+        const normalizedExpected = normalize(expectedOutput);
+  
+        const pass = normalizedUserOutput === normalizedExpected;
+  
         results.push({
           input: testCase.input,
-          expected,
+          expected: expectedOutput,
           output: userOutput,
           pass,
         });
-      } catch {
+      } catch (error) {
+        console.error("Error running code:", error);
         results.push({
           input: testCase.input,
-          expected: testCase.expectedOutput,
-          output: "Error",
+          expected: String(testCase.expectedOutput),
+          output: "Error: " + (error.response?.data?.message || "Unknown error"),
           pass: false,
         });
       }
     }
-
+  
     const finalOutput = results
       .map(
         (r, i) => `Test Case ${i + 1}:
-Input: ${r.input}
-Expected: ${r.expected}
-Output: ${r.output}
-Result: ${r.pass ? "✅ Passed" : "❌ Failed"}\n`
+  Input: ${r.input}
+  Expected: ${r.expected}
+  Output: ${r.output}
+  Result: ${r.pass ? "✅ Passed" : "❌ Failed"}\n`
       )
       .join("\n");
-
+  
     setOutput(finalOutput);
   };
 
@@ -124,7 +141,7 @@ Result: ${r.pass ? "✅ Passed" : "❌ Failed"}\n`
           </p>
         </div>
 
-      {/* Question Selector */}
+      {/* selector for question tags */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Choose Question:</label>
         <select
