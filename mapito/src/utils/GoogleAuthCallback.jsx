@@ -54,6 +54,8 @@ const GoogleAuthCallback = () => {
                 }}
                 className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full"
             />
+
+            //customized loading effect while loading for google login
             <motion.p 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
