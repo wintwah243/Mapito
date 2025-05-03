@@ -7,7 +7,7 @@ import { ChevronDown } from "lucide-react";
 export default function LandingNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const [dropdownOpen, setDropdownOpen] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const dropdownRef = useRef(null);
@@ -40,7 +40,7 @@ export default function LandingNavbar() {
       transition={{ duration: 0.6 }}
       className="bg-white w-full flex items-center justify-between py-4 px-6 md:px-12 fixed top-0 left-0 z-50 shadow"
     >
-      {/* Logo */}
+      {/* header--projectName */}
       <div className="text-2xl font-bold text-gray-900 cursor-pointer">Mapito</div>
 
       {/* Desktop Links */}
@@ -59,7 +59,7 @@ export default function LandingNavbar() {
     About us
   </button>
 
-  {/* Resources Dropdown - Improved Version */}
+  {/* Dropdown for various features */}
   <div className="relative group" onMouseLeave={() => setDropdownOpen(false)}>
     <button
       className="flex items-center gap-1 hover:text-indigo-600 transition-all duration-300 py-2"
@@ -67,13 +67,13 @@ export default function LandingNavbar() {
       aria-expanded={dropdownOpen}
       aria-haspopup="true"
     >
-      <span>Resources</span>
+      <span>Features</span>
       <ChevronDown
         className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
       />
     </button>
 
-    {/* Dropdown Menu */}
+    {/* Dropdown Menu on desktop view no authentication check becos i have separated two files. Landing & Home */}
     {dropdownOpen && (
       <div
         className="absolute left-0 mt-1 w-56 bg-white border border-gray-200 rounded-lg shadow-xl z-50 py-2"
@@ -119,7 +119,7 @@ export default function LandingNavbar() {
         </Link>
       </div>
 
-      {/* Hamburger for Mobile */}
+      {/* for responsive mobile view */}
       <div className="md:hidden flex items-center">
         <button onClick={toggleMenu} className="text-gray-700 focus:outline-none">
           {isOpen ? (
@@ -134,7 +134,7 @@ export default function LandingNavbar() {
         </button>
       </div>
 
-      {/* Side Menu for Mobile */}
+      {/* Side Menu for Mobile view - no authentication check becos i have separated two files. Landing & Home */}
       <motion.div
         initial={{ x: "-100%" }}
         animate={{ x: isOpen ? 0 : "-100%" }}
