@@ -11,7 +11,7 @@ export default function Navbar() {
   const [userName, setUserName] = useState("");
   const [profilePic, setProfilePic] = useState("");
   const navigate = useNavigate();
-  const [dropdownOpen, setDropdownOpen] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -70,7 +70,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
       transition={{ duration: 0.6 }}
       className="bg-white w-full flex items-center justify-between py-4 px-6 md:px-12 fixed top-0 left-0 z-50 shadow"
     >
-      {/* Logo */}
+      {/* Header - projectname */}
       <div className="text-2xl font-bold text-gray-900 cursor-pointer">Mapito</div>
 
       {/* Desktop Links */}
@@ -78,7 +78,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
         <Link to="/home" className="hover:text-indigo-600 transition-all duration-300 py-2">Home</Link>
         <Link to="/aboutus" className="hover:text-indigo-600 transition-all duration-300 py-2">About us</Link>
 
-        {/* Resources Dropdown - Improved Version */}
+        {/* dropdown for various features */}
         <div className="relative group" onMouseLeave={() => setDropdownOpen(false)}>
           <button
             className="flex items-center gap-1 hover:text-indigo-600 transition-all duration-300 py-2"
@@ -86,13 +86,13 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
             aria-expanded={dropdownOpen}
             aria-haspopup="true"
           >
-            <span>Resources</span>
+            <span>Features</span>
             <ChevronDown
               className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
             />
           </button>
 
-          {/* Dropdown Menu */}
+          {/* Dropdown Menu on desktop view */}
           {dropdownOpen && (
             <div
               className="absolute left-0 mt-1 w-56 bg-white border border-gray-200 rounded-lg shadow-xl z-50 py-2"
@@ -134,7 +134,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
 
       </div>
 
-      {/* Desktop Button + Avatar */}
+      {/* for user profile pic on desktop view */}
       <div className="hidden md:flex items-center gap-4">
         {isAuthenticated ? (
           <>
@@ -168,7 +168,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
         )}
       </div>
 
-      {/* for Mobile */}
+      {/* for Mobile view */}
       <div className="md:hidden flex items-center">
         <button onClick={toggleMenu} className="text-gray-700 focus:outline-none">
           {isOpen ? (
@@ -250,7 +250,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
             }}
             className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
           >
-            <FaKeyboard size={20} className="text-gray-600" />
+            <FaStickyNote size={20} className="text-gray-600" />
             QuickNotes
           </button>
 
@@ -261,7 +261,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
             }}
             className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
           >
-            <FaKeyboard size={20} className="text-gray-600" />
+            <FaUserFriends size={20} className="text-gray-600" />
             Mock Interview
           </button>
           
