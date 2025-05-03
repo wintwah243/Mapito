@@ -16,6 +16,7 @@ const LandingHero = () => {
         <FaCheckCircle className="text-white" />,
     ];
 
+    //this is used to present user how roadmap generatiion structure works
     const demoRoadmap = [
         "### 1. Learn HTML & CSS Fundamentals",
         "### 2. Master JavaScript Basics",
@@ -54,7 +55,7 @@ const LandingHero = () => {
                     </button>
                 </div>
 
-                {/* Demo Roadmap */}
+                {/* Demo Roadmap for user for a better user interface */}
                 <div className="mt-12 p-6 w-full max-w-4xl">
                     <div className="flex items-center justify-between mb-10">
                         <h2 className="text-3xl font-bold text-indigo-700">Example Roadmap</h2>
