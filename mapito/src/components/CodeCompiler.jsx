@@ -2,106 +2,23 @@ import React, { useState } from "react";
 import Editor from "@monaco-editor/react";
 import axios from "axios";
 import Navbar from "./Navbar";
+import { quizQuestions } from "../utils/data";
 
+//language ID by judge0
 const languageMap = {
   javascript: 63,
   python: 71,
   java: 62,
 };
 
-const questions = [
-  {
-    id: 1,
-    title: "Greet Function",
-    description: "Write a function greet(name) that returns 'Hello, name!'",
-    difficulty: "Easy",
-    tags: ["String", "Function"],
-    testCases: [
-      { input: "Alice", expectedOutput: "Hello, Alice!" },
-      { input: "Bob", expectedOutput: "Hello, Bob!" },
-    ],
-    starterCode: {
-      javascript: `function greet(name) {
-  // Your code here
-}`,
-      python: `def greet(name):
-    # Your code here`,
-      java: `public class Main {
-    public static String greet(String name) {
-        // Your code here
-    }
-
-    public static void main(String[] args) {
-        // Test code will be injected
-    }
-}`,
-    },
-  },
-  {
-    id: 2,
-    title: "Add Two Numbers",
-    description: "Write a function that returns the sum of two numbers.",
-    difficulty: "Easy",
-    tags: ["Math", "Function"],
-    testCases: [
-      { input: "3,5", expectedOutput: "8" },
-      { input: "10,20", expectedOutput: "30" },
-    ],
-    starterCode: {
-      javascript: `function add(a, b) {
-  // Your code here
-}`,
-      python: `def add(a, b):
-    # Your code here`,
-      java: `public class Main {
-    public static int add(int a, int b) {
-        // Your code here
-    }
-
-    public static void main(String[] args) {
-        // Test code will be injected
-    }
-}`,
-    },
-  },
-  {
-    id: 3,
-    title: "Check Even or Odd",
-    description: "Write a function that checks if a number is even or odd.",
-    difficulty: "Easy",
-    tags: ["Conditionals", "Math"],
-    testCases: [
-      { input: "4", expectedOutput: "Even" },
-      { input: "7", expectedOutput: "Odd" },
-    ],
-    starterCode: {
-      javascript: `function checkEvenOdd(n) {
-  // Your code here
-}`,
-      python: `def check_even_odd(n):
-    # Your code here`,
-      java: `public class Main {
-    public static String checkEvenOdd(int n) {
-        // Your code here
-    }
-
-    public static void main(String[] args) {
-        // Test code will be injected
-    }
-}`,
-    },
-  },
-];
-
-
 const CodeCompiler = () => {
-  const [selectedQuestion, setSelectedQuestion] = useState(questions[0]);
+  const [selectedQuestion, setSelectedQuestion] = useState(quizQuestions[0]);
   const [language, setLanguage] = useState("javascript");
-  const [code, setCode] = useState(questions[0].starterCode["javascript"]);
+  const [code, setCode] = useState(quizQuestions[0].starterCode["javascript"]);
   const [output, setOutput] = useState("");
 
   const handleQuestionChange = (e) => {
-    const question = questions.find((q) => q.id === parseInt(e.target.value));
+    const question = quizQuestions.find((q) => q.id === parseInt(e.target.value));
     setSelectedQuestion(question);
     setCode(question.starterCode[language]);
     setOutput("");
@@ -196,33 +113,45 @@ Result: ${r.pass ? "✅ Passed" : "❌ Failed"}\n`
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 pt-20">
+    <div className="max-w-5xl mx-auto p-4 pt-20 mt-5">
       <Navbar />
+
+      {/* Header */}
+      <div className="container mx-auto px-6 text-center">
+          <h1 className="text-gray-900 text-3xl font-bold mb-6">Solve and Run code Here</h1>
+          <p className="text-gray-400 text-sm max-w-3xl mx-auto">
+          Write, solve, and run your code instantly using our interactive code editor below.
+          </p>
+        </div>
 
       {/* Question Selector */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Choose Question:</label>
         <select
-          className="border border-gray-300 rounded px-3 py-2"
+          className="border border-indigo-600 rounded px-3 py-2"
           onChange={handleQuestionChange}
           value={selectedQuestion.id}
         >
-          {questions.map((q) => (
+          {quizQuestions.map((q) => (
             <option key={q.id} value={q.id}>
               {q.title}
             </option>
           ))}
         </select>
         <p className="mt-2 text-sm text-gray-600">{selectedQuestion.description}</p>
-        <div className="text-sm">
-          <strong>Difficulty:</strong> {selectedQuestion.difficulty}
+        <div className="text-sm mb-2">
+          <strong>Difficulty:</strong> {selectedQuestion.difficulty == "Easy" ?
+           <span className="bg-green-200 text-gray-900 px-2 py-1 rounded text-xs mr-1">Easy</span>
+            : <span className="bg-red-200 text-gray-900 px-2 py-1 rounded text-xs mr-1">Diffcult</span>
+            }
         </div>
+
         <div className="text-sm">
           <strong>Tags:</strong>{" "}
           {selectedQuestion.tags.map((tag, i) => (
             <span
               key={i}
-              className="bg-gray-200 text-gray-800 px-2 py-1 rounded text-xs mr-1"
+              className="bg-purple-200 text-gray-800 px-2 py-1 rounded text-xs mr-1"
             >
               {tag}
             </span>
@@ -234,7 +163,7 @@ Result: ${r.pass ? "✅ Passed" : "❌ Failed"}\n`
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Choose Language:</label>
         <select
-          className="border border-gray-300 rounded px-3 py-2"
+          className="border bg-gray-200 border-gray-300 rounded px-3 py-2"
           onChange={handleLanguageChange}
           value={language}
         >
