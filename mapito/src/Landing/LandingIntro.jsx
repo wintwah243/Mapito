@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Bot from "../components/Bot";
 
 export default function LandingIntro() {
+     // make scroll effect
     const handleLearnMore = () => {
         const learnmoreSection = document.getElementById('learnmore');
         if (learnmoreSection) {
@@ -21,7 +22,7 @@ export default function LandingIntro() {
                     transition={{ duration: 1 }}
                     className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight"
                 >
-                    Plan and Achieve Your Roadmap with <span className="text-indigo-600">Mapito</span>
+                    Plan and Achieve Your Journey with <span className="text-indigo-600">Mapito</span>
                 </motion.h1>
 
                 <motion.p
@@ -30,8 +31,8 @@ export default function LandingIntro() {
                     transition={{ duration: 1, delay: 0.3 }}
                     className="text-gray-600 text-lg"
                 >
-                    Transform your goals into structured, actionable steps with our personalized, 
-                    AI-powered roadmap tailored to your aspirations.
+                    Turn your goals into action with our AI-powered platform built to guide, 
+                    test, and grow your potential — all in one place.
                 </motion.p>
 
                 {/* Buttons */}
@@ -56,7 +57,7 @@ export default function LandingIntro() {
                 </motion.div>
             </div>
 
-            {/* Right AI Image */}
+            {/* Right robot Image */}
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
