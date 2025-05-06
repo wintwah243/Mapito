@@ -20,8 +20,8 @@ export default function LandingNavbar() {
           setDropdownOpen(false);
         }
       };
-      //add a listener for when the user presses the mouse
       document.addEventListener('mousedown', handleClickOutside);
+      //cleanup function
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
@@ -117,7 +117,7 @@ export default function LandingNavbar() {
       <div className="hidden md:flex items-center gap-4">
         <Link
           to="/login"
-          className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-5 rounded-full text-sm font-medium transition-all duration-300"
+          className="bg-gray-900 text-white py-2 px-5 rounded-full text-sm font-medium transition-all duration-300"
         >
           Login
         </Link>
