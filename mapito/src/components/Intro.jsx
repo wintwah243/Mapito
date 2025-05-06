@@ -4,16 +4,20 @@ import Bot from "./Bot";
 
 export default function Intro() {
 
+    //event handler to handle get started button
     const handleGetStarted = () => {
         const heroSection = document.getElementById('hero');
         if (heroSection) {
+            //add scroll effect
             heroSection.scrollIntoView({ behavior: 'smooth' });
         }
     };
 
+    //event handler to handle learn more button
     const handleLearnMore = () => {
         const learnmoreSection = document.getElementById('learnmore');
         if (learnmoreSection) {
+            //add scroll effect
             learnmoreSection.scrollIntoView({ behavior: 'smooth' });
         }
     };
@@ -38,7 +42,7 @@ export default function Intro() {
                     transition={{ duration: 1 }}
                     className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight"
                 >
-                    Plan and Achieve Your Roadmap with <span className="text-indigo-600">Mapito</span>
+                    Plan and Achieve Your Journey with <span className="text-indigo-600">Mapito</span>
                 </motion.h1>
 
                 <motion.p
@@ -47,8 +51,8 @@ export default function Intro() {
                     transition={{ duration: 1, delay: 0.3 }}
                     className="text-gray-600 text-lg"
                 >
-                    This Mapito project helps users transform their goals into structured,
-                    actionable steps by providing a personalized, AI-powered roadmap tailored to their aspirations.
+                     Turn your goals into action with our AI-powered platform built to guide, test, and
+                     grow your potential — all in one place.
                 </motion.p>
 
                 {/* Buttons */}
@@ -73,7 +77,7 @@ export default function Intro() {
                 </motion.div>
             </div>
 
-            {/* Right AI Image */}
+            {/* Right robot Image */}
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -90,7 +94,7 @@ export default function Intro() {
                 />
             </motion.div>
 
-            {/* Fixing the Bot Component */}
+            {/* for the Bot Component */}
             <div className="absolute bottom-0 right-0 z-20">
                 <Bot />
             </div>
