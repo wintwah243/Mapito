@@ -24,14 +24,14 @@ const features = [
         desc: 'Crafted with the latest React stack for fast, scalable performance.',
     },
     {
-        title: 'Progress Tracking',
+        title: 'Wide Range of Tools',
         icon: <FaMoneyBillWave className="text-yellow-500 text-3xl" />,
-        desc: 'Monitor your learning journey and celebrate milestones along the way.',
+        desc: 'Offer various tools to make your learning journey fun and productive along the way.',
     },
     {
         title: 'Support & Guidance',
         icon: <FaHeadset className="text-indigo-600 text-3xl" />,
-        desc: 'Need help? Our team is ready to assist you whenever you need it.',
+        desc: 'Need help? Our Mapito AI Chat Bot is ready to assist you whenever you need it.',
     },
 ];
 
@@ -59,7 +59,7 @@ const LandingLearnMore = () => {
                     </motion.p>
                 </div>
 
-                {/* Features Grid */}
+                {/* for features grid ui */}
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((item, i) => (
                         <motion.div
@@ -88,11 +88,11 @@ const LandingLearnMore = () => {
                         Our Mission
                     </h2>
                     <p className="text-gray-700 max-w-2xl mx-auto">
-                        We believe that creating a personalized roadmap for success
-                        should be simple, accessible, and empowering. That's why we built
-                        Mapito — to provide everyone with the tools they need to reach their
-                        goals. Whether you're mapping out short-term achievements or planning
-                        long-term success, Mapito is here to guide you every step of the way.
+                    At Mapito, we believe that achieving success should be an empowering and
+                    straightforward journey. That’s why we created a platform that makes building
+                    your personalized roadmap easy and accessible. Whether you're working towards
+                    short-term goals or planning for long-term success, Mapito is here to support
+                    and guide you at every step.
                     </p>
                 </motion.div>
             </div>
