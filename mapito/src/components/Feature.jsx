@@ -1,72 +1,115 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaCogs, FaClipboardList, FaCalendarCheck, FaCheckCircle } from 'react-icons/fa';
-import Navbar from './Navbar';
 
-const steps = [
+const processSteps = [
   {
     id: 1,
-    title: 'Generate Your Roadmap',
-    description: 'Use AI to create a personalized learning path tailored to your goals.',
-    icon: <FaCogs size={24}/>
+    title: 'Sign Up & Choose Your Goal',
+    description: 'Create your account and select your learning objective.',
   },
   {
     id: 2,
-    title: 'Take Skill Quizzes',
-    description: 'Validate your knowledge and track progress with interactive quizzes.',
-    icon: <FaClipboardList size={24} />
+    title: 'Generate Personalized Roadmap',
+    description: 'Use Mapito AI to build a learning path tailored to you.', 
   },
   {
     id: 3,
-    title: 'Chat With AI Assistant',
-    description: 'Ask questions and get instant support from Mapito’s smart chatbot.',
-    icon: <FaCalendarCheck size={24}/>
+    title: 'Start Practicing & Take Quizzes',
+    description: 'Complete tasks, code challenges, and quizzes.',
   },
   {
     id: 4,
-    title: 'Practice in Code Editor',
-    description: 'Write and run code directly in your browser to sharpen your skills.',
-    icon: <FaCheckCircle size={24}/>
+    title: 'Take Mock Interview & Improve',
+    description: 'Monitor your growth and achieve your roadmap.',
   }
 ];
 
-const Feature = () => {
+const WorkingProcess = () => {
   return (
     <>
-      <Navbar />
-      <div className="mt-20 bg-white py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto text-center">
-          <p className="text-sm text-gray-500 font-semibold uppercase tracking-wide">A Clear Process</p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-2">Our Working Process</h2>
+      <div className="mt-20 bg-white py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <motion.p 
+            className="text-sm text-indigo-600 font-medium uppercase tracking-wider"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            A Clear Process
+          </motion.p>
+          <motion.h2 
+            className="text-4xl sm:text-5xl font-bold text-gray-900 mt-4 leading-tight"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            Our Working Process
+          </motion.h2>
+          <motion.p 
+            className="mt-6 text-xl text-gray-500 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            Simple steps to achieve your learning goals efficiently - from a roadmap to mock interview, a complete guide for developers
+          </motion.p>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto text-center">
-          {steps.map((step, index) => (
-            <motion.div
-              key={step.id}
-              className="flex flex-col items-center text-center relative"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              viewport={{ once: true }}
-            >
-              {index !== steps.length - 1 && (
-                <div className="absolute hidden lg:block top-5 right-[-60%] w-full h-1 border-t-2 border-dashed border-gray-900 z-0"></div>
-              )}
+        {/* Enhanced Timeline */}
+        <div className="mt-24 relative">
 
-              <div className="relative z-10">
-              <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center text-white font-semibold mb-4 shadow-lg flex-shrink-0 mx-auto">
-                  {step.icon}
+          {/* Horizontal Timeline Line - Desktop */}
+          <div className="hidden md:block absolute left-16 right-16 top-12 h-2 bg-gray-200 z-0 rounded-full overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-400 w-full h-full"></div>
+          </div>
+
+          {/* Steps Container */}
+          <div className="flex flex-col md:flex-row items-center justify-between relative z-10 gap-16 md:gap-8 lg:gap-16">
+            {processSteps.map((step, index) => (
+              <motion.div
+                key={step.id}
+                className="flex flex-col items-center text-center relative w-full md:w-auto"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                viewport={{ once: true }}
+              >
+                <div className="relative">
+                  {/* for Animated Dot */}
+                  <motion.span
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-indigo-600 border-4 border-white z-20 shadow-lg"
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ repeat: Infinity, duration: 2, delay: index * 0.3 }}
+                  />
+                  <div className="w-16 h-16 rounded-full bg-white border-2 border-indigo-100 flex items-center justify-center z-10 relative shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center">
+                      {step.icon}
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">{step.title}</h3>
-                <p className="text-sm text-gray-500 mt-2">{step.description}</p>
-              </div>
-            </motion.div>
-          ))}
+                <h3 className="text-lg font-semibold text-gray-900 mt-6">{step.title}</h3>
+                <p className="text-gray-500 mt-3 max-w-xs leading-relaxed">{step.description}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Vertical Timeline Line for Mobile view */}
+          <div className="md:hidden absolute top-0 left-8 h-full z-0">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-full bg-gradient-to-b from-indigo-400 to-indigo-500 rounded-full"></div>
+            
+            {/* dots between timeline */}
+            {[0, 1, 2].map((dot) => (
+              <div 
+                key={dot}
+                className="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-white border-2 border-indigo-500"
+                style={{ top: `${dot * 33.33 + 16.665}%` }}
+              ></div>
+            ))}
+          </div>
         </div>
       </div>
     </>
   );
 };
 
-export default Feature;
+export default WorkingProcess;
