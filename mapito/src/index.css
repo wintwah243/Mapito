@@ -128,7 +128,7 @@
 }
 
 .chat-body .message.error .message-text{
-  color:red;
+  color:black;
 }
 
 .chat-body .bot-message svg{
