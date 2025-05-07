@@ -11,6 +11,7 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import userdb from './models/User.js';
 import rateLimit from 'express-rate-limit';
+import axios from 'axios';
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -177,8 +178,6 @@ ${answer ? `Candidate's latest answer: "${answer}". Give feedback and ask the ne
   }
 });
 
-
-
 //api route for summarize note
 app.post('/api/summarize-note', async (req, res) => {
   const { note } = req.body;
@@ -188,23 +187,51 @@ app.post('/api/summarize-note', async (req, res) => {
   }
 
   try {
+    // for gemini api
     const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
-
-    const prompt = `
-      You are a helpful assistant.
-      Summarize the following note in a short and clear paragraph:
-      ---
-      ${note}
-    `;
-
+    const prompt = `Summarize the following note in a short and clear paragraph: ${note}`;
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const summary = response.text();
-
-    res.json({ summary });
+    
+    return res.json({ summary, source: 'gemini' });
+    
   } catch (error) {
-    console.error('Error summarizing note:', error);
-    res.status(500).json({ error: 'Failed to summarize note' });
+    console.error('Gemini API error, trying fallback:', error);
+    
+    // backup plan by using Hugging Face API
+    try {
+      const hfResponse = await axios.post(
+        'https://api-inference.huggingface.co/models/facebook/bart-large-cnn',
+        { inputs: note },
+        { headers: { Authorization: `Bearer ${process.env.HF_API_KEY}` } }
+      );
+      
+      return res.json({ 
+        summary: hfResponse.data[0].summary_text,
+        source: 'huggingface',
+        warning: 'Using alternative summary service'
+      });
+      
+    } catch (hfError) {
+      console.error('Hugging Face fallback failed:', hfError);
+      
+      // Fallback 2: Simple text processing
+      try {
+        const summary = simpleFallbackSummary(note);
+        return res.json({ 
+          summary,
+          source: 'basic-fallback',
+          warning: 'Using simplified summary due to API limits'
+        });
+      } catch (finalError) {
+        console.error('All fallbacks failed:', finalError);
+        return res.status(500).json({ 
+          error: 'Failed to summarize note',
+          details: 'All summary methods failed'
+        });
+      }
+    }
   }
 });
 
