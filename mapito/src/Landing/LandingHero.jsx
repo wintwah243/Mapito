@@ -9,14 +9,14 @@ const LandingHero = () => {
     const navigate = useNavigate();
 
     const icons = [
-        <FaRocket className="text-white" />,
-        <FaLightbulb className="text-white" />,
-        <FaCode className="text-white" />,
-        <FaTools className="text-white" />,
-        <FaCheckCircle className="text-white" />,
+        <FaRocket className="text-white" size={18} />,
+        <FaLightbulb className="text-white" size={18} />,
+        <FaCode className="text-white" size={18} />,
+        <FaTools className="text-white" size={18} />,
+        <FaCheckCircle className="text-white" size={18} />,
     ];
 
-    //this is used to present user how roadmap generatiion structure works
+    // for better UI
     const demoRoadmap = [
         "### 1. Learn HTML & CSS Fundamentals",
         "### 2. Master JavaScript Basics",
@@ -25,73 +25,100 @@ const LandingHero = () => {
         "### 5. Learn Version Control with Git",
         "### 6. Understand APIs and HTTP Requests",
         "### 7. Practice Responsive Design",
-        "### 8. Learn Testing Fundamentals",
-        "### 9. Optimize Performance",
-        "### 10. Prepare for Interviews"
+        "### 8. Prepare for Interviews"
     ];
 
-
     return (
-        <section id='hero'>
-            <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-white">
-                <h1 className="text-4xl font-bold text-center mb-6">Plan your Roadmap with <span className='text-indigo-700'>AI</span></h1>
-                <p className="text-lg text-gray-600 mb-6 text-center max-w-2xl">
-                    Mapito empowers individuals to transform complex visions into structured, actionable roadmaps, providing clarity, direction, and a powerful foundation for achieving meaningful goals.
-                </p>
+        <section id='hero' className="bg-white">
+            <div className="flex flex-col items-center justify-center min-h-screen px-4 py-8 sm:p-4">
+                {/* Header Section */}
+                <div className="w-full max-w-2xl text-center mb-8 px-2">
+                    <h1 className="text-3xl sm:text-4xl font-bold mb-4">Plan your Roadmap with <span className='text-indigo-700'>AI</span></h1>
+                    <p className="text-base sm:text-lg text-gray-600">
+                        Mapito empowers individuals to transform complex visions into structured, actionable roadmaps.
+                    </p>
+                </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
+                {/* Input Section */}
+                <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md mb-12">
                     <input
                         type="text"
-                        className="border border-gray-300 rounded-md p-3 flex-1"
+                        className="border border-gray-300 rounded-lg p-3 flex-1 text-sm sm:text-base"
                         placeholder="Enter your goal (e.g., Frontend Developer)"
                         value={goal}
                         onChange={(e) => setGoal(e.target.value)}
                     />
                     <button
                         onClick={() => navigate("/signup")}
-                        className="bg-gray-900 hover:bg-indigo-700 text-white rounded-md p-3 font-semibold"
+                        className="bg-gray-900 hover:bg-indigo-700 text-white rounded-lg p-3 font-semibold text-sm sm:text-base"
                     >
                         Try It Now
                     </button>
                 </div>
 
-                {/* Demo Roadmap for user for a better user interface */}
-                <div className="mt-12 p-6 w-full max-w-4xl">
-                    <div className="flex items-center justify-between mb-10">
-                        <h2 className="text-3xl font-bold text-indigo-700">Example Roadmap</h2>
+                {/* Demo Roadmap */}
+                <div className="w-full max-w-4xl px-2 sm:px-6">
+                    <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
+                        <h2 className="text-2xl sm:text-3xl font-bold text-indigo-700 text-center sm:text-left">Example Roadmap</h2>
                         <button
                             onClick={() => navigate('/signup')}
-                            className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-6 rounded-full font-semibold transition duration-300"
+                            className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-5 sm:px-6 rounded-full font-semibold text-sm sm:text-base transition duration-300 whitespace-nowrap"
                         >
                             Get Started
                         </button>
                     </div>
 
-                    <div className="relative border-l-4 border-indigo-300 ml-6">
+                    <div className="relative">
+                        {/* Timeline line */}
+                        <div className="hidden sm:block absolute left-1/2 h-full w-0.5 bg-indigo-200 transform -translate-x-1/2"></div>
+                        
+                        {/* Mobile timeline dots */}
+                        <div className="sm:hidden absolute left-4 h-full w-1 bg-indigo-200"></div>
+
                         {demoRoadmap.map((step, index) => (
                             <motion.div
                                 key={index}
-                                className={`flex flex-col sm:flex-row items-center mb-16 ${index % 2 === 0 ? 'sm:flex-row' : 'sm:flex-row-reverse'}`}
-                                initial={{ opacity: 0, x: index % 2 === 0 ? -100 : 100 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: index * 0.2, duration: 0.6 }}
+                                className="relative mb-10 pl-8 sm:pl-0"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1, duration: 0.4 }}
                             >
-                                <div className="w-full sm:w-1/2 flex justify-center">
-                                    <div className="relative">
-                                        <span className="absolute left-1/2 transform -translate-x-1/2 -top-8 flex items-center justify-center w-12 h-12 bg-gradient-to-r from-indigo-500 to-indigo-700 rounded-full ring-8 ring-white shadow-lg">
-                                            {index === 0 ? (
-                                                <FaRocket className="text-white" />
-                                            ) : index === demoRoadmap.length - 1 ? (
-                                                <FaCheckCircle className="text-white" />
-                                            ) : (
-                                                icons[index % icons.length]
-                                            )}
-                                        </span>
-                                        <div className="mt-8 p-6 w-72 sm:w-80 bg-indigo-50 rounded-lg shadow-md hover:shadow-lg transition">
-                                            <div className="text-lg font-semibold text-indigo-800 text-center sm:text-left">
+                                {/* Mobile dot */}
+                                <div className="sm:hidden absolute left-0 top-6 w-4 h-4 rounded-full bg-indigo-500 border-4 border-white transform -translate-x-1/2"></div>
+                                
+                                {/* Desktop dot */}
+                                <div className="hidden sm:block absolute left-1/2 top-6 w-4 h-4 rounded-full bg-indigo-500 border-4 border-white transform -translate-x-1/2 -translate-y-1/2"></div>
+                                
+                                {/* Card */}
+                                <div className={`bg-indigo-50 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow ${index % 2 === 0 ? 'sm:mr-auto sm:max-w-md' : 'sm:ml-auto sm:max-w-md'}`}>
+                                    <div className="flex items-start gap-3">
+                                        <div className="flex-shrink-0 mt-1 sm:hidden">
+                                            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-700 flex items-center justify-center">
+                                                {index === 0 ? (
+                                                    <FaRocket className="text-white" size={14} />
+                                                ) : index === demoRoadmap.length - 1 ? (
+                                                    <FaCheckCircle className="text-white" size={14} />
+                                                ) : (
+                                                    icons[index % icons.length]
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="text-sm sm:text-base font-semibold text-indigo-800">
                                                 <ReactMarkdown>
                                                     {step}
                                                 </ReactMarkdown>
+                                            </div>
+                                        </div>
+                                        <div className="hidden sm:block flex-shrink-0 ml-3">
+                                            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-700 flex items-center justify-center">
+                                                {index === 0 ? (
+                                                    <FaRocket className="text-white" size={14} />
+                                                ) : index === demoRoadmap.length - 1 ? (
+                                                    <FaCheckCircle className="text-white" size={14} />
+                                                ) : (
+                                                    icons[index % icons.length]
+                                                )}
                                             </div>
                                         </div>
                                     </div>
