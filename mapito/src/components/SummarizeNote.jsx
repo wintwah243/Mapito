@@ -8,6 +8,7 @@ function SummarizeNote() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [warning, setWarning] = useState('');
 
   const handleSummarize = async () => {
     if (!note.trim()) return;
@@ -15,27 +16,54 @@ function SummarizeNote() {
     setLoading(true);
     setError('');
     setSummary('');
-
+    setWarning(''); 
+  
     try {
       const res = await fetch('https://mapito.onrender.com/api/summarize-note', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ note })
+        body: JSON.stringify({ note: note.trim() }) // Trim the note before sending
       });
-
-      if (!res.ok) {
-        throw new Error(res.status === 429 ? 
-          'Too many requests. Please try again later.' : 
-          'Failed to summarize. Please try again.');
-      }
-
+  
       const data = await res.json();
+  
+      if (!res.ok) {
+        // Handle structured error responses from backend
+        const errorMsg = data.error || 
+                        (data.details ? `${data.error}: ${JSON.stringify(data.details)}` : 
+                        'Failed to summarize. Please try again.');
+        throw new Error(errorMsg);
+      }
+  
+      // Set the summary
       setSummary(data.summary);
+  
+      // Show warning if using backup plan
+      if (data.warning) {
+        setWarning(data.warning);
+      }
+  
     } catch (err) {
-      setError(err.message || 'Network error. Please check your connection.');
+      let userFriendlyError = err.message;
+      
+      if (err.message.includes('Failed to summarize note')) {
+        userFriendlyError = 'Our summarization service is currently limited. ' + 
+                           'The summary may be less detailed than usual.';
+      }
+      else if (err.message.includes('Hugging Face API key not configured')) {
+        userFriendlyError = 'Service temporarily unavailable. Please try again later.';
+      }
+  
+      setError(userFriendlyError);
       console.error('Summarization error:', err);
+      
+      // If we have a complete failure, show at least the first part of the note
+      if (!summary) {
+        setSummary(note.length > 200 ? `${note.substring(0, 200)}...` : note);
+        setWarning('Showing partial content as summary failed');
+      }
     } finally {
       setLoading(false);
     }
