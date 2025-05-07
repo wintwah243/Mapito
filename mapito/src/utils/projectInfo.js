@@ -1,58 +1,58 @@
 export const projectInfo = `
 Introduction:
-I'm your friendly Mapito assistant, here to help you build your personalized roadmap for achieving any goal! Whether you're planning a career change, learning a new skill, or starting a personal project, I'm here to guide you step-by-step.
+I'm your friendly Mapito assistant, here to help developers like you grow faster and smarter with a personalized roadmap and hands-on practice tools. Whether you're just starting out or leveling up your skills, Mapito guides you step-by-step toward your goals.
 
 Details:
-Mapito is a simple yet powerful tool for turning big dreams into clear, actionable plans. We specialize in generating personalized learning paths and project roadmaps based on your goals. Just share what you want to achieve, and Mapito will create a structured plan with milestones to keep you motivated.
+Mapito is an AI-powered learning and practicing platform built for aspiring and junior developers. It combines smart guidance with interactive tools to create a complete self-learning experience.
 
-No matter where you start, Mapito helps you move forward with confidence. Progress becomes easier when you know the next step!
+Just tell Mapito what you're aiming for — like becoming a frontend developer or mastering Python — and it generates a tailored roadmap with milestones, projects, and practice tasks to keep you focused. Along the way, you can take quizzes, write and run code in the built-in compiler, and even simulate job interviews with AI.
 
-Stay connected for updates, productivity tips, and inspiring success stories:
-- Instagram: https://instagram.com/mapitoapp
-- mail: wahwint72@gmail.com
-- LinkedIn: https://linkedin.com/company/mapito
+We’ve also added tools like note summarization with AI, typing speed tests, and smart mock interviews to help you grow with confidence.
 
-Need help? Contact us at support@mapitoapp.com.
+Our project helps students to get access to free, quality educational resources by providing a roadmap to the interview stage, and it is ethical since it uses AI only to support better learning and protects user privacy by enhancing security. 
 
-Visit https://www.mapitoapp.com to create your roadmap today!
+📌 Key Features:
+- **AI-Powered Roadmaps**: Personalized learning paths based on your goals and current skills.
+- **Smart Quizzes**: Adaptive quizzes that grow with your progress.
+- **Code Compiler**: Write, run, and debug code directly in your browser.
+- **AI Note Summarizer**: Turn long study notes into concise summaries instantly.
+- **Typing Speed Test**: Track and improve your typing skills with real-time feedback.
+- **AI Mock Interview**: Practice interviews with job-specific questions powered by AI.
 
-Features:
-- Personalized Roadmaps
-- Progress Tracking
-- Achievement Badges
-- Smart Recommendations
+🎯 Categories:
+- Developer Roadmaps (e.g., Become a Frontend Developer)
+- Technical Skills (e.g., Learn JavaScript, Python)
+- Career Preparation (e.g., Job Interviews, Typing Skills)
+- Personal Projects & Growth
 
-Categories:
-- Career Development (e.g., Become a Frontend Developer)
-- Learning Skills (e.g., Learn JavaScript)
-- Personal Growth (e.g., Start a Fitness Journey)
+📢 Developer Contact - Stay in touch:
+- Website: https://shiportfolio.onrender.com
+- Instagram: https://www.instagram.com/shi1_shi4?igsh=aGczNmNqOGhocjdv&utm_source=qr
+- LinkedIn: http://linkedin.com/in/wint-wah-386240307
 
 ---
 
 FAQ:
 Q: What is Mapito?
-A: Mapito helps you create personalized roadmaps for your goals, providing step-by-step guidance and tracking your progress.
+A: It's a developer-focused platform that offers AI-generated roadmaps and interactive tools to help you learn, practice, and grow.
 
-Q: Is Mapito free to use?
-A: Yes! Mapito offers free roadmap generation and progress tracking. Some premium features are coming soon.
+Q: Is Mapito free?
+A: Yes! Core features like roadmap generation, quizzes, and code practice are free. Premium tools are coming soon.
 
-Q: Can I edit my roadmap later?
-A: Absolutely! You can adjust your roadmap anytime as your goals evolve.
+Q: Can I customize my roadmap?
+A: No, You can not edit or update your roadmap but you can download your roadmap with pdf file.
 
-Q: What types of goals can I map?
-A: You can map career goals, learning goals, fitness plans, creative projects, and more!
-
-Q: How does Mapito generate my roadmap?
-A: Based on your selected goal and preferences, Mapito uses smart algorithms and expert knowledge to suggest a clear, structured path.
+Q: What makes Mapito different?
+A: Mapito blends AI-generated plans with hands-on tools like a live code editor, quiz engine, typing test, and mock interviews — all in one place.
 
 ---
 
 Tips for Success:
-- Set Clear Goals: Be specific when you describe your goal. It helps generate a more effective roadmap.
-- Stay Consistent: Small progress every day leads to big results. Mapito will help you track it!
-- Celebrate Milestones: Every achievement counts. Take time to recognize your progress.
-- Stay Flexible: It's okay to adjust your plan if life changes. Mapito lets you update your roadmap anytime.
-- Ask for Help: If you're stuck, reach out to Mapito support or your community for advice and motivation.
+- Be clear with your goals to get the most accurate roadmap.
+- Practice consistently — Mapito tracks your growth!
+- Use built-in tools like quizzes and code challenges for active learning.
+- Summarize your long notes into quick notes with AI.
+- Prepare for real-world interviews with mock sessions and skill tests.
 
-At Mapito, we believe every journey starts with a simple step — and we're here to guide you all the way!
+At Mapito, we believe developers succeed faster when learning is structured, practical, and personalized — and we’re here to guide you all the way!
 `;
