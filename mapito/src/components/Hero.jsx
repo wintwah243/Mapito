@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaRocket, FaLightbulb, FaCode, FaTools, FaCheckCircle, FaDownload } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
@@ -11,6 +11,23 @@ const Hero = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    // Load saved roadmap from localStorage on component mount
+    useEffect(() => {
+        const savedRoadmap = localStorage.getItem('savedRoadmap');
+        const savedGoal = localStorage.getItem('savedGoal');
+        
+        if (savedRoadmap && savedGoal) {
+            try {
+                setRoadmap(JSON.parse(savedRoadmap));
+                setGoal(savedGoal);
+            } catch (e) {
+                console.error('Failed to parse saved roadmap:', e);
+                localStorage.removeItem('savedRoadmap');
+                localStorage.removeItem('savedGoal');
+            }
+        }
+    }, []);
+
     const icons = [
         <FaRocket className="text-white" size={14} />,
         <FaLightbulb className="text-white" size={14} />,
@@ -19,7 +36,6 @@ const Hero = () => {
         <FaCheckCircle className="text-white" size={14} />,
     ];
 
-    //to handle generate roadmap
     const handleGenerate = async () => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -31,7 +47,7 @@ const Hero = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:8000/api/generate-roadmap', {
+            const response = await fetch('https://mapito.onrender.com/api/generate-roadmap', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -46,15 +62,18 @@ const Hero = () => {
                 .map(step => step.trim())
                 .filter(step => step.length > 0);
 
+            // Save to localStorage
+            localStorage.setItem('savedRoadmap', JSON.stringify(steps));
+            localStorage.setItem('savedGoal', goal);
+            
             setRoadmap(steps);
         } catch (error) {
             console.error('Error generating roadmap:', error);
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
-    //to handle download roadmap with pdf file
     const handleDownload = () => {
         const doc = new jsPDF();
         doc.setFontSize(18);
@@ -74,6 +93,19 @@ const Hero = () => {
         });
     
         doc.save(`${goal || "roadmap"}.pdf`);
+    };
+
+    // Clear saved roadmap when generating a new one or when component unmounts
+    const clearSavedRoadmap = () => {
+        localStorage.removeItem('savedRoadmap');
+        localStorage.removeItem('savedGoal');
+    };
+
+    // Optionally add a button to clear the roadmap
+    const handleClearRoadmap = () => {
+        clearSavedRoadmap();
+        setRoadmap([]);
+        setGoal('');
     };
 
     return (
@@ -140,13 +172,21 @@ const Hero = () => {
                             <h2 className="text-2xl sm:text-3xl font-bold text-indigo-700">
                                 Your {goal ? `${goal} ` : ''}Roadmap
                             </h2>
-                            <button
-                                onClick={handleDownload}
-                                className="flex items-center gap-2 bg-white border border-indigo-500 text-indigo-600 hover:bg-indigo-50 py-2 px-4 rounded-lg font-medium text-sm sm:text-base transition-colors duration-200"
-                            >
-                                <FaDownload size={14} />
-                                Download PDF
-                            </button>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={handleDownload}
+                                    className="flex items-center gap-2 bg-white border border-indigo-500 text-indigo-600 hover:bg-indigo-50 py-2 px-4 rounded-lg font-medium text-sm sm:text-base transition-colors duration-200"
+                                >
+                                    <FaDownload size={14} />
+                                    Download
+                                </button>
+                                <button
+                                    onClick={handleClearRoadmap}
+                                    className="flex items-center gap-2 bg-white border border-red-500 text-red-600 hover:bg-red-50 py-2 px-4 rounded-lg font-medium text-sm sm:text-base transition-colors duration-200"
+                                >
+                                    Clear
+                                </button>
+                            </div>
                         </div>
 
                         <div className="relative">
