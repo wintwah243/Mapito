@@ -78,7 +78,7 @@ const Hero = () => {
 
     return (
         <section id='hero' className="bg-gradient-to-b from-gray-50 to-white">
-            <div className="flex flex-col items-center justify-center min-h-screen px-4 py-12 sm:p-6 lg:p-8">
+            <div className="flex flex-col items-center justify-center px-4 py-12 sm:p-6 lg:p-8">
                 {/* Header Section */}
                 <motion.div 
                     className="w-full max-w-2xl text-center mb-12"
