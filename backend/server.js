@@ -103,55 +103,128 @@ app.use('/api/generate-roadmap', apiLimiter);
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// API route for roadmap
+// API route for generate roadmap
 app.post('/api/generate-roadmap', async (req, res) => {
   const { goal } = req.body;
 
-  if (!goal) {
-    return res.status(400).json({ error: 'Goal is required' });
+  if (!goal || typeof goal !== 'string') {
+    return res.status(400).json({ 
+      error: 'Invalid input',
+      details: 'Goal must be a non-empty string' 
+    });
   }
 
+  // Process the goal input
+  const processedGoal = goal.trim().substring(0, 100); // Limit length
+
   try {
+    // we will use gemini first
     const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
-
     const prompt = `
-      You are a career roadmap expert.
-      Generate a clear and beginner-friendly learning roadmap for someone who wants to become a "${goal}".
-      Break it down into stages or milestones and make as short and clear as possible.
-      Use simple language.
+      Create a 5-step beginner-friendly learning roadmap for becoming a "${processedGoal}".
+      Format as numbered steps with clear objectives.
+      Keep each step concise (1-2 sentences).
     `;
-
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const roadmapText = response.text();
+    
+    return res.json({ 
+      roadmap: roadmapText,
+      source: 'gemini'
+    });
+    
+  } catch (geminiError) {
+    console.error('Gemini API error:', geminiError);
+    
+    // for backup plan, we will use huggin face
+    try {
+      if (!process.env.HF_API_KEY) {
+        throw new Error('Hugging Face API key not configured');
+      }
 
-    res.json({ roadmap: roadmapText });
-  } catch (error) {
-    console.error('Error generating roadmap:', error);
-    
-    if (error.status === 429) {
-      // Return a pre-defined roadmap when rate limited
-      const fallbackRoadmap = getFallbackRoadmap(req.body.goal);
-      return res.status(200).json({ 
-        roadmap: fallbackRoadmap,
-        warning: 'Using fallback content due to API limits' 
+      const hfResponse = await axios.post(
+        'https://api-inference.huggingface.co/models/google/flan-t5-xxl',
+        {
+          inputs: `Generate a 5-step learning roadmap for becoming a ${processedGoal}. Format as numbered steps.`
+        },
+        { 
+          headers: { 
+            Authorization: `Bearer ${process.env.HF_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          timeout: 10000
+        }
+      );
+
+      if (!hfResponse.data || !hfResponse.data[0] || !hfResponse.data[0].generated_text) {
+        throw new Error('Invalid response format from Hugging Face');
+      }
+
+      const hfRoadmap = formatHuggingFaceResponse(hfResponse.data[0].generated_text);
+      
+      return res.json({ 
+        roadmap: hfRoadmap,
+        source: 'huggingface',
+        warning: 'Using alternative AI service'
       });
+      
+    } catch (hfError) {
+      console.error('Hugging Face fallback failed:', hfError);
+      
+      // backup plan 2
+      try {
+        const predefinedRoadmap = getPredefinedRoadmap(processedGoal);
+        return res.json({ 
+          roadmap: predefinedRoadmap,
+          source: 'predefined',
+          warning: 'Using generic roadmap template'
+        });
+      } catch (finalError) {
+        console.error('All fallbacks failed:', finalError);
+        return res.status(500).json({ 
+          error: 'Failed to generate roadmap',
+          details: {
+            geminiError: geminiError.message,
+            hfError: hfError.message
+          },
+          suggestion: 'Please try again later or with a different goal description'
+        });
+      }
     }
-    
-    res.status(500).json({ error: 'Failed to generate roadmap' });
   }
 });
 
-//for backup plan
-function getFallbackRoadmap(goal) {
-  // Simple predefined roadmaps
-  const fallbacks = {
-    'frontend developer': `1. Learn HTML basics\n2. Master CSS fundamentals\n3. Learn JavaScript\n4. Pick a framework (React/Vue)\n5. Build projects`,
-    'backend developer': `1. Learn a server language (Node/Python)\n2. Understand databases\n3. Learn API design\n4. Study authentication\n5. Build projects`,
-    'data scientist': `1. Learn Python basics\n2. Study statistics\n3. Learn data analysis\n4. Master machine learning basics\n5. Work on datasets`
+// For Hugging Face's raw response into a cleaner roadmap
+function formatHuggingFaceResponse(text) {
+  // Basic cleaning and formatting
+  return text
+    .replace(/<\/?s>/g, '') // Remove any HTML tags
+    .replace(/\n+/g, '\n')  // Remove extra newlines
+    .trim();
+}
+
+// for predefined roadmaps
+function getPredefinedRoadmap(goal) {
+  const lowerGoal = goal.toLowerCase();
+  
+  const roadmaps = {
+    'frontend': `1. Learn HTML fundamentals\n2. Master CSS and responsive design\n3. Learn JavaScript (ES6+)\n4. Choose a framework (React, Vue, Angular)\n5. Build portfolio projects`,
+    'backend': `1. Learn a server language (Node.js, Python, Java)\n2. Understand databases (SQL & NoSQL)\n3. Learn API development (REST, GraphQL)\n4. Study authentication & security\n5. Build scalable applications`,
+    'data science': `1. Learn Python and data analysis (Pandas, NumPy)\n2. Study statistics fundamentals\n3. Learn data visualization (Matplotlib, Seaborn)\n4. Explore machine learning basics\n5. Work on real-world datasets`,
+    'mobile': `1. Choose a platform (iOS/Swift or Android/Kotlin)\n2. Learn UI/UX principles\n3. Understand mobile architecture\n4. Study platform-specific APIs\n5. Publish an app to store`,
+    'devops': `1. Learn Linux fundamentals\n2. Master version control (Git)\n3. Understand CI/CD pipelines\n4. Learn containerization (Docker)\n5. Study cloud platforms (AWS, GCP, Azure)`
   };
-  return fallbacks[goal.toLowerCase()] || 
-    `1. Research ${goal} fundamentals\n2. Find learning resources\n3. Practice regularly\n4. Build small projects\n5. Seek feedback`;
+
+  // Find the best matching roadmap
+  for (const [key, roadmap] of Object.entries(roadmaps)) {
+    if (lowerGoal.includes(key)) {
+      return roadmap;
+    }
+  }
+
+  // Generic fallback roadmap
+  return `1. Research ${goal} fundamentals\n2. Find quality learning resources\n3. Practice consistently\n4. Build small projects\n5. Seek feedback and iterate`;
 }
 
 //api route for ai mock interview
