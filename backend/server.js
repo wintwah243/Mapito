@@ -182,58 +182,117 @@ ${answer ? `Candidate's latest answer: "${answer}". Give feedback and ask the ne
 app.post('/api/summarize-note', async (req, res) => {
   const { note } = req.body;
 
-  if (!note) {
-    return res.status(400).json({ error: 'Note is required' });
+  // Validate input
+  if (!note || typeof note !== 'string') {
+    return res.status(400).json({ 
+      error: 'Invalid input',
+      details: 'Note must be a non-empty string'
+    });
   }
+  
+  const processedNote = note.length > 10000 ? note.substring(0, 10000) + '...' : note;
 
   try {
-    // for gemini api
+    // we will use Gemini first
     const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
-    const prompt = `Summarize the following note in a short and clear paragraph: ${note}`;
+    const prompt = `Summarize the following note in a short and clear paragraph: ${processedNote}`;
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const summary = response.text();
     
-    return res.json({ summary, source: 'gemini' });
+    return res.json({ 
+      summary,
+      source: 'gemini',
+      length: summary.length 
+    });
     
-  } catch (error) {
-    console.error('Gemini API error, trying fallback:', error);
+  } catch (geminiError) {
+    console.error('Gemini API error:', geminiError);
     
-    // backup plan by using Hugging Face API
+    // For backup plan, we will use hugging face
     try {
+      if (!process.env.HF_API_KEY) {
+        throw new Error('Hugging Face API key not configured');
+      }
+
       const hfResponse = await axios.post(
         'https://api-inference.huggingface.co/models/facebook/bart-large-cnn',
-        { inputs: note },
-        { headers: { Authorization: `Bearer ${process.env.HF_API_KEY}` } }
+        { inputs: processedNote },
+        { 
+          headers: { 
+            Authorization: `Bearer ${process.env.HF_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          timeout: 10000 // 10 second timeout
+        }
       );
-      
+
+      if (!hfResponse.data || !hfResponse.data[0] || !hfResponse.data[0].summary_text) {
+        throw new Error('Invalid response format from Hugging Face');
+      }
+
       return res.json({ 
         summary: hfResponse.data[0].summary_text,
         source: 'huggingface',
+        length: hfResponse.data[0].summary_text.length,
         warning: 'Using alternative summary service'
       });
       
     } catch (hfError) {
       console.error('Hugging Face fallback failed:', hfError);
       
-      // Fallback 2: Simple text processing
+      // for backup plan 2
       try {
-        const summary = simpleFallbackSummary(note);
+        const summary = simpleFallbackSummary(processedNote);
         return res.json({ 
           summary,
           source: 'basic-fallback',
-          warning: 'Using simplified summary due to API limits'
+          length: summary.length,
+          warning: 'Using simplified summary due to API limitations'
         });
       } catch (finalError) {
         console.error('All fallbacks failed:', finalError);
         return res.status(500).json({ 
           error: 'Failed to summarize note',
-          details: 'All summary methods failed'
+          details: {
+            geminiError: geminiError.message,
+            hfError: hfError.message,
+            finalError: finalError.message
+          },
+          suggestion: 'Please try again later or with a shorter note'
         });
       }
     }
   }
 });
+
+// Improved simple fallback function
+function simpleFallbackSummary(text) {
+  if (!text) return 'No content to summarize';
+  
+  // Remove excessive whitespace and newlines
+  const cleanText = text.replace(/\s+/g, ' ').trim();
+  
+  // Extract first few meaningful sentences
+  const sentences = cleanText.split(/[.!?]+/)
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+    
+  if (sentences.length === 0) {
+    return cleanText.slice(0, 200) + (cleanText.length > 200 ? '...' : '');
+  }
+  
+  // Take first 2-3 sentences that aren't too short/long
+  const importantSentences = sentences
+    .filter(s => s.length > 20 && s.length < 150)
+    .slice(0, 3);
+    
+  if (importantSentences.length === 0) {
+    return sentences.slice(0, 2).join('. ') + '.';
+  }
+  
+  return importantSentences.join('. ') + '.';
+}
 
 // Start server
 app.listen(port, () => {
