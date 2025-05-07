@@ -10,6 +10,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import userdb from './models/User.js';
+import rateLimit from 'express-rate-limit';
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -89,6 +90,15 @@ passport.deserializeUser((user, done) => {
 app.use("/api/auth", authRoutes);
 app.use("/uploads", express.static(path.join(__dirname,"uploads")));
 
+// Add rate limiting middleware
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, 
+  message: 'Too many requests, please try again later'
+});
+
+app.use('/api/generate-roadmap', apiLimiter);
+
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -117,9 +127,31 @@ app.post('/api/generate-roadmap', async (req, res) => {
     res.json({ roadmap: roadmapText });
   } catch (error) {
     console.error('Error generating roadmap:', error);
+    
+    if (error.status === 429) {
+      // Return a pre-defined roadmap when rate limited
+      const fallbackRoadmap = getFallbackRoadmap(req.body.goal);
+      return res.status(200).json({ 
+        roadmap: fallbackRoadmap,
+        warning: 'Using fallback content due to API limits' 
+      });
+    }
+    
     res.status(500).json({ error: 'Failed to generate roadmap' });
   }
 });
+
+//for backup plan
+function getFallbackRoadmap(goal) {
+  // Simple predefined roadmaps
+  const fallbacks = {
+    'frontend developer': `1. Learn HTML basics\n2. Master CSS fundamentals\n3. Learn JavaScript\n4. Pick a framework (React/Vue)\n5. Build projects`,
+    'backend developer': `1. Learn a server language (Node/Python)\n2. Understand databases\n3. Learn API design\n4. Study authentication\n5. Build projects`,
+    'data scientist': `1. Learn Python basics\n2. Study statistics\n3. Learn data analysis\n4. Master machine learning basics\n5. Work on datasets`
+  };
+  return fallbacks[goal.toLowerCase()] || 
+    `1. Research ${goal} fundamentals\n2. Find learning resources\n3. Practice regularly\n4. Build small projects\n5. Seek feedback`;
+}
 
 //api route for ai mock interview
 app.post('/api/mock-interview', async (req, res) => {
