@@ -5,6 +5,7 @@ import LandingFeature from './LandingFeature'
 import LandingLearnMore from './LandingLearnMore'
 import LandingHero from './LandingHero'
 import LandingFooter from './LandingFooter'
+import FAQ from '../components/FAQ'
 
 const LandingPage = () => {
   return (
@@ -14,6 +15,7 @@ const LandingPage = () => {
       <LandingFeature />
       <LandingLearnMore />
       <LandingHero />
+      <FAQ />
       <LandingFooter />
     </>
   )
