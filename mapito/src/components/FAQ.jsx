@@ -22,7 +22,7 @@ const FAQ = () => {
               },
               {
                 question: "Is Mapito free?",
-                answer: "Yes! Core features like roadmap generation, quizzes, and code practice are free."
+                answer: "Yes! Core features like roadmap generation, quizzes, summarize note, mock interview and code practice are free."
               },
               {
                 question: "Can I customize my roadmap?",
