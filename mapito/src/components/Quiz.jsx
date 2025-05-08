@@ -9,7 +9,7 @@ const Quiz = () => {
     const [selectedAnswer, setSelectedAnswer] = useState('');
     const [score, setScore] = useState(0);
     const [quizEnded, setQuizEnded] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(60); // 1 minute
+    const [timeLeft, setTimeLeft] = useState(60);
 
     const handleLanguageSelect = (language) => {
         setSelectedLanguage(language);
@@ -17,7 +17,7 @@ const Quiz = () => {
         setScore(0);
         setQuizEnded(false);
         setSelectedAnswer('');
-        setTimeLeft(60); // Reset timer
+        setTimeLeft(60);
     };
 
     const currentQuestion = quizData[selectedLanguage]?.[currentQuestionIndex];
@@ -43,7 +43,7 @@ const Quiz = () => {
         setScore(0);
         setQuizEnded(false);
         setSelectedAnswer('');
-        setTimeLeft(60); // Reset timer
+        setTimeLeft(60);
     };
 
     useEffect(() => {
@@ -64,20 +64,25 @@ const Quiz = () => {
     }, [selectedLanguage, quizEnded]);
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-gray-50 mt-10">
             <Navbar />
 
-            {/* Banner and About Section */}
-            <div className="mt-16 w-full bg-white text-white py-10 px-4 text-center">
-                <h1 className="text-3xl text-gray-900 font-bold mb-2">Welcome to the Mapito Quiz!</h1>
-                <p className="text-md max-w-2xl text-gray-500 mx-auto">
-                    Test your knowledge in Technology Field. Choose a category and begin your journey to mastery.
-                </p>
+            {/* Hero Section */}
+            <div className="bg-white text-white py-16 px-4 text-center">
+                <div className="max-w-4xl mx-auto">
+                    <h1 className="text-4xl text-gray-900 font-bold mb-4">Take Tech Challenge With Mapito Quiz</h1>
+                    <p className="text-xl opacity-90 text-gray-900">
+                        Test your expertise across various technology domains. Select a category and begin your challenge!
+                    </p>
+                </div>
             </div>
 
-            {/* Language Selector */}
+            {/* Main Content */}
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                
+            {/* Language Selector section */}
             {!selectedLanguage && (
-                <div className="max-w-4xl mx-auto px-4 mt-10">
+                <div className="max-w-4xl mx-auto px-4">
                     <h2 className="text-xl font-semibold mb-4 text-gray-700">Choose a Language</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-white">
                         {[
@@ -104,76 +109,102 @@ const Quiz = () => {
                 </div>
             )}
 
-            {/* Quiz Section */}
-            {selectedLanguage && (
-                <div className="max-w-2xl mx-auto px-4 mt-10 bg-white rounded-xl shadow-md p-6">
-                    {!quizEnded ? (
-                        <>
-                            <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-2xl font-semibold text-gray-900">
-                                    {selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1)} Quiz
-                                </h2>
-                                <p className="text-sm text-gray-500">
-                                    Time left: {timeLeft} sec
-                                </p>
+                {/* Quiz Section */}
+                {selectedLanguage && (
+                    <section className="max-w-3xl mx-auto">
+                        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                            {/* Quiz Header */}
+                            <div className="bg-gray-900 px-6 py-4">
+                                <div className="flex justify-between items-center">
+                                    <h2 className="text-xl font-bold text-white">
+                                        {selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1)} Challenge
+                                    </h2>
+                                    <div className="bg-indigo-700 text-white px-3 py-1 rounded-full text-sm font-medium">
+                                        Question {currentQuestionIndex + 1}/{quizData[selectedLanguage].length}
+                                    </div>
+                                </div>
+                                {!quizEnded && (
+                                    <div className="mt-2">
+                                        <div className="w-full bg-indigo-500 rounded-full h-2">
+                                            <div 
+                                                className="bg-white h-2 rounded-full" 
+                                                style={{ width: `${(timeLeft / 60) * 100}%` }}
+                                            ></div>
+                                        </div>
+                                        <p className="text-right text-xs text-indigo-200 mt-1">
+                                            Time remaining: {timeLeft}s
+                                        </p>
+                                    </div>
+                                )}
                             </div>
 
-                            <div className="mb-6">
-                                <p className="text-xl text-gray-800">{currentQuestion.question}</p>
-                            </div>
-                            <div className="space-y-4">
-                                {currentQuestion.options.map((option, index) => (
-                                    <div key={index} className="flex items-center">
-                                        <input
-                                            type="radio"
-                                            id={option}
-                                            name="quiz-option"
-                                            value={option}
-                                            checked={selectedAnswer === option}
-                                            onChange={() => handleAnswerSelect(option)}
-                                            className="mr-2"
-                                        />
-                                        <label htmlFor={option} className="text-lg text-gray-700">
-                                            {option}
-                                        </label>
+                            {/* Quiz Content */}
+                            <div className="p-6">
+                                {!quizEnded ? (
+                                    <>
+                                        <h3 className="text-lg font-medium text-gray-800 mb-6">
+                                            {currentQuestion.question}
+                                        </h3>
+                                        <div className="space-y-3">
+                                            {currentQuestion.options.map((option, index) => (
+                                                <div 
+                                                    key={index} 
+                                                    className={`p-4 border rounded-lg cursor-pointer transition-colors ${selectedAnswer === option ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-indigo-300'}`}
+                                                    onClick={() => handleAnswerSelect(option)}
+                                                >
+                                                    <div className="flex items-center">
+                                                        <div className={`w-5 h-5 rounded-full border flex items-center justify-center mr-3 ${selectedAnswer === option ? 'border-indigo-500 bg-indigo-500' : 'border-gray-300'}`}>
+                                                            {selectedAnswer === option && (
+                                                                <div className="w-2 h-2 rounded-full bg-white"></div>
+                                                            )}
+                                                        </div>
+                                                        <span className="text-gray-700">{option}</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="mt-8 flex justify-end">
+                                            <button
+                                                onClick={handleNextQuestion}
+                                                disabled={!selectedAnswer}
+                                                className={`px-6 py-2 rounded-md font-medium ${!selectedAnswer ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-900 hover:bg-indigo-700 text-white'}`}
+                                            >
+                                                {currentQuestionIndex === quizData[selectedLanguage].length - 1 ? 'Finish' : 'Next'}
+                                            </button>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="text-center py-8">
+                                        <div className="mx-auto w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                                            <svg className="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <h3 className="text-2xl font-bold text-gray-800 mb-2">Quiz Completed!</h3>
+                                        <p className="text-gray-600 mb-6">
+                                            You scored {score} out of {quizData[selectedLanguage].length}
+                                        </p>
+                                        <div className="flex justify-center space-x-4">
+                                            <button
+                                                onClick={handleRestart}
+                                                className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                                            >
+                                                Try Again
+                                            </button>
+                                            <button
+                                                onClick={() => setSelectedLanguage('')}
+                                                className="px-6 py-2 bg-white text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                                            >
+                                                Choose Another Quiz
+                                            </button>
+                                        </div>
                                     </div>
-                                ))}
+                                )}
                             </div>
-                            <div className="mt-6 flex justify-center">
-                                <button
-                                    onClick={handleNextQuestion}
-                                    className="bg-gray-900 text-white px-6 py-2 rounded-full hover:bg-indigo-700 transition duration-300"
-                                >
-                                    Next
-                                </button>
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <h2 className="text-2xl font-semibold text-center mb-6 text-gray-900">
-                                Quiz Completed
-                            </h2>
-                            <p className="text-lg text-center text-gray-800 mb-4">
-                                Your score: {score} / {quizData[selectedLanguage].length}
-                            </p>
-                            <div className="flex justify-center space-x-4">
-                                <button
-                                    onClick={handleRestart}
-                                    className="bg-gray-900 text-white px-6 py-2 rounded-[10px] hover:bg-green-700 transition duration-300"
-                                >
-                                    Restart Quiz
-                                </button>
-                                <button
-                                    onClick={() => setSelectedLanguage('')}
-                                    className="bg-gray-100 text-gray-900 px-6 py-2 rounded-[10px] border border-gray-300 hover:bg-gray-200 transition duration-300"
-                                >
-                                    Stop Quiz
-                                </button>
-                            </div>
-                        </>
-                    )}
-                </div>
-            )}
+                        </div>
+                    </section>
+                )}
+            </main>
         </div>
     );
 };
