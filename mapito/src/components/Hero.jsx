@@ -11,23 +11,6 @@ const Hero = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    // Load saved roadmap from localStorage on component mount
-    useEffect(() => {
-        const savedRoadmap = localStorage.getItem('savedRoadmap');
-        const savedGoal = localStorage.getItem('savedGoal');
-        
-        if (savedRoadmap && savedGoal) {
-            try {
-                setRoadmap(JSON.parse(savedRoadmap));
-                setGoal(savedGoal);
-            } catch (e) {
-                console.error('Failed to parse saved roadmap:', e);
-                localStorage.removeItem('savedRoadmap');
-                localStorage.removeItem('savedGoal');
-            }
-        }
-    }, []);
-
     const icons = [
         <FaRocket className="text-white" size={14} />,
         <FaLightbulb className="text-white" size={14} />,
@@ -95,13 +78,13 @@ const Hero = () => {
         doc.save(`${goal || "roadmap"}.pdf`);
     };
 
-    // Clear saved roadmap when generating a new one or when component unmounts
+    // Clear saved roadmap when user wants to generate another roadmap
     const clearSavedRoadmap = () => {
         localStorage.removeItem('savedRoadmap');
         localStorage.removeItem('savedGoal');
     };
 
-    // Optionally add a button to clear the roadmap
+    // to handle a button to clear the roadmap
     const handleClearRoadmap = () => {
         clearSavedRoadmap();
         setRoadmap([]);
