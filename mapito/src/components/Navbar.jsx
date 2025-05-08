@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import CharAvatar from "../utils/CharAvatar";
-import { FaHome, FaInfoCircle, FaClipboardList, FaCode, FaKeyboard, FaStickyNote, FaUserFriends  } from 'react-icons/fa';
+import { FaHome, FaInfoCircle, FaClipboardList, FaCode, FaKeyboard, FaStickyNote, FaUserFriends, FaBook  } from 'react-icons/fa';
 import { ChevronDown } from "lucide-react";
 
 export default function Navbar() {
@@ -127,6 +127,12 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
                 isAuthenticated={isAuthenticated}
                 text="Mock Interview"
                 icon={<FaUserFriends className="w-5 h-5" />}
+              />
+              <NavDropdownItem
+                to="/documentation"
+                isAuthenticated={isAuthenticated}
+                text="Documentation"
+                icon={<FaBook className="w-5 h-5" />}
               />
             </div>
           )}
@@ -263,6 +269,17 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
           >
             <FaUserFriends size={20} className="text-gray-600" />
             Mock Interview
+          </button>
+
+           <button
+            onClick={() => {
+              toggleMenu();
+              isAuthenticated ? navigate("/documentation") : navigate("/signup");
+            }}
+            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
+          >
+            <FaBook size={20} className="text-gray-600" />
+            Documentation
           </button>
           
           {isAuthenticated ? (
