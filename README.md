@@ -1,4 +1,3 @@
-
 **Features**
 - Generate roadmap presented in a linear branching visual format with AI
 - Download roapmap with PDF file
@@ -13,3 +12,8 @@
 - Update profile info (name, bio, profile pic)
 - Password Hashing
 - User Profile Pic Upload with Cloudinary
+
+**Backup Plan Features**
+- We initially utilizes GEMINI to respond when users use core features.
+- Backup Plan 1 : We use Hugging Face for our fallback if GEMINI api fails (due to exceeding free limit) or network error.
+- Backup Plan 2 : We prepared predefined responses for core features (related to AI) if Hugging Face api fails or network error.
