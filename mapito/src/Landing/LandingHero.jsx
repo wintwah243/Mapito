@@ -16,16 +16,16 @@ const LandingHero = () => {
         <FaCheckCircle className="text-white" size={18} />,
     ];
 
-    // for better UI
+    //display demo roadmap on landing page 
     const demoRoadmap = [
-        "### 1. Learn HTML & CSS Fundamentals",
-        "### 2. Master JavaScript Basics",
-        "### 3. Explore Frontend Frameworks (React, Vue, or Angular)",
-        "### 4. Build Portfolio Projects",
-        "### 5. Learn Version Control with Git",
-        "### 6. Understand APIs and HTTP Requests",
-        "### 7. Practice Responsive Design",
-        "### 8. Prepare for Interviews"
+        "### Learn HTML & CSS Fundamentals",
+        "### Master JavaScript Basics",
+        "### Explore Frontend Frameworks (React, Vue, or Angular)",
+        "### Build Portfolio Projects",
+        "### Learn Version Control with Git",
+        "### Understand APIs and HTTP Requests",
+        "### Practice Responsive Design",
+        "### Prepare for Interviews"
     ];
 
     return (
@@ -87,7 +87,7 @@ const LandingHero = () => {
                                 <div className="sm:hidden absolute left-0 top-6 w-4 h-4 rounded-full bg-indigo-500 border-4 border-white transform -translate-x-1/2"></div>
                                 
                                 {/* Desktop dot */}
-                                <div className="hidden sm:block absolute left-1/2 top-6 w-4 h-4 rounded-full bg-indigo-500 border-4 border-white transform -translate-x-1/2 -translate-y-1/2"></div>
+                                {/* <div className="hidden sm:block absolute left-1/2 top-6 w-4 h-4 rounded-full bg-indigo-500 border-4 border-white transform -translate-x-1/2 -translate-y-1/2"></div> */}
                                 
                                 {/* Card */}
                                 <div className={`bg-indigo-50 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow ${index % 2 === 0 ? 'sm:mr-auto sm:max-w-md' : 'sm:ml-auto sm:max-w-md'}`}>
