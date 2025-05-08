@@ -26,6 +26,7 @@ import LandingAboutus from './Landing/LandingAboutus'
 import TypingTest from './components/TypingTest'
 import SummarizeNote from './components/SummarizeNote'
 import MockInterview from './components/MockInterview'
+import Documentation from './components/Documentation'
 
 const Home = () => (
 <>
@@ -46,7 +47,7 @@ return (
 <Route path='/' element={<LandingPage />} />
 <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
 <Route path="/login" element={<Login />} />
-<Route path="signup" element={<SignUp />} />
+<Route path="/signup" element={<SignUp />} />
 <Route path="/google-auth" element={<GoogleAuthCallback />} />
 <Route path="/quiz" element={<Quiz />} />
 <Route path="/code" element={<CodeCompiler />} />
@@ -56,8 +57,9 @@ return (
 <Route path='userinfo' element={<UserInfo />} />
 <Route path="/landingaboutus" element={<LandingAboutus />}/>
 <Route path="/typing-test" element={<TypingTest />} />
-<Route path='summarize' element={<SummarizeNote />} />
-<Route path='mock-interview' element={<MockInterview />} />
+<Route path='/summarize' element={<SummarizeNote />} />
+<Route path='/mock-interview' element={<MockInterview />} />
+<Route path='/documentation' element={<Documentation />} />
 </Routes>
 </Router>
 </UserProvider>
