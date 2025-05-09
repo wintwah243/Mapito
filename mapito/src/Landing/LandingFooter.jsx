@@ -22,6 +22,7 @@ export default function LandingFooter() {
             <li><a href="/signup" className="hover:text-gray-300">Problems</a></li>
             <li><a href="/signup" className="hover:text-gray-300">QuickNotes</a></li>
             <li><a href="/signup" className="hover:text-gray-300">Mock Interview</a></li>
+             <li><a href="/signup" className="hover:text-gray-300">Documentation</a></li>
           </ul>
         </div>
 
