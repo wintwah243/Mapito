@@ -38,7 +38,7 @@ app.use(express.json());
 
 //setup for session
 app.use(session({
-  secret:"e4d8aab3b6a0e2b114d5c76cb90d20cc54a39977746075609b28244acb00741b2021f63ea4b88598a457c2505640e85600587007386bdfaca9f0352b782405f0",
+  secret:process.env.SESSION_SECRET,
   resave:false,
   saveUninitialized: true
 }));
@@ -498,14 +498,14 @@ app.post('/api/summarize-note', async (req, res) => {
   }
 });
 
-// Improved simple fallback function
+//simple fallback function
 function simpleFallbackSummary(text) {
   if (!text) return 'No content to summarize';
   
-  // Remove excessive whitespace and newlines
+  //Remove excessive whitespace and newlines
   const cleanText = text.replace(/\s+/g, ' ').trim();
   
-  // Extract first few meaningful sentences
+  //Extract first few meaningful sentences
   const sentences = cleanText.split(/[.!?]+/)
     .map(s => s.trim())
     .filter(s => s.length > 0);
@@ -514,7 +514,7 @@ function simpleFallbackSummary(text) {
     return cleanText.slice(0, 200) + (cleanText.length > 200 ? '...' : '');
   }
   
-  // Take first 2-3 sentences that aren't too short/long
+  //Take first 2-3 sentences that aren't too short/long
   const importantSentences = sentences
     .filter(s => s.length > 20 && s.length < 150)
     .slice(0, 3);
