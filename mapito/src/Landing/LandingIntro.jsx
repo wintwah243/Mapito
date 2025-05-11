@@ -13,7 +13,7 @@ export default function LandingIntro() {
     };
 
     return (
-        <section className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-white px-6 py-12 relative overflow-hidden">
+        <section className="mt-5 min-h-screen flex flex-col md:flex-row items-center justify-center bg-white px-6 py-12 relative overflow-hidden">
             {/* Left Text Content */}
             <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-6 z-10 max-w-xl">
                 <motion.h1
