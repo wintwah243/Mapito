@@ -13,7 +13,7 @@ export default function LandingIntro() {
     };
 
     return (
-        <section className="mt-9 min-h-screen flex flex-col md:flex-row items-center justify-center bg-white px-6 py-12 relative overflow-hidden">
+        <section className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-white px-6 py-12 relative overflow-hidden">
             {/* Left Text Content */}
             <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-6 z-10 max-w-xl">
                 <motion.h1
@@ -44,13 +44,13 @@ export default function LandingIntro() {
                 >
                     <Link
                         to="/signup"
-                        className="bg-black hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-full shadow-md transition-all duration-300"
+                        className="bg-black hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300"
                     >
                         Get Started
                     </Link>
                     <button
                         onClick={handleLearnMore}
-                        className="border border-gray-400 hover:bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-full transition-all duration-300"
+                        className="border border-gray-400 hover:bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-all duration-300"
                     >
                         Learn More
                     </button>
