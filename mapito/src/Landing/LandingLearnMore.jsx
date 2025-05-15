@@ -88,11 +88,11 @@ const LandingLearnMore = () => {
                         Our Mission
                     </h2>
                     <p className="text-gray-700 max-w-2xl mx-auto">
-                    At Mapito, we believe that achieving success should be an empowering and
-                    straightforward journey. That’s why we created a platform that makes building
-                    your personalized roadmap easy and accessible. Whether you're working towards
-                    short-term goals or planning for long-term success, Mapito is here to support
-                    and guide you at every step.
+                    At Mapito, our mission is to make high-quality education freely accessible to all students, 
+                    regardless of their background or location. We believe that every learner deserves the 
+                    opportunity to grow and succeed, so we built a platform that offers personalized roadmaps, 
+                    practical tools, and AI-powered support — all designed to help you reach your goals, 
+                    wherever you are.
                     </p>
                 </motion.div>
             </div>
