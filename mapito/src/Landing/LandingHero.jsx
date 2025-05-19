@@ -60,12 +60,6 @@ const LandingHero = () => {
                 <div className="w-full max-w-4xl px-2 sm:px-6">
                     <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
                         <h2 className="text-2xl sm:text-3xl font-bold text-indigo-700 text-center sm:text-left">Example Roadmap</h2>
-                        <button
-                            onClick={() => navigate('/signup')}
-                            className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-5 sm:px-6 rounded-full font-semibold text-sm sm:text-base transition duration-300 whitespace-nowrap"
-                        >
-                            Get Started
-                        </button>
                     </div>
 
                     <div className="relative">
@@ -85,9 +79,6 @@ const LandingHero = () => {
                             >
                                 {/* Mobile dot */}
                                 <div className="sm:hidden absolute left-0 top-6 w-4 h-4 rounded-full bg-indigo-500 border-4 border-white transform -translate-x-1/2"></div>
-                                
-                                {/* Desktop dot */}
-                                {/* <div className="hidden sm:block absolute left-1/2 top-6 w-4 h-4 rounded-full bg-indigo-500 border-4 border-white transform -translate-x-1/2 -translate-y-1/2"></div> */}
                                 
                                 {/* Card */}
                                 <div className={`bg-indigo-50 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow ${index % 2 === 0 ? 'sm:mr-auto sm:max-w-md' : 'sm:ml-auto sm:max-w-md'}`}>
