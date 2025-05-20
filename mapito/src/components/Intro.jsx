@@ -27,15 +27,6 @@ export default function Intro() {
 
             {/* Left Text Content */}
             <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-6 z-10 max-w-xl">
-                <motion.span
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="text-sm font-semibold text-gray-500 uppercase"
-                >
-                    Your RoadMap Generator with Powerful AI
-                </motion.span>
-
                 <motion.h1
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -101,4 +92,4 @@ export default function Intro() {
             
         </section>
     );
-}
+};
