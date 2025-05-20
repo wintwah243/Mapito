@@ -7,7 +7,7 @@ import { ChevronDown } from "lucide-react";
 export default function LandingNavbar() {
   const [isOpen, setIsOpen] = useState(false); //for toggle menu
   const navigate = useNavigate();
-  const [dropdownOpen, setDropdownOpen] = useState(false); //for dropdown for desktop view
+  const [dropdownOpen, setDropdownOpen] = useState(false); //for dropdown on desktop view
   const toggleMenu = () => setIsOpen(!isOpen); //for mobile view
 
   // used for dropdown menu
@@ -122,7 +122,7 @@ export default function LandingNavbar() {
       <div className="hidden md:flex items-center gap-4">
         <Link
           to="/login"
-          className="bg-gray-900 text-white py-2 px-5 rounded-full text-sm font-medium transition-all duration-300"
+          className="bg-indigo-500 text-white py-2 px-5 rounded-lg text-sm font-medium transition-all duration-300"
         >
           Login
         </Link>
@@ -151,7 +151,7 @@ export default function LandingNavbar() {
         className="fixed top-0 left-0 h-full w-64 bg-white z-40 shadow-lg p-6 flex flex-col gap-6 md:hidden"
       >
         <div className="flex justify-between items-center">
-          <span className="text-2xl font-bold text-indigo-600">Menu</span>
+          <span className="text-2xl font-bold text-indigo-600">Mapito</span>
           <button onClick={toggleMenu}>
             <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -165,7 +165,6 @@ export default function LandingNavbar() {
             Home
           </Link>
    
-         
           <button
            onClick={() => {
            toggleMenu();
@@ -177,7 +176,6 @@ export default function LandingNavbar() {
          About us
         </button>
          
-
           <button
             onClick={() => {
               toggleMenu();
@@ -188,7 +186,6 @@ export default function LandingNavbar() {
             <FaClipboardList size={20} className="text-gray-600" />
             Quizzes
           </button>
-
 
             <button
                 onClick={() => {
@@ -249,7 +246,7 @@ export default function LandingNavbar() {
           <Link
             to="/login"
             onClick={toggleMenu}
-            className="flex items-center justify-center bg-gray-900 text-white py-2 px-5 rounded-full text-sm font-medium"
+            className="flex items-center justify-center bg-indigo-500 text-white py-2 px-5 rounded-lg text-sm font-medium"
           >
             Login
           </Link>
@@ -258,4 +255,4 @@ export default function LandingNavbar() {
       </motion.div>
     </motion.nav>
   );
-}
+};
