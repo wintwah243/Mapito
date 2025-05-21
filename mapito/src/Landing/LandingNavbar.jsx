@@ -118,13 +118,13 @@ export default function LandingNavbar() {
   </div>
 </div>
 
-      {/* Desktop Login Button */}
+      {/* Desktop signup Button */}
       <div className="hidden md:flex items-center gap-4">
         <Link
-          to="/login"
+          to="/signup"
           className="bg-indigo-500 text-white py-2 px-5 rounded-lg text-sm font-medium transition-all duration-300"
         >
-          Login
+          Sign Up Free
         </Link>
       </div>
 
@@ -242,13 +242,13 @@ export default function LandingNavbar() {
             Documentation
           </button>
 
-          {/* mobile view login button */}
+          {/* mobile view signup button */}
           <Link
-            to="/login"
+            to="/signup"
             onClick={toggleMenu}
             className="flex items-center justify-center bg-indigo-500 text-white py-2 px-5 rounded-lg text-sm font-medium"
           >
-            Login
+            Sign Up Free
           </Link>
           
         </div>
