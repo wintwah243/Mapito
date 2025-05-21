@@ -37,7 +37,7 @@ export default function Navbar() {
     setIsAuthenticated(false);
     setUserName("");
     setProfilePic("");
-    navigate("/login");
+    navigate("/");
   };
 
   const dropdownRef = useRef(null);
@@ -159,7 +159,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
             )}
             <button
               onClick={handleLogout}
-              className="bg-gray-900 hover:bg-gray-200 text-white py-2 px-5 rounded-full text-sm font-medium transition-all duration-300"
+              className="bg-gray-900 hover:bg-indigo-500 text-white py-2 px-5 rounded-lg text-sm font-medium transition-all duration-300"
             >
               Logout
             </button>
@@ -197,7 +197,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
         className="fixed top-0 left-0 h-full w-64 bg-white z-40 shadow-lg p-6 flex flex-col gap-6 md:hidden"
       >
         <div className="flex justify-between items-center">
-          <span className="text-2xl font-bold text-indigo-600">Menu</span>
+          <span className="text-2xl font-bold text-indigo-600">Mapito</span>
           <button onClick={toggleMenu}>
             <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -294,13 +294,14 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
                 ) : (
                   <CharAvatar fullName={userName} width="w-12" height="h-12" />
                 )}
+                <p className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3">Accout info</p>
               </div>
               <button
                 onClick={() => {
                   toggleMenu();
                   handleLogout();
                 }}
-                className="bg-gray-900 text-white hover:bg-gray-200 py-2 px-5 rounded-full text-sm font-medium"
+                className="bg-indigo-500 text-white hover:bg-gray-200 py-2 px-5 rounded-lg text-sm font-medium cursor-pointer"
               >
                 Logout
               </button>
@@ -319,4 +320,4 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
 
     </motion.nav>
   );
-}
+};
