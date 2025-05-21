@@ -284,7 +284,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
           
           {isAuthenticated ? (
             <>
-              <div onClick={() => { navigate("/userinfo"); toggleMenu(); }} className="cursor-pointer">
+              <div onClick={() => { navigate("/userinfo"); toggleMenu(); }} className="flex items-center gap-5 cursor-pointer">
                 {profilePic ? (
                   <img
                     src={`${profilePic}?${new Date().getTime()}`}
