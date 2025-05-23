@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { quizData } from '../utils/data';
 import Navbar from './Navbar';
 import { FaReact, FaPython, FaJava, FaPhp, FaBrain, FaJsSquare } from 'react-icons/fa';
+import Footer from './Footer';
 
 const Quiz = () => {
     const [selectedLanguage, setSelectedLanguage] = useState('');
@@ -64,52 +65,51 @@ const Quiz = () => {
     }, [selectedLanguage, quizEnded]);
 
     return (
-        <div className="min-h-screen bg-gray-50 mt-10">
+        <div className="min-h-screen bg-white mt-20">
             <Navbar />
 
-            {/* Hero Section */}
+            {/* header section */}
             <div className="bg-white text-white py-16 px-4 text-center">
                 <div className="max-w-4xl mx-auto">
                     <h1 className="text-4xl text-gray-900 font-bold mb-4">Take Tech Challenge With Mapito Quiz</h1>
                     <p className="text-xl opacity-90 text-gray-900">
-                        Test your expertise across various technology domains. Select a category and begin your challenge!
+                        Put your skills to the test across a wide range of technology domains.
+                        Choose a category that interests you and dive into your challenge to showcase
+                        your expertise!
                     </p>
                 </div>
             </div>
 
             {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                
-            {/* Language Selector section */}
-            {!selectedLanguage && (
-                <div className="max-w-4xl mx-auto px-4">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-700">Choose a Language</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-white">
-                        {[
-                            { label: 'JavaScript', icon: <FaJsSquare className="bg-gray-200 p-[5px] rounded-full text-gray-900 text-4xl mr-2" />, key: 'javascript' },
-                            { label: 'React', icon: <FaReact className="bg-gray-200 p-[5px] rounded-full text-gray-900 text-4xl mr-2" />, key: 'react' },
-                            { label: 'Python', icon: <FaPython className="bg-gray-200 p-[5px] rounded-full text-gray-900 text-4xl mr-2" />, key: 'python' },
-                            { label: 'Java', icon: <FaJava className="bg-gray-200 p-[5px] rounded-full text-gray-900 text-4xl mr-2" />, key: 'java' },
-                            { label: 'PHP', icon: <FaPhp className="bg-gray-200 p-[5px] rounded-full text-gray-900 text-4xl mr-2" />, key: 'php' },
-                            { label: 'AI', icon: <FaBrain className="bg-gray-200 p-[5px] rounded-full text-gray-900 text-4xl mr-2" />, key: 'ai' },
-                        ].map(({ label, icon, key }) => (
-                            <button
-                                key={key}
-                                onClick={() => handleLanguageSelect(key)}
-                                className="flex items-center bg-white text-gray-900 border border-black p-6 rounded-xl shadow-md cursor-pointer transition duration-300"
-                            >
-                                {icon}
-                                <div>
-                                    <p className="text-sm mb-1">Category</p>
-                                    <h3 className="text-xl font-semibold">{label}</h3>
-                                </div>
-                            </button>
-                        ))}
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-white min-h-screen">
+                {!selectedLanguage && (
+                    <div className="max-w-4xl mx-auto text-center">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            {[
+                                { label: 'JavaScript', emoji: '🌟', key: 'javascript' },
+                                { label: 'React', emoji: '⚛️', key: 'react' },
+                                { label: 'Python', emoji: '🤖', key: 'python' },
+                                { label: 'Java', emoji: '☕', key: 'java' },
+                                { label: 'PHP', emoji: '🐘', key: 'php' },
+                                { label: 'AI', emoji: '🧠', key: 'ai' },
+                            ].map(({ label, emoji, key }) => (
+                                <button
+                                    key={key}
+                                    onClick={() => handleLanguageSelect(key)}
+                                    className="flex items-start bg-white border border-gray-200 hover:border-indigo-500 hover:shadow-lg rounded-2xl p-6 space-x-4 transition duration-300 ease-in-out"
+                                >
+                                    <div className="text-4xl">{emoji}</div>
+                                    <div className="text-left">
+                                        <h3 className="text-lg font-semibold text-gray-800">{label}</h3>
+                                        <p className="text-sm text-gray-500">Explore challenges and sharpen your skills in {label}.</p>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
 
-                {/* Quiz Section */}
+                {/* Quiz Interface */}
                 {selectedLanguage && (
                     <section className="max-w-3xl mx-auto">
                         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -126,8 +126,8 @@ const Quiz = () => {
                                 {!quizEnded && (
                                     <div className="mt-2">
                                         <div className="w-full bg-indigo-500 rounded-full h-2">
-                                            <div 
-                                                className="bg-white h-2 rounded-full" 
+                                            <div
+                                                className="bg-white h-2 rounded-full"
                                                 style={{ width: `${(timeLeft / 60) * 100}%` }}
                                             ></div>
                                         </div>
@@ -147,8 +147,8 @@ const Quiz = () => {
                                         </h3>
                                         <div className="space-y-3">
                                             {currentQuestion.options.map((option, index) => (
-                                                <div 
-                                                    key={index} 
+                                                <div
+                                                    key={index}
                                                     className={`p-4 border rounded-lg cursor-pointer transition-colors ${selectedAnswer === option ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-indigo-300'}`}
                                                     onClick={() => handleAnswerSelect(option)}
                                                 >
@@ -205,6 +205,8 @@ const Quiz = () => {
                     </section>
                 )}
             </main>
+           {/* Footer section */}
+            <Footer />
         </div>
     );
 };
