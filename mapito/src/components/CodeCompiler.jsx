@@ -3,6 +3,7 @@ import Editor from "@monaco-editor/react";
 import axios from "axios";
 import Navbar from "./Navbar";
 import { quizQuestions } from "../utils/data";
+import Footer from "./Footer";
 
 //language ID by judge0
 const languageMap = {
@@ -130,7 +131,8 @@ const CodeCompiler = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 pt-20 mt-5">
+     <section>
+    <div className="max-w-5xl mx-auto p-4 pt-20 mt-5 mb-20">
       <Navbar />
 
       {/* Header */}
@@ -214,6 +216,10 @@ const CodeCompiler = () => {
         <pre className="whitespace-pre-wrap">{output}</pre>
       </div>
     </div>
+       
+    {/* Footer */}
+    <Footer />
+    </section>
   );
 };
 
