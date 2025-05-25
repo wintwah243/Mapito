@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 const TypingTest = () => {
   const [quote, setQuote] = useState("");
@@ -51,7 +52,7 @@ const TypingTest = () => {
 
   useEffect(() => {
     fetchQuote();
-    return () => clearTimer();
+    return () => clearTimer(); // cleanup function
   }, []);
 
   // Countdown Timer
@@ -134,7 +135,8 @@ const TypingTest = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 mt-20">
+    <section>
+    <div className="min-h-screen bg-gray-50 mt-20 mb-20">
       <Navbar />
       <div className="container mx-auto px-4 py-6 md:py-12 max-w-4xl">
         <div className="bg-white rounded-xl shadow-md overflow-hidden p-4 md:p-6">
@@ -229,6 +231,9 @@ const TypingTest = () => {
         </div>
       </div>
     </div>
+    {/* Footer section */}
+      <Footer />
+    </section>
   );
 };
 
