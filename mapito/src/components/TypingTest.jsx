@@ -136,7 +136,7 @@ const TypingTest = () => {
 
   return (
     <section>
-    <div className="min-h-screen bg-gray-50 mt-20 mb-20">
+    <div className="min-h-screen bg-gray-50 mt-20">
       <Navbar />
       <div className="container mx-auto px-4 py-6 md:py-12 max-w-4xl">
         <div className="bg-white rounded-xl shadow-md overflow-hidden p-4 md:p-6">
