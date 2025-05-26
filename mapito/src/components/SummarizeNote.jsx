@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from './Navbar';
 import { FaMagic, FaSpinner, FaExclamationTriangle, FaCopy, FaCheck } from 'react-icons/fa';
+import Footer from './Footer';
 
 function SummarizeNote() {
   const [note, setNote] = useState('');
@@ -82,6 +83,7 @@ function SummarizeNote() {
   };
 
   return (
+    <section>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 mt-20">
       <Navbar />
       <div className="max-w-3xl mx-auto px-4 py-8">
@@ -89,7 +91,7 @@ function SummarizeNote() {
           <div className="p-6 md:p-8">
             <div className="flex items-center mb-6">
               <FaMagic className="text-indigo-600 text-2xl mr-3" />
-              <h2 className="text-2xl font-bold text-gray-800">Summarize your note with AI</h2>
+              <h2 className="text-2xl font-bold text-gray-800">Summarize your long note here</h2>
             </div>
             
             <div className="mb-6">
@@ -108,7 +110,7 @@ function SummarizeNote() {
             <button
               onClick={handleSummarize}
               disabled={loading || !note.trim()}
-              className={`flex items-center justify-center w-full px-6 py-3 rounded-lg font-medium text-white transition-all ${
+              className={`flex items-center justify-center w-full bg-indigo-500 px-6 py-3 rounded-lg font-medium text-white transition-all ${
                 loading || !note.trim() 
                   ? 'bg-gray-400 cursor-not-allowed' 
                   : 'bg-gray-900 hover:bg-indigo-700 shadow-md hover:shadow-lg'
@@ -174,6 +176,9 @@ function SummarizeNote() {
         </div>
       </div>
     </div>
+    {/* Footer section */}
+     <Footer />
+    </section>
   );
 }
 
