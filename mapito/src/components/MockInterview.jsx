@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './Navbar';
 import { FaPlay, FaStop, FaMicrophone, FaVideo, FaPaperPlane, FaRobot, FaUser } from 'react-icons/fa';
+import Footer from './Footer';
 
 function MockInterview() {
   const [role, setRole] = useState('');
@@ -147,14 +148,15 @@ function MockInterview() {
   }, []);
 
   return (
+    <section>
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 mt-20">
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="p-6 md:p-8">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 flex items-center">
-              <FaRobot className="text-blue-600 mr-3" />
-              AI Mock Interview
+              <FaRobot className="text-indigo-500 mr-3" />
+              Practice Your Coding Interview With Our AI
             </h1>
             
             {!started ? (
@@ -184,7 +186,7 @@ function MockInterview() {
                 
                 <button
                   onClick={handleStart}
-                  className="flex items-center justify-center w-full px-6 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-blue-700 transition-all"
+                  className="flex items-center justify-center w-full px-6 py-3 bg-indigo-500 text-white rounded-lg font-medium hover:bg-blue-700 transition-all"
                   disabled={loading}
                 >
                   <FaPlay className="mr-2" />
@@ -262,6 +264,9 @@ function MockInterview() {
         </div>
       </div>
     </div>
+    {/* footer section */}
+      <Footer />
+    </section>
   );
 }
 
