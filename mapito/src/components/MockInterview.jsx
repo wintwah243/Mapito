@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './Navbar';
-import { FaPlay, FaStop, FaMicrophone, FaVideo, FaPaperPlane, FaRobot, FaUser } from 'react-icons/fa';
 import Footer from './Footer';
+import { FaPlay, FaStop, FaMicrophone, FaVideo, FaPaperPlane, FaRobot, FaUser } from 'react-icons/fa';
 
 function MockInterview() {
   const [role, setRole] = useState('');
@@ -12,34 +12,24 @@ function MockInterview() {
   const [isRecording, setIsRecording] = useState(false);
   const [videoEnabled, setVideoEnabled] = useState(false);
   const [transcript, setTranscript] = useState('');
-  
+
   const videoRef = useRef(null);
-  const mediaRecorderRef = useRef(null);
-  const audioChunksRef = useRef([]);
   const recognitionRef = useRef(null);
 
-  // Initialize webcam
   const initWebcam = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: true, 
-        audio: true 
-      });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
-    } catch (err) {
+    } catch {
       setError('Could not access camera/microphone');
     }
   };
 
-  // Initialize speech recognition
   const initSpeechRecognition = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      setError('Speech recognition not supported in your browser');
-      return;
-    }
+    if (!SpeechRecognition) return setError('Speech recognition not supported in this browser');
 
     recognitionRef.current = new SpeechRecognition();
     recognitionRef.current.continuous = true;
@@ -47,8 +37,7 @@ function MockInterview() {
 
     recognitionRef.current.onresult = (event) => {
       const transcript = Array.from(event.results)
-        .map(result => result[0])
-        .map(result => result.transcript)
+        .map(result => result[0].transcript)
         .join('');
       setTranscript(transcript);
     };
@@ -58,65 +47,54 @@ function MockInterview() {
     };
   };
 
-  // Start/stop recording
   const toggleRecording = () => {
     if (isRecording) {
       recognitionRef.current.stop();
-      setIsRecording(false);
     } else {
       recognitionRef.current.start();
-      setIsRecording(true);
     }
+    setIsRecording(!isRecording);
   };
 
-  // Start interview
   const handleStart = async () => {
     if (!role.trim()) return setError('Please enter a job role');
-    
     setStarted(true);
     setLoading(true);
-    
     try {
       if (videoEnabled) await initWebcam();
       initSpeechRecognition();
-      
-      const res = await fetch('https://mapito.onrender.com/api/mock-interview', {
+
+      const res = await fetch('http://localhost:8000/api/mock-interview', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role })
       });
-      
+
       const data = await res.json();
       if (res.ok) {
         setConversation([{ from: 'ai', text: data.message }]);
       } else {
         setError(data.error || 'Failed to start interview');
       }
-    } catch (err) {
+    } catch {
       setError('Network error');
     }
-    
     setLoading(false);
   };
 
-  // Send response
   const handleSendAnswer = async () => {
     if (!transcript.trim()) return;
-    
+
     setLoading(true);
     const history = conversation.map(msg => `${msg.from}: ${msg.text}`).join('\n');
-    
+
     try {
       const res = await fetch('http://localhost:8000/api/mock-interview', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          role,
-          answer: transcript,
-          history
-        })
+        body: JSON.stringify({ role, answer: transcript, history })
       });
-      
+
       const data = await res.json();
       if (res.ok) {
         setConversation(prev => [
@@ -128,66 +106,65 @@ function MockInterview() {
       } else {
         setError(data.error || 'Failed to process answer');
       }
-    } catch (err) {
+    } catch {
       setError('Network error');
     }
-    
+
     setLoading(false);
   };
 
-  // Clean up
   useEffect(() => {
     return () => {
       if (videoRef.current?.srcObject) {
         videoRef.current.srcObject.getTracks().forEach(track => track.stop());
       }
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
+      if (recognitionRef.current) recognitionRef.current.stop();
     };
   }, []);
 
   return (
-    <section>
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 mt-20">
+    <section className="bg-gray-50 min-h-screen flex flex-col">
       <Navbar />
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          <div className="p-6 md:p-8">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 flex items-center">
-              <FaRobot className="text-indigo-500 mr-3" />
-              Practice Your Coding Interview With Our AI
+      <main className="flex-1 py-10">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="bg-white shadow-md rounded-xl p-6 md:p-10">
+            <h1 className="text-3xl font-semibold text-gray-800 flex items-center mb-2">
+              <FaRobot className="text-indigo-600 mr-3" />
+              Improve Your Coding interview With Us
             </h1>
-            
+            <p className="text-gray-600 mb-8">
+              Practice your job interview skills using AI. Get instant feedback on your spoken or typed answers.
+            </p>
+
             {!started ? (
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Job Role
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Job Role</label>
                   <input
                     type="text"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="e.g. Frontend Developer, Data Scientist or etc..."
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                    placeholder="e.g., Frontend Developer"
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
                   />
                 </div>
-                
-                <div className="flex space-x-4">
+
+                <div className="flex gap-4">
                   <button
                     onClick={() => setVideoEnabled(!videoEnabled)}
-                    className={`flex items-center px-4 py-2 rounded-lg ${videoEnabled ? 'bg-green-100 text-green-800' : 'bg-gray-100'}`}
+                    className={`px-4 py-2 rounded-lg font-medium ${
+                      videoEnabled ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'
+                    }`}
                   >
-                    <FaVideo className="mr-2" />
+                    <FaVideo className="inline mr-2" />
                     {videoEnabled ? 'Video On' : 'Video Off'}
                   </button>
                 </div>
-                
+
                 <button
                   onClick={handleStart}
-                  className="flex items-center justify-center w-full px-6 py-3 bg-indigo-500 text-white rounded-lg font-medium hover:bg-blue-700 transition-all"
                   disabled={loading}
+                  className="w-full flex items-center justify-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
                 >
                   <FaPlay className="mr-2" />
                   {loading ? 'Starting...' : 'Start Interview'}
@@ -196,50 +173,47 @@ function MockInterview() {
             ) : (
               <div className="space-y-6">
                 {videoEnabled && (
-                  <div className="relative bg-black rounded-lg overflow-hidden h-64">
-                    <video
-                      ref={videoRef}
-                      autoPlay
-                      muted
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="absolute bottom-4 left-4 flex space-x-2">
-                      <button
-                        onClick={toggleRecording}
-                        className={`p-3 rounded-full ${isRecording ? 'bg-red-500' : 'bg-gray-800'} text-white`}
-                      >
-                        <FaMicrophone />
-                      </button>
-                    </div>
+                  <div className="relative h-64 bg-black rounded-lg overflow-hidden">
+                    <video ref={videoRef} autoPlay muted className="w-full h-full object-cover" />
+                    <button
+                      onClick={toggleRecording}
+                      className={`absolute bottom-4 left-4 p-3 rounded-full text-white ${
+                        isRecording ? 'bg-red-500' : 'bg-gray-700'
+                      }`}
+                    >
+                      <FaMicrophone />
+                    </button>
                   </div>
                 )}
-                
-                <div className="border border-gray-200 rounded-lg bg-gray-50 p-4 h-64 overflow-y-auto">
+
+                <div className="h-64 overflow-y-auto border border-gray-200 rounded-lg bg-gray-50 p-4">
                   {conversation.map((msg, i) => (
-                    <div key={i} className={`mb-3 ${msg.from === 'user' ? 'text-right' : 'text-left'}`}>
-                      <div className={`inline-flex items-start max-w-3/4 p-3 rounded-lg ${msg.from === 'user' ? 'bg-blue-100' : 'bg-gray-200'}`}>
-                        <span className="mr-2 mt-1">
-                          {msg.from === 'user' ? <FaUser /> : <FaRobot />}
-                        </span>
-                        <p className="whitespace-pre-wrap">{msg.text}</p>
+                    <div key={i} className={`mb-4 ${msg.from === 'user' ? 'text-right' : 'text-left'}`}>
+                      <div
+                        className={`inline-flex items-start gap-2 p-3 rounded-lg max-w-[75%] ${
+                          msg.from === 'user' ? 'bg-indigo-100 ml-auto' : 'bg-gray-200'
+                        }`}
+                      >
+                        {msg.from === 'user' ? <FaUser /> : <FaRobot />}
+                        <p className="text-gray-800 whitespace-pre-wrap">{msg.text}</p>
                       </div>
                     </div>
                   ))}
                 </div>
-                
-                <div className="flex items-end space-x-3">
+
+                <div className="flex gap-3 items-end">
                   <div className="flex-1">
                     <textarea
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                      rows="3"
-                      placeholder={isRecording ? "Speaking..." : "Type or speak your answer"}
+                      rows={3}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                      placeholder={isRecording ? 'Speaking...' : 'Type or speak your answer'}
                       value={transcript}
                       onChange={(e) => setTranscript(e.target.value)}
                       disabled={isRecording}
                     />
                     {isRecording && (
                       <div className="mt-1 flex items-center text-sm text-gray-500">
-                        <div className="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></div>
+                        <span className="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>
                         Listening...
                       </div>
                     )}
@@ -247,24 +221,22 @@ function MockInterview() {
                   <button
                     onClick={handleSendAnswer}
                     disabled={loading || !transcript.trim()}
-                    className="flex items-center justify-center h-12 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                    className="h-12 w-12 flex items-center justify-center bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400"
                   >
                     <FaPaperPlane />
                   </button>
                 </div>
               </div>
             )}
-            
+
             {error && (
-              <div className="mt-4 p-3 bg-red-100 border-l-4 border-red-500 text-red-700">
+              <div className="mt-6 bg-red-100 text-red-800 border-l-4 border-red-500 p-4 rounded-md">
                 {error}
               </div>
             )}
           </div>
         </div>
-      </div>
-    </div>
-    {/* footer section */}
+      </main>
       <Footer />
     </section>
   );
