@@ -125,7 +125,7 @@ function MockInterview() {
   return (
     <section className="bg-gray-50 min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 py-10">
+      <main className="flex-1 py-10 mt-10">
         <div className="max-w-5xl mx-auto px-4">
           <div className="bg-white shadow-md rounded-xl p-6 md:p-10">
             <h1 className="text-3xl font-semibold text-gray-800 flex items-center mb-2">
