@@ -27,6 +27,7 @@ import TypingTest from './components/TypingTest'
 import SummarizeNote from './components/SummarizeNote'
 import MockInterview from './components/MockInterview'
 import Documentation from './components/Documentation'
+import ScrollToTop from './utils/ScrollToTop'
 
 const Home = () => (
 <>
@@ -43,6 +44,7 @@ const App = () => {
 return (
 <UserProvider>
 <Router>
+<ScrollToTop />
 <Routes>
 <Route path='/' element={<LandingPage />} />
 <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
