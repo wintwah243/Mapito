@@ -153,14 +153,16 @@ const LandingAboutus = () => {
                 Our team brings together educators, tech lovers, and problem-solvers who care about making education easier for everyone.
               </p>
             </div>
+
             {/* Team Members */}
-            <div className="flex justify-center">
-              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {/* Member 1 */}
+              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 hover:border-indigo-500">
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
                     <img
                       src={myPhoto}
-                      alt="founder"
+                      alt="Wint Wah Kyaw Soe"
                       className="w-16 h-16 rounded-full object-cover"
                     />
                   </div>
@@ -175,10 +177,30 @@ const LandingAboutus = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Member 2 */}
+              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 hover:border-indigo-500">
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0">
+                    <img
+                      src="https://i.pinimg.com/736x/02/59/54/0259543779b1c2db9ba9d62d47e11880.jpg"
+                      alt="Another Member"
+                      className="w-16 h-16 rounded-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">Team member 2</h3>
+                    <p className="text-indigo-600 font-medium mb-2">Upcoming</p>
+                    <p className="text-gray-600">
+                      Passionate about design and storytelling. I turn ideas into visual experiences and enjoy creating things that feel good and look better.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
-
+        
         {/* Tech Stack */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-6">
