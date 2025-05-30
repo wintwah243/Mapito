@@ -156,7 +156,7 @@ const AboutUs = () => {
             {/* Team Members */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Member 1 */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 hover:border-indigo-500">
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
                     <img
@@ -178,7 +178,7 @@ const AboutUs = () => {
               </div>
 
               {/* Member 2 */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 hover:border-indigo-500">
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
                     <img
