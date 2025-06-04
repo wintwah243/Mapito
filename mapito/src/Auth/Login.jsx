@@ -89,7 +89,7 @@ const Login = () => {
       <div className='w-full max-w-md p-6 rounded-md bg-white'>
         <h3 className='text-3xl font-semibold text-black mb-4'>Welcome back!</h3>
         <p className='text-sm text-slate-700 mb-6'>
-        Let AI create your perfect path forward – welcome to Mapito, your intelligent roadmap generator.
+        Let AI create your perfect path forward – welcome to Mapito, your intelligent learning platform.
         </p>
 
         <form onSubmit={handleLogin}>
