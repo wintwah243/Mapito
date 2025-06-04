@@ -105,7 +105,7 @@ const SignUp = () => {
     <AuthLayout>
       <div className='lg:w-[100%] h-auto md:h-full mt-10 md:mt-0 flex flex-col justify-center'>
           <h3 className='text-[40px] font-semibold text-black'>Create an account</h3>
-          <p className='text-xs text-slate-700 mt-[5px] mb-6'>Let AI create your perfect path forward – welcome to Mapito, your intelligent roadmap generator.</p>
+          <p className='text-xs text-slate-700 mt-[5px] mb-6'>Let AI create your perfect path forward – welcome to Mapito, your intelligent learning platform.</p>
 
           <form onSubmit={handleSignUp}>
             
