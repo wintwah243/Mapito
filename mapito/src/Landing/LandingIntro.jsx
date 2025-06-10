@@ -44,13 +44,13 @@ export default function LandingIntro() {
                 >
                     <Link
                         to="/signup"
-                        className="bg-black hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300"
+                        className="bg-black hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
                     >
                         Get Started
                     </Link>
                     <button
                         onClick={handleLearnMore}
-                        className="border border-gray-400 hover:bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-all duration-300"
+                        className="border border-gray-400 hover:bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-all duration-300 cursor-pointer"
                     >
                         Learn More
                     </button>
