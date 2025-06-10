@@ -75,8 +75,8 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
 
       {/* Desktop Links */}
       <div className="hidden md:flex items-center gap-8 text-gray-700 font-semibold">
-        <Link to="/home" className="hover:text-indigo-600 transition-all duration-300 py-2">Home</Link>
-        <Link to="/aboutus" className="hover:text-indigo-600 transition-all duration-300 py-2">About us</Link>
+        <Link to="/home" className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">Home</Link>
+        <Link to="/aboutus" className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">About us</Link>
 
         {/* dropdown for various features */}
         <div className="relative group" onMouseLeave={() => setDropdownOpen(false)}>
@@ -86,7 +86,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
             aria-expanded={dropdownOpen}
             aria-haspopup="true"
           >
-            <span>Features</span>
+            <span className="cursor-pointer">Features</span>
             <ChevronDown
               className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
             />
@@ -128,15 +128,15 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
                 text="Mock Interview"
                 icon={<FaUserFriends className="w-5 h-5" />}
               />
-              <NavDropdownItem
-                to="/documentation"
-                isAuthenticated={isAuthenticated}
-                text="Documentation"
-                icon={<FaBook className="w-5 h-5" />}
-              />
             </div>
           )}
         </div>
+
+         <Link 
+           to="/documentation" 
+           className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">
+           Documentations
+         </Link>
 
       </div>
 
