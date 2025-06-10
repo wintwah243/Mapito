@@ -51,14 +51,14 @@ export default function LandingNavbar() {
   <div className="hidden md:flex items-center gap-8 text-gray-700 font-semibold">
   <Link 
     to="/" 
-    className="hover:text-indigo-600 transition-all duration-300 py-2"
+    className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer"
   >
     Home
   </Link>
 
   <button
     onClick={() => navigate("/landingaboutus")}
-    className="hover:text-indigo-600 transition-all duration-300 py-2"
+    className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer"
   >
     About us
   </button>
@@ -71,7 +71,7 @@ export default function LandingNavbar() {
       aria-expanded={dropdownOpen}
       aria-haspopup="true"
     >
-      <span>Features</span>
+      <span className="cursor-pointer">Features</span>
       <ChevronDown
         className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
       />
@@ -108,14 +108,16 @@ export default function LandingNavbar() {
           text="Mock Interview"
           icon={<FaUserFriends className="w-5 h-5" />}
         />
-        <NavDropdownItem
-          to="/documentation"
-          text="Documentation"
-          icon={<FaBook className="w-5 h-5" />}
-        />
       </div>
     )}
   </div>
+
+    <button
+    onClick={() => navigate("/signup")}
+    className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer"
+  >
+    Documentations
+  </button>
 </div>
 
       {/* Desktop signup Button */}
