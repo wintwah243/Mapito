@@ -28,6 +28,7 @@ import SummarizeNote from './components/SummarizeNote'
 import MockInterview from './components/MockInterview'
 import Documentation from './components/Documentation'
 import ScrollToTop from './utils/ScrollToTop'
+import News from './components/News'
 
 const Home = () => (
 <>
@@ -62,6 +63,7 @@ return (
 <Route path='/summarize' element={<SummarizeNote />} />
 <Route path='/mock-interview' element={<MockInterview />} />
 <Route path='/documentation' element={<Documentation />} />
+<Route path='notice' element={<News />} />
 </Routes>
 </Router>
 </UserProvider>
