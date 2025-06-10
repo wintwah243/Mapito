@@ -36,9 +36,9 @@ export default function News() {
     };
 
     return (
-        <section>
+        <section className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
             <LandingNavbar />
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div>
             <div className="w-full max-w-4xl bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-10 border border-gray-200">
                 <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 text-center">
                     System Notices & Instructions
