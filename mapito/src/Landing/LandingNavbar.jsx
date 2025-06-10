@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { FaHome, FaInfoCircle, FaClipboardList, FaCode, FaKeyboard, FaStickyNote, FaUserFriends, FaBook } from 'react-icons/fa';
+import { FaHome, FaInfoCircle, FaClipboardList, FaCode, FaKeyboard, FaStickyNote, FaUserFriends, FaBook, FaBell } from 'react-icons/fa';
 import { ChevronDown } from "lucide-react";
 
 export default function LandingNavbar() {
@@ -117,6 +117,13 @@ export default function LandingNavbar() {
     className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer"
   >
     Documentations
+  </button>
+
+    <button
+    onClick={() => navigate("/notice")}
+    className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer"
+  >
+    Notice Board
   </button>
 </div>
 
@@ -242,6 +249,18 @@ export default function LandingNavbar() {
               >
             <FaBook size={20} className="text-gray-600" />
             Documentation
+          </button>
+
+
+          <button
+                onClick={() => {
+                    toggleMenu();
+                    navigate("/notice");
+                }}
+              className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
+              >
+            <FaBell size={20} className="text-gray-600" />
+            Notice Board
           </button>
 
           {/* mobile view signup button */}
