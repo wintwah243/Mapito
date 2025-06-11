@@ -78,7 +78,7 @@ const AboutUs = () => {
           <div className="container mx-auto px-6">
             <div className="flex flex-col md:flex-row items-center">
               <div className="md:w-1/2 mb-10 md:mb-0">
-                <h2 className="text-3xl font-bold text-indigo-600 mb-6">Our System</h2>
+                <h2 className="text-3xl font-bold text-blue-600 mb-6">Our System</h2>
                 <p className="text-gray-600 mb-4">
                   At Mapito, we're revolutionizing how developers learn and practice. We combine AI-powered guidance with
                   hands-on coding experience to create the most effective learning platform.
@@ -146,7 +146,7 @@ const AboutUs = () => {
                 Our Team
               </h1>
               <h2 className="text-xl sm:text-2xl text-gray-600">
-                Meet the People Behind <span className='text-indigo-600'>Mapito</span>
+                Meet the People Behind <span className='text-blue-600'>Mapito</span>
               </h2>
               <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
                 Our team brings together educators, tech lovers, and problem-solvers who care about making education easier for everyone.
@@ -156,7 +156,7 @@ const AboutUs = () => {
             {/* Team Members */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Member 1 */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 hover:border-indigo-500">
+              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 hover:border-blue-500">
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
                     <img
@@ -167,7 +167,7 @@ const AboutUs = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-gray-900">Wint Wah Kyaw Soe</h3>
-                    <p className="text-indigo-600 font-medium mb-2">Founder & Developer of Mapito</p>
+                    <p className="text-blue-600 font-medium mb-2">Founder & Developer of Mapito</p>
                     <p className="text-gray-600">
                       You can call me 'Shi' and I love coffee with coding. I describe myself as a person full of desire
                       to learn. I am a fullstack developer and global learning enthusiast. I usually waste my time by exploring
@@ -178,7 +178,7 @@ const AboutUs = () => {
               </div>
 
               {/* Member 2 */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 hover:border-indigo-500">
+              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 hover:border-blue-500">
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
                     <img
@@ -189,7 +189,7 @@ const AboutUs = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-gray-900">Team member 2</h3>
-                    <p className="text-indigo-600 font-medium mb-2">Upcoming</p>
+                    <p className="text-blue-600 font-medium mb-2">Upcoming</p>
                     <p className="text-gray-600">
                       Passionate about design and storytelling. I turn ideas into visual experiences and enjoy creating things that feel good and look better.
                     </p>
@@ -224,7 +224,7 @@ const AboutUs = () => {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
               Join thousands of developers who use Mapito to practice smarter and grow faster.
             </p>
-            <button onClick={() => navigate("/home")} className="px-8 py-4 bg-indigo-600 text-white rounded-lg transition duration-300 text-lg font-semibold cursor-pointer">
+            <button onClick={() => navigate("/home")} className="px-8 py-4 bg-blue-600 text-white rounded-lg transition duration-300 text-lg font-semibold cursor-pointer">
               Start Your Journey Now
             </button>
           </div>
