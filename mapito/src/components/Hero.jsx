@@ -15,42 +15,31 @@ const Hero = () => {
         const fetchSavedRoadmap = async () => {
             const token = localStorage.getItem('token');
             if (!token) return;
-    
+
             try {
-                const response = await fetch('https://mapito.onrender.com/api/generate-roadmap', {
+                const response = await fetch('https://mapito.onrender.com/api/roadmaps', {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     },
                 });
-    
+
                 if (response.ok) {
                     const data = await response.json();
                     const steps = data.roadmap
                         .split('\n')
                         .map(step => step.trim())
                         .filter(step => step.length > 0);
-    
+
                     setRoadmap(steps);
                     setGoal(data.goal);
-    
-                    localStorage.setItem('savedRoadmap', JSON.stringify(steps));
-                    localStorage.setItem('savedGoal', data.goal);
                 }
             } catch (error) {
                 console.error('Error fetching saved roadmap:', error);
             }
         };
-    
-        const savedRoadmap = localStorage.getItem('savedRoadmap');
-        const savedGoal = localStorage.getItem('savedGoal');
-    
-        if (savedRoadmap && savedGoal) {
-            setRoadmap(JSON.parse(savedRoadmap));
-            setGoal(savedGoal);
-        } else {
-            fetchSavedRoadmap();
-        }
-    }, []); 
+
+        fetchSavedRoadmap();
+    }, []);
 
     const icons = [
         <FaRocket className="text-white" size={14} />,
@@ -86,10 +75,6 @@ const Hero = () => {
                 .map(step => step.trim())
                 .filter(step => step.length > 0);
 
-            // Save to localStorage
-            localStorage.setItem('savedRoadmap', JSON.stringify(steps));
-            localStorage.setItem('savedGoal', goal);
-
             setRoadmap(steps);
         } catch (error) {
             console.error('Error generating roadmap:', error);
@@ -119,15 +104,7 @@ const Hero = () => {
         doc.save(`${goal || "roadmap"}.pdf`);
     };
 
-    // Clear saved roadmap when generating a new one or when component unmounts
-    const clearSavedRoadmap = () => {
-        localStorage.removeItem('savedRoadmap');
-        localStorage.removeItem('savedGoal');
-    };
-
-    // Optionally add a button to clear the roadmap
     const handleClearRoadmap = () => {
-        clearSavedRoadmap();
         setRoadmap([]);
         setGoal('');
     };
@@ -135,13 +112,8 @@ const Hero = () => {
     return (
         <section id='hero' className="bg-white">
             <div className="flex flex-col items-center justify-center px-4 py-12 sm:p-6 lg:p-8">
-                {/* Header Section */}
-                <motion.div
-                    className="w-full max-w-2xl text-center mb-12"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                >
+                {/* Header */}
+                <motion.div className="w-full max-w-2xl text-center mb-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
                     <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 leading-tight">
                         Get your AI-Powered <span className="text-indigo-600"> Roadmap</span>
                     </h1>
@@ -150,13 +122,8 @@ const Hero = () => {
                     </p>
                 </motion.div>
 
-                {/* Input Section */}
-                <motion.div
-                    className="w-full max-w-md mb-12"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                >
+                {/* Input */}
+                <motion.div className="w-full max-w-md mb-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
                     <div className="flex flex-col sm:flex-row gap-3 w-full">
                         <input
                             type="text"
@@ -184,7 +151,7 @@ const Hero = () => {
                     </div>
                 </motion.div>
 
-                {/* Generated Roadmap Timeline */}
+                {/* Roadmap */}
                 {roadmap.length > 0 && (
                     <div className="w-full max-w-4xl px-2 sm:px-6">
                         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
@@ -208,7 +175,6 @@ const Hero = () => {
                         </div>
 
                         <div className="relative">
-                            {/* Timeline line */}
                             <div className="hidden sm:block absolute left-1/2 h-full w-0.5 bg-indigo-200 transform -translate-x-1/2"></div>
                             <div className="sm:hidden absolute left-4 h-full w-1 bg-indigo-200"></div>
 
@@ -220,44 +186,22 @@ const Hero = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.1, duration: 0.4 }}
                                 >
-                                    {/* Mobile dot */}
                                     <div className="sm:hidden absolute left-0 top-6 w-4 h-4 rounded-full bg-indigo-500 border-4 border-white transform -translate-x-1/2"></div>
-
-                                    {/* Card */}
                                     <div className={`bg-indigo-50 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow ${index % 2 === 0 ? 'sm:mr-auto sm:max-w-md' : 'sm:ml-auto sm:max-w-md'}`}>
                                         <div className="flex items-start gap-3">
-                                            {/* Icon (mobile) */}
                                             <div className="flex-shrink-0 mt-1 sm:hidden">
                                                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-700 flex items-center justify-center">
-                                                    {index === 0 ? (
-                                                        <FaRocket className="text-white" size={14} />
-                                                    ) : index === roadmap.length - 1 ? (
-                                                        <FaCheckCircle className="text-white" size={14} />
-                                                    ) : (
-                                                        icons[index % icons.length]
-                                                    )}
+                                                    {index === 0 ? <FaRocket className="text-white" size={14} /> : index === roadmap.length - 1 ? <FaCheckCircle className="text-white" size={14} /> : icons[index % icons.length]}
                                                 </div>
                                             </div>
-
-                                            {/* Step content */}
                                             <div className="flex-1">
                                                 <div className="text-sm sm:text-base font-semibold text-indigo-800">
-                                                    <ReactMarkdown>
-                                                        {step}
-                                                    </ReactMarkdown>
+                                                    <ReactMarkdown>{step}</ReactMarkdown>
                                                 </div>
                                             </div>
-
-                                            {/* Icon (desktop) */}
                                             <div className="hidden sm:block flex-shrink-0 ml-3">
                                                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-700 flex items-center justify-center">
-                                                    {index === 0 ? (
-                                                        <FaRocket className="text-white" size={14} />
-                                                    ) : index === roadmap.length - 1 ? (
-                                                        <FaCheckCircle className="text-white" size={14} />
-                                                    ) : (
-                                                        icons[index % icons.length]
-                                                    )}
+                                                    {index === 0 ? <FaRocket className="text-white" size={14} /> : index === roadmap.length - 1 ? <FaCheckCircle className="text-white" size={14} /> : icons[index % icons.length]}
                                                 </div>
                                             </div>
                                         </div>
@@ -267,7 +211,6 @@ const Hero = () => {
                         </div>
                     </div>
                 )}
-
             </div>
         </section>
     );
