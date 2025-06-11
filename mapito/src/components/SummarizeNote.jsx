@@ -73,7 +73,7 @@ function SummarizeNote() {
   };
 
   return (
-    <section className="min-h-screen bg-gradient-to-b from-gray-100 to-blue-50 pt-20 flex flex-col">
+    <section className="min-h-screen bg-white pt-20 flex flex-col">
       <Navbar />
 
       <main className="flex-grow max-w-5xl mx-auto px-6 py-10 bg-white rounded-xl shadow-xl">
