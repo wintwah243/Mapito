@@ -47,7 +47,7 @@ const LearnMore = () => {
                         initial={{ opacity: 0, y: -30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}>
-                        Discover the Power of <span className='text-indigo-700'>Mapito</span>
+                        Discover the Power of <span className='text-blue-600'>Mapito</span>
                     </motion.h1>
 
                     <motion.p
