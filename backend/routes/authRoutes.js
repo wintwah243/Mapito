@@ -16,6 +16,7 @@ import fs from 'fs';
 dotenv.config();
 const keysecret = process.env.JWT_SECRET;
 import User from "../models/User.js";
+import Roadmap from "../models/Roadmap.js";
 
 const router = express.Router();
 
@@ -329,6 +330,28 @@ router.get("/google/callback", passport.authenticate("google", {
     );
 
     res.redirect(`https://mapito-df8g.onrender.com/google-auth?token=${token}`);
+});
+
+// Save roadmap to DB
+router.post('/api/save-roadmap', async (req, res) => {
+  try {
+    const { goal, content, source } = req.body;
+    const roadmap = new Roadmap({ goal, content, source });
+    await roadmap.save();
+    res.status(201).json(roadmap);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to save roadmap' });
+  }
+});
+
+// Get all saved roadmaps
+router.get('/api/roadmaps', async (req, res) => {
+  try {
+    const roadmaps = await Roadmap.find().sort({ createdAt: -1 });
+    res.json(roadmaps);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch roadmaps' });
+  }
 });
 
 export default router;
