@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from './Navbar';
-import { FaMagic, FaSpinner, FaExclamationTriangle, FaCopy, FaCheck } from 'react-icons/fa';
 import Footer from './Footer';
+import { FaMagic, FaSpinner, FaExclamationTriangle, FaCopy, FaCheck, FaInfoCircle } from 'react-icons/fa';
 
 function SummarizeNote() {
   const [note, setNote] = useState('');
@@ -10,57 +10,46 @@ function SummarizeNote() {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
   const [warning, setWarning] = useState('');
+  const [summarySource, setSummarySource] = useState('');
 
   const handleSummarize = async () => {
     if (!note.trim()) return;
-    
+
     setLoading(true);
     setError('');
     setSummary('');
-    setWarning(''); 
-  
+    setWarning('');
+
     try {
       const res = await fetch('https://mapito.onrender.com/api/summarize-note', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ note: note.trim() }) // Trim the note before sending
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ note: note.trim() }),
       });
-  
       const data = await res.json();
-  
+
       if (!res.ok) {
-        // Handle structured error responses from backend
-        const errorMsg = data.error || 
-                        (data.details ? `${data.error}: ${JSON.stringify(data.details)}` : 
-                        'Failed to summarize. Please try again.');
+        const errorMsg =
+          data.error ||
+          (data.details ? `${data.error}: ${JSON.stringify(data.details)}` : 'Failed to summarize. Please try again.');
         throw new Error(errorMsg);
       }
-  
-      // Set the summary
+
       setSummary(data.summary);
-  
-      // Show warning if using backup plan
-      if (data.warning) {
-        setWarning(data.warning);
-      }
-  
+      if (data.warning) setWarning(data.warning);
+      setSummarySource(data.source || 'unknown');
     } catch (err) {
       let userFriendlyError = err.message;
-      
       if (err.message.includes('Failed to summarize note')) {
-        userFriendlyError = 'Our summarization service is currently limited. ' + 
-                           'The summary may be less detailed than usual.';
-      }
-      else if (err.message.includes('Hugging Face API key not configured')) {
+        userFriendlyError =
+          'Our summarization service is currently limited. The summary may be less detailed than usual.';
+      } else if (err.message.includes('Hugging Face API key not configured')) {
         userFriendlyError = 'Service temporarily unavailable. Please try again later.';
       }
-  
+
       setError(userFriendlyError);
       console.error('Summarization error:', err);
-      
-      // If we have a complete failure, show at least the first part of the note
+
       if (!summary) {
         setSummary(note.length > 200 ? `${note.substring(0, 200)}...` : note);
         setWarning('Showing partial content as summary failed');
@@ -71,113 +60,155 @@ function SummarizeNote() {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(summary)
+    navigator.clipboard
+      .writeText(summary)
       .then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Failed to copy:', err);
         setError('Failed to copy text');
       });
   };
 
   return (
-    <section>
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 mt-20">
+    <section className="min-h-screen bg-gradient-to-b from-gray-100 to-blue-50 pt-20 flex flex-col">
       <Navbar />
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          <div className="p-6 md:p-8">
-            <div className="flex items-center mb-6">
-              <FaMagic className="text-indigo-600 text-2xl mr-3" />
-              <h2 className="text-2xl font-bold text-gray-800">Summarize your long note here</h2>
-            </div>
-            
-            <div className="mb-6">
-              <label htmlFor="note" className="block text-sm font-medium text-gray-700 mb-2">
-                Enter your note
-              </label>
-              <textarea
-                id="note"
-                className="w-full border border-gray-300 rounded-lg p-4 h-48 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-                placeholder="Paste your long note here..."
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-              />
-            </div>
 
-            <button
-              onClick={handleSummarize}
-              disabled={loading || !note.trim()}
-              className={`flex items-center justify-center w-full bg-indigo-500 px-6 py-3 rounded-lg font-medium text-white transition-all ${
-                loading || !note.trim() 
-                  ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-gray-900 hover:bg-indigo-700 shadow-md hover:shadow-lg'
-              }`}
-            >
-              {loading ? (
-                <>
-                  <FaSpinner className="animate-spin mr-2" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <FaMagic className="mr-2" />
-                  Summarize
-                </>
-              )}
-            </button>
+      <main className="flex-grow max-w-5xl mx-auto px-6 py-10 bg-white rounded-xl shadow-xl">
+        {/* Header */}
+        <header className="flex items-center mb-8">
+          <FaMagic className="text-blue-600 text-3xl mr-4" />
+          <h1 className="text-3xl font-extrabold text-gray-900 leading-tight">
+            Summarize Your Long Notes Instantly
+          </h1>
+        </header>
 
-            {error && (
-              <div className="mt-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r">
-                <div className="flex items-center">
-                  <FaExclamationTriangle className="text-red-500 mr-3" />
-                  <p className="text-red-700 font-medium">{error}</p>
-                </div>
-              </div>
-            )}
-
-            {summary && (
-              <div className="mt-6 bg-indigo-50 rounded-lg overflow-hidden transition-all duration-300 border border-indigo-100">
-                <div className="flex justify-between items-center p-4 bg-indigo-100 border-b border-indigo-200">
-                  <h3 className="font-semibold text-indigo-800 flex items-center">
-                    <FaMagic className="mr-2" />
-                    Summary
-                  </h3>
-                  <button
-                    onClick={copyToClipboard}
-                    className="flex items-center text-sm text-indigo-600 hover:text-indigo-800 transition-colors"
-                    title="Copy to clipboard"
-                  >
-                    {copied ? (
-                      <>
-                        <FaCheck className="mr-1 text-green-500" />
-                        Copied!
-                      </>
-                    ) : (
-                      <>
-                        <FaCopy className="mr-1" />
-                        Copy
-                      </>
-                    )}
-                  </button>
-                </div>
-                <div className="p-4 md:p-6">
-                  <p className="text-gray-700 whitespace-pre-wrap">{summary}</p>
-                </div>
-              </div>
-            )}
+        {/* How it Works & Why it Helps */}
+        <section className="mb-10 grid md:grid-cols-2 gap-10">
+          <div className="flex flex-col space-y-4 p-6 bg-blue-50 rounded-lg border border-blue-200 shadow-sm">
+            <h2 className="flex items-center text-xl font-semibold text-blue-700 mb-2">
+              <FaInfoCircle className="mr-2" /> How It Works
+            </h2>
+            <p className="text-gray-700 leading-relaxed">
+              Our smart summarization engine uses Google Gemini AI to
+              analyze your long notes and extract the most important points. Simply paste your text, click
+              summarize, and get a concise, easy-to-read summary in seconds.
+            </p>
           </div>
-        </div>
 
-        <div className="mt-8 text-center text-sm text-gray-500">
-          <p>Enter your text and get a concise summary instantly.</p>
-        </div>
-      </div>
-    </div>
-    {/* Footer section */}
-     <Footer />
+          <div className="flex flex-col space-y-4 p-6 bg-blue-50 rounded-lg border border-blue-200 shadow-sm">
+            <h2 className="flex items-center text-xl font-semibold text-blue-700 mb-2">
+              <FaInfoCircle className="mr-2" /> Why It Helps
+            </h2>
+            <p className="text-gray-700 leading-relaxed">
+              Summaries save you time and boost productivity by focusing on key ideas without the clutter. This
+              tool is perfect for students, professionals, or anyone who needs quick insights from lengthy texts.
+            </p>
+          </div>
+        </section>
+
+        {/* Input Section */}
+        <section className="mb-8">
+          <label htmlFor="note" className="block mb-2 text-lg font-medium text-gray-800">
+            Enter Your Note
+          </label>
+          <textarea
+            id="note"
+            className="w-full rounded-lg border border-gray-300 p-4 h-52 resize-y focus:outline-none focus:ring-4 focus:ring-blue-400 transition-shadow"
+            placeholder="Paste your long note here..."
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            spellCheck="false"
+          />
+          <button
+            onClick={handleSummarize}
+            disabled={loading || !note.trim()}
+            className={`mt-4 w-full flex justify-center items-center rounded-lg py-3 text-white font-semibold transition ${
+              loading || !note.trim()
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-blue-700 hover:bg-blue-800 shadow-lg'
+            }`}
+          >
+            {loading ? (
+              <>
+                <FaSpinner className="animate-spin mr-2" />
+                Processing...
+              </>
+            ) : (
+              <>
+                <FaMagic className="mr-2" />
+                Summarize
+              </>
+            )}
+          </button>
+        </section>
+
+        {/* Output Section */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-100 border-l-4 border-red-600 rounded">
+            <div className="flex items-center">
+              <FaExclamationTriangle className="text-red-600 mr-3" />
+              <p className="text-red-700 font-semibold">{error}</p>
+            </div>
+          </div>
+        )}
+
+        {summary && (
+          <section className="mb-10 bg-blue-50 border border-blue-200 rounded-lg shadow-inner">
+            <header className="flex justify-between items-center bg-blue-100 p-4 border-b border-blue-300">
+              <h3 className="flex items-center text-blue-900 font-semibold text-lg">
+                <FaMagic className="mr-2" />
+                Summary
+              </h3>
+              <button
+                onClick={copyToClipboard}
+                className="flex items-center text-blue-700 hover:text-blue-900 transition-colors font-medium"
+                title="Copy to clipboard"
+              >
+                {copied ? (
+                  <>
+                    <FaCheck className="mr-1 text-green-500" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <FaCopy className="mr-1" />
+                    Copy
+                  </>
+                )}
+              </button>
+            </header>
+            <article className="p-6 text-gray-800 whitespace-pre-wrap leading-relaxed text-base">{summary}</article>
+
+            {warning && (
+              <div className="px-6 pb-4 text-sm text-yellow-700 font-semibold">
+                ⚠️ <em>{warning}</em>
+              </div>
+            )}
+
+            {summarySource && (
+              <footer className="px-6 pb-6 text-xs text-blue-600 italic">
+                Source: <strong>{summarySource}</strong>
+              </footer>
+            )}
+          </section>
+        )}
+
+        {/* Intentions Section */}
+        <section className="mb-12 px-6 py-8 bg-white border border-gray-200 rounded-lg shadow-md">
+          <h2 className="text-xl font-bold mb-3 text-gray-900">Our Intentions</h2>
+          <p className="text-gray-700 leading-relaxed">
+            We aim to make complex information accessible and manageable. Whether you're studying for exams,
+            preparing reports, or just organizing your thoughts, our tool helps you cut through the noise and
+            focus on what truly matters. We continuously improve our algorithms to provide accurate, helpful
+            summaries while respecting your privacy and data security.
+          </p>
+        </section>
+      </main>
+
+      <Footer />
     </section>
   );
 }
