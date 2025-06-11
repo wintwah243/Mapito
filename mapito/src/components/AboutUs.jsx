@@ -12,7 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import myPhoto from '../assets/images/ww.jpg'
+import myPhoto from '../assets/images/mypf.JPG'
 
 const AboutUs = () => {
   const navigate = useNavigate();
