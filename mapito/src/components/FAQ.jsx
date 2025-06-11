@@ -65,7 +65,7 @@ const FAQ = () => {
           <a
             href="https://t.me/shishi_ww"
             target="_blank"
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition"
           >
             <svg
               className="w-5 h-5"
