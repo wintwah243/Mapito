@@ -102,7 +102,7 @@ const Hero = () => {
                     transition={{ duration: 0.5 }}
                 >
                     <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 leading-tight">
-                        Plan your <span className="text-indigo-600">Roadmap</span> with AI
+                        Get your AI-Powered <span className="text-indigo-600"> Roadmap</span> 
                     </h1>
                     <p className="text-base sm:text-lg text-gray-600 max-w-lg mx-auto">
                         Transform your learning goals into structured, actionable steps with personalized guidance.
