@@ -17,7 +17,7 @@ const Hero = () => {
             if (!token) return;
     
             try {
-                const response = await fetch('https://mapito.onrender.com/api/user-roadmap', {
+                const response = await fetch('https://mapito.onrender.com/api/generate-roadmap', {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     },
