@@ -165,7 +165,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
             )}
             <button
               onClick={handleLogout}
-              className="bg-indigo-500 hover:bg-indigo-200 text-white py-2 px-5 rounded-lg text-sm font-medium transition-all duration-300"
+              className="bg-blue-600 hover:bg-indigo-200 text-white py-2 px-5 rounded-lg text-sm font-medium transition-all duration-300"
             >
               Logout
             </button>
@@ -318,7 +318,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
                   toggleMenu();
                   handleLogout();
                 }}
-                className="bg-indigo-500 text-white hover:bg-gray-200 py-2 px-5 rounded-lg text-sm font-medium cursor-pointer"
+                className="bg-blue-600 text-white hover:bg-gray-200 py-2 px-5 rounded-lg text-sm font-medium cursor-pointer"
               >
                 Logout
               </button>
@@ -327,7 +327,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
             <Link
               to="/login"
               onClick={toggleMenu}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-5 rounded-full text-sm font-medium"
+              className="bg-blue-600 hover:bg-indigo-700 text-white py-2 px-5 rounded-full text-sm font-medium"
             >
               Login
             </Link>
