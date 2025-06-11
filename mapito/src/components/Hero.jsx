@@ -8,38 +8,31 @@ import { useNavigate } from 'react-router-dom';
 const Hero = () => {
     const [goal, setGoal] = useState('');
     const [roadmap, setRoadmap] = useState([]);
+    const [history, setHistory] = useState([]); // roadmap history
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchSavedRoadmap = async () => {
-            const token = localStorage.getItem('token');
-            if (!token) return;
+    const fetchSavedRoadmaps = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
 
-            try {
-                const response = await fetch('https://mapito.onrender.com/api/roadmaps', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
+        try {
+            const response = await fetch('https://mapito.onrender.com/api/roadmaps', {
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    const steps = data.roadmap
-                        .split('\n')
-                        .map(step => step.trim())
-                        .filter(step => step.length > 0);
-
-                    setRoadmap(steps);
-                    setGoal(data.goal);
-                }
-            } catch (error) {
-                console.error('Error fetching saved roadmap:', error);
+            if (response.ok) {
+                const data = await response.json();
+                setHistory(data); // array of { goal, roadmap }
             }
-        };
+        } catch (error) {
+            console.error('Error fetching saved roadmaps:', error);
+        }
+    };
 
-        fetchSavedRoadmap();
-    }, []);
+    fetchSavedRoadmaps();
+}, []);
 
     const icons = [
         <FaRocket className="text-white" size={14} />,
@@ -76,6 +69,17 @@ const Hero = () => {
                 .filter(step => step.length > 0);
 
             setRoadmap(steps);
+            // Save the new roadmap to history and backend
+           setHistory(prev => [...prev, { goal, roadmap: steps }]);
+
+           await fetch('https://mapito.onrender.com/api/roadmaps', {
+            method: 'POST',
+            headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+            },
+           body: JSON.stringify({ goal, roadmap: steps.join('\n') }),
+        });
         } catch (error) {
             console.error('Error generating roadmap:', error);
         } finally {
@@ -212,7 +216,27 @@ const Hero = () => {
                     </div>
                 )}
             </div>
-        </section>
+            {history.length > 0 && (
+        <div className="w-full max-w-2xl mt-6">
+        <h3 className="text-lg font-semibold mb-3 text-gray-800">Your Previous Roadmaps</h3>
+        <ul className="space-y-4">
+            {history.map((entry, index) => (
+                <li
+                    key={index}
+                    className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer"
+                    onClick={() => {
+                        setGoal(entry.goal);
+                        setRoadmap(entry.roadmap.split('\n').map(step => step.trim()).filter(step => step.length > 0));
+                    }}
+                >
+                    <div className="font-medium text-indigo-600 mb-1">{entry.goal}</div>
+                    <div className="text-sm text-gray-600 line-clamp-2">{entry.roadmap.slice(0, 100)}...</div>
+                </li>
+            ))}
+        </ul>
+    </div>
+    )}
+ </section>
     );
 };
 
