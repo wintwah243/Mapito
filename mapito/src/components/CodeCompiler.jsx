@@ -118,7 +118,7 @@ const CodeCompiler = () => {
   };
 
   return (
-    <section className="bg-gray-50 min-h-screen">
+    <section className="bg-gray-50 min-h-screen mt-10">
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 py-16">
 
