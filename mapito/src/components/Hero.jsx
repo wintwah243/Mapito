@@ -11,6 +11,17 @@ const Hero = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const savedRoadmap = localStorage.getItem('savedRoadmap');
+        const savedGoal = localStorage.getItem('savedGoal');
+
+        if (savedRoadmap && savedGoal) {
+            setRoadmap(JSON.parse(savedRoadmap));
+            setGoal(savedGoal);
+        }
+    }, []);
+
+
     const icons = [
         <FaRocket className="text-white" size={14} />,
         <FaLightbulb className="text-white" size={14} />,
@@ -30,7 +41,7 @@ const Hero = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('https://mapito.onrender.com/api/generate-roadmap', {
+            const response = await fetch('http://localhost:8000/api/generate-roadmap', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,7 +59,7 @@ const Hero = () => {
             // Save to localStorage
             localStorage.setItem('savedRoadmap', JSON.stringify(steps));
             localStorage.setItem('savedGoal', goal);
-            
+
             setRoadmap(steps);
         } catch (error) {
             console.error('Error generating roadmap:', error);
@@ -61,30 +72,30 @@ const Hero = () => {
         const doc = new jsPDF();
         doc.setFontSize(18);
         doc.text(goal || "My Roadmap", 10, 20);
-    
+
         doc.setFontSize(12);
         let yPosition = 30;
         roadmap.forEach((step, index) => {
             const cleanStep = step.replace(/[*#-]/g, '').trim();
             doc.text(`${index + 1}. ${cleanStep}`, 10, yPosition);
             yPosition += 10;
-            
-            if (yPosition > 280) { 
+
+            if (yPosition > 280) {
                 doc.addPage();
                 yPosition = 20;
             }
         });
-    
+
         doc.save(`${goal || "roadmap"}.pdf`);
     };
 
-    // Clear saved roadmap when user wants to generate another roadmap
+    // Clear saved roadmap when generating a new one or when component unmounts
     const clearSavedRoadmap = () => {
         localStorage.removeItem('savedRoadmap');
         localStorage.removeItem('savedGoal');
     };
 
-    // to handle a button to clear the roadmap
+    // Optionally add a button to clear the roadmap
     const handleClearRoadmap = () => {
         clearSavedRoadmap();
         setRoadmap([]);
@@ -95,14 +106,14 @@ const Hero = () => {
         <section id='hero' className="bg-white">
             <div className="flex flex-col items-center justify-center px-4 py-12 sm:p-6 lg:p-8">
                 {/* Header Section */}
-                <motion.div 
+                <motion.div
                     className="w-full max-w-2xl text-center mb-12"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
                     <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 leading-tight">
-                        Get your AI-Powered <span className="text-indigo-600"> Roadmap</span> 
+                        Get your AI-Powered <span className="text-indigo-600"> Roadmap</span>
                     </h1>
                     <p className="text-base sm:text-lg text-gray-600 max-w-lg mx-auto">
                         Transform your learning goals into structured, actionable steps with personalized guidance.
@@ -110,7 +121,7 @@ const Hero = () => {
                 </motion.div>
 
                 {/* Input Section */}
-                <motion.div 
+                <motion.div
                     className="w-full max-w-md mb-12"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -143,29 +154,23 @@ const Hero = () => {
                     </div>
                 </motion.div>
 
-                {/* Roadmap Section */}
+                {/* Generated Roadmap Timeline */}
                 {roadmap.length > 0 && (
-                    <motion.div 
-                        className="w-full max-w-4xl"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5 }}
-                    >
+                    <div className="w-full max-w-4xl px-2 sm:px-6">
                         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
-                            <h2 className="text-2xl sm:text-3xl font-bold text-indigo-700">
-                                Your {goal ? `${goal} ` : ''}Roadmap
+                            <h2 className="text-2xl sm:text-3xl font-bold text-blue-600 text-center sm:text-left">
+                                Your Roadmap
                             </h2>
-                            <div className="flex gap-2">
+                            <div className="flex gap-3">
                                 <button
                                     onClick={handleDownload}
-                                    className="flex items-center gap-2 bg-white border border-indigo-500 text-indigo-600 hover:bg-indigo-50 py-2 px-4 rounded-lg font-medium text-sm sm:text-base transition-colors duration-200"
+                                    className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center gap-2"
                                 >
-                                    <FaDownload size={14} />
-                                    Download
+                                    <FaDownload /> Download PDF
                                 </button>
                                 <button
                                     onClick={handleClearRoadmap}
-                                    className="flex items-center gap-2 bg-white border border-red-500 text-red-600 hover:bg-red-50 py-2 px-4 rounded-lg font-medium text-sm sm:text-base transition-colors duration-200"
+                                    className="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg font-semibold text-sm sm:text-base"
                                 >
                                     Clear
                                 </button>
@@ -175,29 +180,25 @@ const Hero = () => {
                         <div className="relative">
                             {/* Timeline line */}
                             <div className="hidden sm:block absolute left-1/2 h-full w-0.5 bg-indigo-200 transform -translate-x-1/2"></div>
-                            
-                            {/* Mobile timeline dots */}
-                            <div className="sm:hidden absolute left-4 h-full w-1 bg-indigo-200 rounded-full"></div>
+                            <div className="sm:hidden absolute left-4 h-full w-1 bg-indigo-200"></div>
 
                             {roadmap.map((step, index) => (
                                 <motion.div
                                     key={index}
-                                    className="relative mb-8 pl-8 sm:pl-0"
+                                    className="relative mb-10 pl-8 sm:pl-0"
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.1, duration: 0.4 }}
                                 >
                                     {/* Mobile dot */}
                                     <div className="sm:hidden absolute left-0 top-6 w-4 h-4 rounded-full bg-indigo-500 border-4 border-white transform -translate-x-1/2"></div>
-                                    
-                                    {/* Desktop dot */}
-                                    <div className="hidden sm:block absolute left-1/2 top-6 w-4 h-4 rounded-full bg-indigo-500 border-4 border-white transform -translate-x-1/2 -translate-y-1/2"></div>
-                                    
+
                                     {/* Card */}
-                                    <div className={`bg-indigo-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow ${index % 2 === 0 ? 'sm:mr-auto sm:max-w-md' : 'sm:ml-auto sm:max-w-md'}`}>
-                                        <div className="flex items-start gap-4">
-                                            <div className="flex-shrink-0">
-                                                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-600 flex items-center justify-center shadow-md">
+                                    <div className={`bg-indigo-50 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow ${index % 2 === 0 ? 'sm:mr-auto sm:max-w-md' : 'sm:ml-auto sm:max-w-md'}`}>
+                                        <div className="flex items-start gap-3">
+                                            {/* Icon (mobile) */}
+                                            <div className="flex-shrink-0 mt-1 sm:hidden">
+                                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-700 flex items-center justify-center">
                                                     {index === 0 ? (
                                                         <FaRocket className="text-white" size={14} />
                                                     ) : index === roadmap.length - 1 ? (
@@ -207,11 +208,26 @@ const Hero = () => {
                                                     )}
                                                 </div>
                                             </div>
+
+                                            {/* Step content */}
                                             <div className="flex-1">
-                                                <div className="text-sm sm:text-base font-medium text-gray-800">
+                                                <div className="text-sm sm:text-base font-semibold text-indigo-800">
                                                     <ReactMarkdown>
-                                                        {step.replace(/^###\s*/, '')}
+                                                        {step}
                                                     </ReactMarkdown>
+                                                </div>
+                                            </div>
+
+                                            {/* Icon (desktop) */}
+                                            <div className="hidden sm:block flex-shrink-0 ml-3">
+                                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-700 flex items-center justify-center">
+                                                    {index === 0 ? (
+                                                        <FaRocket className="text-white" size={14} />
+                                                    ) : index === roadmap.length - 1 ? (
+                                                        <FaCheckCircle className="text-white" size={14} />
+                                                    ) : (
+                                                        icons[index % icons.length]
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -219,8 +235,9 @@ const Hero = () => {
                                 </motion.div>
                             ))}
                         </div>
-                    </motion.div>
+                    </div>
                 )}
+
             </div>
         </section>
     );
