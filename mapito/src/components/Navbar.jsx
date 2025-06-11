@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import CharAvatar from "../utils/CharAvatar";
-import { FaHome, FaInfoCircle, FaClipboardList, FaCode, FaKeyboard, FaStickyNote, FaUserFriends, FaBook  } from 'react-icons/fa';
+import { FaHome, FaInfoCircle, FaClipboardList, FaCode, FaKeyboard, FaStickyNote, FaUserFriends, FaBook, FaBell  } from 'react-icons/fa';
 import { ChevronDown } from "lucide-react";
 
 export default function Navbar() {
@@ -136,6 +136,12 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
            to="/documentation" 
            className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">
            Documentations
+         </Link>
+
+         <Link 
+           to="/notice" 
+           className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">
+           Notice Board
          </Link>
 
       </div>
@@ -280,6 +286,17 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
           >
             <FaBook size={20} className="text-gray-600" />
             Documentation
+          </button>
+
+          <button
+            onClick={() => {
+              toggleMenu();
+              navigate("/notice");
+            }}
+            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
+          >
+            <FaBell size={20} className="text-gray-600" />
+            Notice
           </button>
           
           {isAuthenticated ? (
