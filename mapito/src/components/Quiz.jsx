@@ -12,6 +12,15 @@ const Quiz = () => {
     const [quizEnded, setQuizEnded] = useState(false);
     const [timeLeft, setTimeLeft] = useState(60);
 
+    const handleStopQuiz = () => {
+        setSelectedLanguage('');
+        setCurrentQuestionIndex(0);
+        setScore(0);
+        setQuizEnded(false);
+        setSelectedAnswer('');
+        setTimeLeft(60);
+    };
+
     const handleLanguageSelect = (language) => {
         setSelectedLanguage(language);
         setCurrentQuestionIndex(0);
@@ -119,8 +128,16 @@ const Quiz = () => {
                                     <h2 className="text-xl font-bold text-white">
                                         {selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1)} Challenge
                                     </h2>
-                                    <div className="bg-indigo-700 text-white px-3 py-1 rounded-full text-sm font-medium">
-                                        Question {currentQuestionIndex + 1}/{quizData[selectedLanguage].length}
+                                    <div className="flex items-center space-x-4">
+                                        <div className="bg-indigo-700 text-white px-3 py-1 rounded-full text-sm font-medium">
+                                            Question {currentQuestionIndex + 1}/{quizData[selectedLanguage].length}
+                                        </div>
+                                        <button
+                                            onClick={handleStopQuiz}
+                                            className="ml-4 text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full"
+                                        >
+                                            Stop Quiz
+                                        </button>
                                     </div>
                                 </div>
                                 {!quizEnded && (
