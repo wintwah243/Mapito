@@ -12,7 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import LandingNavbar from './LandingNavbar';
 import LandingFooter from './LandingFooter';
-import myPhoto from '../assets/images/ww.jpg'
+import myPhoto from '../assets/images/mypf.JPG'
 
 const LandingAboutus = () => {
 
