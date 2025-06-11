@@ -12,15 +12,45 @@ const Hero = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const fetchSavedRoadmap = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+    
+            try {
+                const response = await fetch('https://mapito.onrender.com/api/user-roadmap', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+    
+                if (response.ok) {
+                    const data = await response.json();
+                    const steps = data.roadmap
+                        .split('\n')
+                        .map(step => step.trim())
+                        .filter(step => step.length > 0);
+    
+                    setRoadmap(steps);
+                    setGoal(data.goal);
+    
+                    localStorage.setItem('savedRoadmap', JSON.stringify(steps));
+                    localStorage.setItem('savedGoal', data.goal);
+                }
+            } catch (error) {
+                console.error('Error fetching saved roadmap:', error);
+            }
+        };
+    
         const savedRoadmap = localStorage.getItem('savedRoadmap');
         const savedGoal = localStorage.getItem('savedGoal');
-
+    
         if (savedRoadmap && savedGoal) {
             setRoadmap(JSON.parse(savedRoadmap));
             setGoal(savedGoal);
+        } else {
+            fetchSavedRoadmap();
         }
-    }, []);
-
+    }, []); 
 
     const icons = [
         <FaRocket className="text-white" size={14} />,
