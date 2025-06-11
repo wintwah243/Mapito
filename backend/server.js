@@ -15,6 +15,8 @@ import axios from 'axios';
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import Roadmap from './models/Roadmap.js';
+import MockInterview from './models/MockInterview.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,9 +29,9 @@ const port = process.env.PORT || 8000;
 
 app.use(
   cors({
-      origin: process.env.CLIENT_URL || "*",
-      methods: ["GET", "POST", "PUT", "DELETE"],
-      allowedHeaders: ["Content-Type", "Authorization"],
+    origin: process.env.CLIENT_URL || "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -38,8 +40,8 @@ app.use(express.json());
 
 //setup for session
 app.use(session({
-  secret:process.env.SESSION_SECRET,
-  resave:false,
+  secret: process.env.SESSION_SECRET,
+  resave: false,
   saveUninitialized: true
 }));
 
@@ -49,35 +51,35 @@ app.use(passport.session());
 
 passport.use(
   new OAuthStrategy({
-      clientID: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "https://mapito.onrender.com/api/auth/google/callback",
-      scope: ["profile", "email"]
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: "/api/auth/google/callback",
+    scope: ["profile", "email"]
   },
-  async(accessToken, refreshToken, profile, done) => {
-      
-      try{
-          let user = await userdb.findOne({googleId: profile.id});
+    async (accessToken, refreshToken, profile, done) => {
 
-          if(!user){
-              user = new userdb({
-                   googleId: profile.id,
-                   fullName: profile.displayName,
-                   email: profile.emails[0].value,
-                   profileImageUrl: profile.photos[0].value
-              });
-              await user.save();
-          }
-          const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-              expiresIn: "1d",
+      try {
+        let user = await userdb.findOne({ googleId: profile.id });
+
+        if (!user) {
+          user = new userdb({
+            googleId: profile.id,
+            fullName: profile.displayName,
+            email: profile.emails[0].value,
+            profileImageUrl: profile.photos[0].value
           });
-      
-          return done(null, user);
-      }catch(error){
-          return done(error, null);
+          await user.save();
+        }
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+          expiresIn: "1d",
+        });
+
+        return done(null, user);
+      } catch (error) {
+        return done(error, null);
       }
-  }
-)
+    }
+  )
 );
 
 passport.serializeUser((user, done) => {
@@ -89,12 +91,12 @@ passport.deserializeUser((user, done) => {
 });
 
 app.use("/api/auth", authRoutes);
-app.use("/uploads", express.static(path.join(__dirname,"uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Add rate limiting middleware
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, 
+  max: 5, // Limit each IP to 5 requests per window
   message: 'Too many requests, please try again later'
 });
 
@@ -103,14 +105,14 @@ app.use('/api/generate-roadmap', apiLimiter);
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// API route for generate roadmap
+// API route
 app.post('/api/generate-roadmap', async (req, res) => {
   const { goal } = req.body;
 
   if (!goal || typeof goal !== 'string') {
-    return res.status(400).json({ 
+    return res.status(400).json({
       error: 'Invalid input',
-      details: 'Goal must be a non-empty string' 
+      details: 'Goal must be a non-empty string'
     });
   }
 
@@ -118,75 +120,142 @@ app.post('/api/generate-roadmap', async (req, res) => {
   const processedGoal = goal.trim().substring(0, 100); // Limit length
 
   try {
-    // we will use gemini first
+    // Try Gemini first
     const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
-    const prompt = `
-      Create a 5-step beginner-friendly learning roadmap for becoming a "${processedGoal}".
-      Format as numbered steps with clear objectives.
-      Keep each step concise (1-2 sentences).
-    `;
+    const prompt = `Create a 5-step learning roadmap for becoming a ${processedGoal}`;
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const roadmapText = response.text();
-    
-    return res.json({ 
+
+    // Save to DB
+    const roadmap = new Roadmap({
+      goal: processedGoal,
+      content: roadmapText,
+      source: 'gemini'
+    });
+    await roadmap.save();
+
+    return res.json({
       roadmap: roadmapText,
       source: 'gemini'
     });
-    
+
+
+    return res.json({
+      roadmap: roadmapText,
+      source: 'gemini'
+    });
+
   } catch (geminiError) {
     console.error('Gemini API error:', geminiError);
-    
-    // for backup plan, we will use huggin face
+
+    // Fallback 1: Try Hugging Face API with different model options
     try {
       if (!process.env.HF_API_KEY) {
         throw new Error('Hugging Face API key not configured');
       }
 
-      const hfResponse = await axios.post(
-        'https://api-inference.huggingface.co/models/google/flan-t5-xxl',
-        {
-          inputs: `Generate a 5-step learning roadmap for becoming a ${processedGoal}. Format as numbered steps.`
-        },
-        { 
-          headers: { 
-            Authorization: `Bearer ${process.env.HF_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          timeout: 10000
-        }
-      );
+      // Try multiple Hugging Face models in sequence
+      const hfModels = [
+        'facebook/bart-large-cnn',         // Good for summarization
+        'google/flan-t5-base',             // Smaller but more accessible
+        'gpt2',                           // Basic text generation
+        'tiiuae/falcon-7b-instruct'       // Instruction following
+      ];
 
-      if (!hfResponse.data || !hfResponse.data[0] || !hfResponse.data[0].generated_text) {
-        throw new Error('Invalid response format from Hugging Face');
+      let hfError;
+
+      for (const model of hfModels) {
+        try {
+          const hfResponse = await axios.post(
+            `https://api-inference.huggingface.co/models/${model}`,
+            {
+              inputs: `Generate a 5-step learning path for becoming a ${processedGoal}. Format as numbered steps.`
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${process.env.HF_API_KEY}`,
+                'Content-Type': 'application/json'
+              },
+              timeout: 8000
+            }
+          );
+
+          if (hfResponse.data?.error) {
+            hfError = hfResponse.data.error;
+            continue; // Try next model
+          }
+
+          if (!hfResponse.data || !hfResponse.data[0]?.generated_text) {
+            hfError = 'Invalid response format';
+            continue;
+          }
+
+          const hfRoadmap = formatRoadmapResponse(hfResponse.data[0].generated_text);
+
+          // Save to DB
+          const roadmap = new Roadmap({
+            goal: processedGoal,
+            content: hfRoadmap,
+            source: `huggingface:${model}`
+          });
+          await roadmap.save();
+
+          return res.json({
+            roadmap: hfRoadmap,
+            source: `huggingface:${model}`,
+            warning: 'Using alternative AI service'
+          });
+
+        } catch (err) {
+          hfError = err.message;
+          continue;
+        }
       }
 
-      const hfRoadmap = formatHuggingFaceResponse(hfResponse.data[0].generated_text);
-      
-      return res.json({ 
-        roadmap: hfRoadmap,
-        source: 'huggingface',
-        warning: 'Using alternative AI service'
-      });
-      
+      throw new Error(`All Hugging Face models failed: ${hfError}`);
+
     } catch (hfError) {
       console.error('Hugging Face fallback failed:', hfError);
-      
-      // backup plan 2
+
+      // Fallback 2: Local AI service (if available)
+      try {
+        const localAIRoadmap = await tryLocalAIService(processedGoal);
+        if (localAIRoadmap) {
+          return res.json({
+            roadmap: localAIRoadmap,
+            source: 'local-ai',
+            warning: 'Using local AI service'
+          });
+        }
+      } catch (localError) {
+        console.error('Local AI fallback failed:', localError);
+      }
+
+      // Fallback 3: Predefined roadmaps
       try {
         const predefinedRoadmap = getPredefinedRoadmap(processedGoal);
-        return res.json({ 
+        // Save to DB
+        const roadmap = new Roadmap({
+          goal: processedGoal,
+          content: predefinedRoadmap,
+          source: 'predefined'
+        });
+        await roadmap.save();
+
+        return res.json({
           roadmap: predefinedRoadmap,
           source: 'predefined',
           warning: 'Using generic roadmap template'
         });
       } catch (finalError) {
         console.error('All fallbacks failed:', finalError);
-        return res.status(500).json({ 
+        return res.status(500).json({
           error: 'Failed to generate roadmap',
           details: {
             geminiError: geminiError.message,
-            hfError: hfError.message
+            hfError: hfError.message,
+            finalError: finalError.message
           },
           suggestion: 'Please try again later or with a different goal description'
         });
@@ -195,25 +264,16 @@ app.post('/api/generate-roadmap', async (req, res) => {
   }
 });
 
-// For Hugging Face's raw response into a cleaner roadmap
-function formatHuggingFaceResponse(text) {
-  // Basic cleaning and formatting
-  return text
-    .replace(/<\/?s>/g, '') // Remove any HTML tags
-    .replace(/\n+/g, '\n')  // Remove extra newlines
-    .trim();
-}
-
-// for predefined roadmaps
+// Enhanced predefined roadmaps
 function getPredefinedRoadmap(goal) {
   const lowerGoal = goal.toLowerCase();
-  
+
   const roadmaps = {
     'frontend': `1. Learn HTML fundamentals\n2. Master CSS and responsive design\n3. Learn JavaScript (ES6+)\n4. Choose a framework (React, Vue, Angular)\n5. Build portfolio projects`,
     'backend': `1. Learn a server language (Node.js, Python, Java)\n2. Understand databases (SQL & NoSQL)\n3. Learn API development (REST, GraphQL)\n4. Study authentication & security\n5. Build scalable applications`,
     'data science': `1. Learn Python and data analysis (Pandas, NumPy)\n2. Study statistics fundamentals\n3. Learn data visualization (Matplotlib, Seaborn)\n4. Explore machine learning basics\n5. Work on real-world datasets`,
     'mobile': `1. Choose a platform (iOS/Swift or Android/Kotlin)\n2. Learn UI/UX principles\n3. Understand mobile architecture\n4. Study platform-specific APIs\n5. Publish an app to store`,
-    'devops': `1. Learn Linux fundamentals\n2. Master version control (Git)\n3. Understand CI/CD pipelines\n4. Learn containerization (Docker)\n5. Study cloud platforms (AWS, GCP, Azure)`
+    'devops': `1. Learn Linux fundamentals\n2. Master version control (Git)\n3. Understand CI/CD pipelines\n4. Learn containerization (Docker). Study cloud platforms (AWS, GCP, Azure)`
   };
 
   // Find the best matching roadmap
@@ -225,7 +285,33 @@ function getPredefinedRoadmap(goal) {
 
   // Generic fallback roadmap
   return `1. Research ${goal} fundamentals\n2. Find quality learning resources\n3. Practice consistently\n4. Build small projects\n5. Seek feedback and iterate`;
+}
+
+// Format the roadmap response consistently
+function formatRoadmapResponse(text) {
+  return text
+    .replace(/(\d)\./g, '$1. ')        // Standardize numbering
+    .replace(/\n+/g, '\n')             // Remove extra newlines
+    .replace(/^\s*-\s*/gm, '')         // Remove bullet points if present
+    .replace(/Step \d+:?/gi, '')       // Remove "Step X:" prefixes
+    .trim();
+}
+
+// mock-interview
+async function saveMockInterview({ role, answer, history, response, source }) {
+  try {
+    await MockInterview.create({
+      role,
+      answer,
+      history,
+      response,
+      source
+    });
+  } catch (error) {
+    console.error('Failed to save mock interview:', error);
+  }
 };
+
 
 //api route for ai mock interview
 app.post('/api/mock-interview', async (req, res) => {
@@ -233,9 +319,9 @@ app.post('/api/mock-interview', async (req, res) => {
 
   // Validate inputs
   if (!role || typeof role !== 'string') {
-    return res.status(400).json({ 
+    return res.status(400).json({
       error: 'Invalid role',
-      details: 'Role must be a non-empty string' 
+      details: 'Role must be a non-empty string'
     });
   }
 
@@ -245,9 +331,9 @@ app.post('/api/mock-interview', async (req, res) => {
     const prompt = `
       You are a professional interviewer for ${role} positions.
       ${history ? `Conversation history:\n${history}\n` : ''}
-      ${answer ? 
-        `The candidate responded: "${answer.substring(0, 500)}"\n\n` + 
-        `Provide constructive feedback (1-2 sentences) and ask a relevant follow-up question.` : 
+      ${answer ?
+        `The candidate responded: "${answer.substring(0, 500)}"\n\n` +
+        `Provide constructive feedback (1-2 sentences) and ask a relevant follow-up question.` :
         `Start the interview by asking the first technical question for a ${role} position.`
       }
       Keep responses professional and concise.
@@ -257,32 +343,32 @@ app.post('/api/mock-interview', async (req, res) => {
     const response = await result.response;
     const nextMessage = response.text();
 
-    return res.json({ 
+    await saveMockInterview({ role, answer, history, response: nextMessage, source: 'gemini' });
+    return res.json({
       message: nextMessage,
       source: 'gemini'
     });
 
   } catch (geminiError) {
     console.error('Gemini API error:', geminiError);
-    
+
     // backup plan 1: we will use Hugging Face API
     try {
       if (!process.env.HF_API_KEY) {
         throw new Error('Hugging Face API key not configured');
       }
 
-      const hfPrompt = `Act as a professional interviewer for ${role} position. ${
-        answer ? 
-        `The candidate said: "${answer.substring(0, 300)}". ` + 
-        `Give brief feedback and ask a follow-up question.` : 
+      const hfPrompt = `Act as a professional interviewer for ${role} position. ${answer ?
+        `The candidate said: "${answer.substring(0, 300)}". ` +
+        `Give brief feedback and ask a follow-up question.` :
         `Ask the first technical interview question for ${role}.`
-      }`;
+        }`;
 
       const hfResponse = await axios.post(
         'https://api-inference.huggingface.co/models/google/flan-t5-xxl',
         { inputs: hfPrompt },
-        { 
-          headers: { 
+        {
+          headers: {
             Authorization: `Bearer ${process.env.HF_API_KEY}`,
             'Content-Type': 'application/json'
           },
@@ -295,27 +381,32 @@ app.post('/api/mock-interview', async (req, res) => {
       }
 
       const hfMessage = cleanInterviewResponse(hfResponse.data[0].generated_text);
-      
-      return res.json({ 
+
+      await saveMockInterview({ role, answer, history, response: hfMessage, source: 'huggingface' });
+      return res.json({
         message: hfMessage,
         source: 'huggingface',
         warning: 'Using alternative interview service'
       });
 
+
     } catch (hfError) {
       console.error('Hugging Face fallback failed:', hfError);
-      
+
       // backup plan 2: Predefined interview questions
       try {
         const predefinedResponse = getPredefinedInterviewResponse(role, answer, history);
-        return res.json({ 
+
+        await saveMockInterview({ role, answer, history, response: predefinedResponse, source: 'predefined' });
+        return res.json({
           message: predefinedResponse,
           source: 'predefined',
           warning: 'Using generic interview questions'
         });
+        
       } catch (finalError) {
         console.error('All fallbacks failed:', finalError);
-        return res.status(500).json({ 
+        return res.status(500).json({
           error: 'Failed to generate interview content',
           details: {
             geminiError: geminiError.message,
@@ -348,7 +439,7 @@ function getPredefinedInterviewResponse(role, answer, history) {
   };
 
   // Normalize role
-  const normalizedRole = Object.keys(roles).find(key => 
+  const normalizedRole = Object.keys(roles).find(key =>
     role.toLowerCase().includes(key)) || 'technical';
 
   const questions = {
@@ -390,15 +481,15 @@ function getPredefinedInterviewResponse(role, answer, history) {
   }
 
   // If answer provided, give generic feedback and next question
-  const usedQuestions = history ? 
+  const usedQuestions = history ?
     questions[normalizedRole].filter(q => history.includes(q)) : [];
-    
+
   const availableQuestions = questions[normalizedRole].filter(
     q => !usedQuestions.includes(q)
   );
 
-  const nextQuestion = availableQuestions.length > 0 
-    ? availableQuestions[0] 
+  const nextQuestion = availableQuestions.length > 0
+    ? availableQuestions[0]
     : "Do you have any questions for me about this role?";
 
   return `Thanks for your answer. ${[
@@ -408,7 +499,7 @@ function getPredefinedInterviewResponse(role, answer, history) {
     "That's a valid way to look at it.",
     "I appreciate your detailed response."
   ][Math.floor(Math.random() * 5)]} Next question: ${nextQuestion}`;
-};
+}
 
 //api route for summarize note
 app.post('/api/summarize-note', async (req, res) => {
@@ -416,32 +507,33 @@ app.post('/api/summarize-note', async (req, res) => {
 
   // Validate input
   if (!note || typeof note !== 'string') {
-    return res.status(400).json({ 
+    return res.status(400).json({
       error: 'Invalid input',
       details: 'Note must be a non-empty string'
     });
   }
-  
+
+  // Truncate very long notes to prevent abuse
   const processedNote = note.length > 10000 ? note.substring(0, 10000) + '...' : note;
 
   try {
-    // we will use Gemini first
+    // Try Gemini first
     const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
     const prompt = `Summarize the following note in a short and clear paragraph: ${processedNote}`;
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const summary = response.text();
-    
-    return res.json({ 
+
+    return res.json({
       summary,
       source: 'gemini',
-      length: summary.length 
+      length: summary.length
     });
-    
+
   } catch (geminiError) {
     console.error('Gemini API error:', geminiError);
-    
-    // For backup plan, we will use hugging face
+
+    // Fallback 1: Try Hugging Face API
     try {
       if (!process.env.HF_API_KEY) {
         throw new Error('Hugging Face API key not configured');
@@ -450,8 +542,8 @@ app.post('/api/summarize-note', async (req, res) => {
       const hfResponse = await axios.post(
         'https://api-inference.huggingface.co/models/facebook/bart-large-cnn',
         { inputs: processedNote },
-        { 
-          headers: { 
+        {
+          headers: {
             Authorization: `Bearer ${process.env.HF_API_KEY}`,
             'Content-Type': 'application/json'
           },
@@ -463,20 +555,20 @@ app.post('/api/summarize-note', async (req, res) => {
         throw new Error('Invalid response format from Hugging Face');
       }
 
-      return res.json({ 
+      return res.json({
         summary: hfResponse.data[0].summary_text,
         source: 'huggingface',
         length: hfResponse.data[0].summary_text.length,
         warning: 'Using alternative summary service'
       });
-      
+
     } catch (hfError) {
       console.error('Hugging Face fallback failed:', hfError);
-      
-      // for backup plan 2
+
+      // Fallback 2: Simple text processing
       try {
         const summary = simpleFallbackSummary(processedNote);
-        return res.json({ 
+        return res.json({
           summary,
           source: 'basic-fallback',
           length: summary.length,
@@ -484,7 +576,7 @@ app.post('/api/summarize-note', async (req, res) => {
         });
       } catch (finalError) {
         console.error('All fallbacks failed:', finalError);
-        return res.status(500).json({ 
+        return res.status(500).json({
           error: 'Failed to summarize note',
           details: {
             geminiError: geminiError.message,
@@ -498,33 +590,34 @@ app.post('/api/summarize-note', async (req, res) => {
   }
 });
 
-//simple fallback function
+// Improved simple fallback function
 function simpleFallbackSummary(text) {
   if (!text) return 'No content to summarize';
-  
-  //Remove excessive whitespace and newlines
+
+  // Remove excessive whitespace and newlines
   const cleanText = text.replace(/\s+/g, ' ').trim();
-  
-  //Extract first few meaningful sentences
+
+  // Extract first few meaningful sentences
   const sentences = cleanText.split(/[.!?]+/)
     .map(s => s.trim())
     .filter(s => s.length > 0);
-    
+
   if (sentences.length === 0) {
     return cleanText.slice(0, 200) + (cleanText.length > 200 ? '...' : '');
   }
-  
-  //Take first 2-3 sentences that aren't too short/long
+
+  // Take first 2-3 sentences that aren't too short/long
   const importantSentences = sentences
     .filter(s => s.length > 20 && s.length < 150)
     .slice(0, 3);
-    
+
   if (importantSentences.length === 0) {
     return sentences.slice(0, 2).join('. ') + '.';
   }
-  
+
   return importantSentences.join('. ') + '.';
 }
+
 
 // Start server
 app.listen(port, () => {
