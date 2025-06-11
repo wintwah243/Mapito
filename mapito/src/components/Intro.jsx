@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Bot from "../components/Bot";
+import Bot from "./Bot";
 
 export default function Intro() {
 
