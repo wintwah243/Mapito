@@ -33,7 +33,7 @@ const LandingHero = () => {
             <div className="flex flex-col items-center justify-center min-h-screen px-4 py-8 sm:p-4 mt-20">
                 {/* Header Section */}
                 <div className="w-full max-w-2xl text-center mb-8 px-2">
-                    <h1 className="text-3xl sm:text-4xl font-bold mb-4">Plan your Roadmap with <span className='text-indigo-700'>AI</span></h1>
+                    <h1 className="text-3xl sm:text-4xl font-bold mb-4">Plan your Roadmap with <span className='text-blue-600'>AI</span></h1>
                     <p className="text-base sm:text-lg text-gray-600">
                         Mapito empowers individuals to transform complex visions into structured, actionable roadmaps.
                     </p>
