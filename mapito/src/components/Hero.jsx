@@ -41,7 +41,7 @@ const Hero = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:8000/api/generate-roadmap', {
+            const response = await fetch('https://mapito.onrender.com/api/generate-roadmap', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ const Hero = () => {
                             placeholder="Enter your goal (e.g., Frontend Developer)"
                             value={goal}
                             onChange={(e) => setGoal(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleGenerate()}
+                            onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
                         />
                         <button
                             onClick={handleGenerate}
