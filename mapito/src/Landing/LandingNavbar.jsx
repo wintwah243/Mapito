@@ -131,7 +131,7 @@ export default function LandingNavbar() {
       <div className="hidden md:flex items-center gap-4">
         <Link
           to="/signup"
-          className="bg-indigo-500 text-white py-2 px-5 rounded-lg text-sm font-medium transition-all duration-300"
+          className="bg-blue-600 text-white py-2 px-5 rounded-lg text-sm font-medium transition-all duration-300"
         >
           Sign Up Free
         </Link>
@@ -267,7 +267,7 @@ export default function LandingNavbar() {
           <Link
             to="/signup"
             onClick={toggleMenu}
-            className="flex items-center justify-center bg-indigo-500 text-white py-2 px-5 rounded-lg text-sm font-medium"
+            className="flex items-center justify-center bg-blue-600 text-white py-2 px-5 rounded-lg text-sm font-medium"
           >
             Sign Up Free
           </Link>
