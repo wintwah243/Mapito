@@ -296,7 +296,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
             className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
           >
             <FaBell size={20} className="text-gray-600" />
-            Notice
+            Notice Board
           </button>
           
           {isAuthenticated ? (
