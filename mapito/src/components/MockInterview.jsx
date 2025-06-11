@@ -197,9 +197,9 @@ function MockInterview() {
         <div className="max-w-5xl mx-auto px-4">
           
           {/* Instructions Banner */}
-          <div className="bg-indigo-600 text-white rounded-lg p-5 mb-6 shadow-md">
+          <div className="bg-blue-600 text-white rounded-lg p-5 mb-6 shadow-md">
             <h2 className="text-xl font-semibold mb-2">How to Use the Mock Interview</h2>
-            <p className="text-indigo-100 max-w-3xl">
+            <p className="text-blue-100 max-w-3xl">
               This tool helps you practice coding interviews by simulating real interview
               conversations with AI. Follow the steps below to get started and make the most
               of your practice session.
@@ -207,8 +207,8 @@ function MockInterview() {
           </div>
 
           {/* Step by Step Guidelines */}
-          <div className="bg-white border border-indigo-300 rounded-lg p-6 mb-8 shadow-sm">
-            <h3 className="text-lg font-semibold text-indigo-700 mb-4">Step-by-Step Guidelines</h3>
+          <div className="bg-white border border-blue-300 rounded-lg p-6 mb-8 shadow-sm">
+            <h3 className="text-lg font-semibold text-blue-700 mb-4">Step-by-Step Guidelines</h3>
             <ol className="list-decimal list-inside space-y-2 text-gray-700">
               <li>Enter the job role you want to practice for (e.g., Frontend Developer).</li>
               <li>Toggle video on if you want to record yourself during the interview.</li>
@@ -234,7 +234,7 @@ function MockInterview() {
 
           <div className="bg-white shadow-md rounded-xl p-6 md:p-10">
             <h1 className="text-3xl font-semibold text-gray-800 flex items-center mb-2">
-              <FaRobot className="text-indigo-600 mr-3" />
+              <FaRobot className="text-blue-600 mr-3" />
               Improve Your Coding Interview Skills
             </h1>
             <p className="text-gray-600 mb-8">
@@ -316,7 +316,7 @@ function MockInterview() {
                     >
                       <div
                         className={`inline-flex items-start gap-2 p-3 rounded-lg max-w-[75%] break-words whitespace-pre-wrap ${msg.from === 'user'
-                            ? 'bg-indigo-100 text-indigo-900 ml-auto'
+                            ? 'bg-indigo-100 text-blue-900 ml-auto'
                             : 'bg-gray-200 text-gray-800'
                           }`}
                       >
@@ -330,7 +330,7 @@ function MockInterview() {
                 <div className="flex gap-3 items-end">
                   <textarea
                     rows={3}
-                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 resize-none"
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 resize-none"
                     placeholder={
                       isRecording
                         ? 'Speaking... (microphone enabled)'
@@ -348,7 +348,7 @@ function MockInterview() {
                   <button
                     onClick={handleSendAnswer}
                     disabled={loading || !(finalTranscript.trim() || interimTranscript.trim())}
-                    className="h-12 w-12 flex items-center justify-center bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+                    className="h-12 w-12 flex items-center justify-center bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
                     aria-label="Send Answer"
                   >
                     <FaPaperPlane />
