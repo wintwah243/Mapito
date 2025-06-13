@@ -63,7 +63,7 @@ return (
 <Route path='/summarize' element={<SummarizeNote />} />
 <Route path='/mock-interview' element={<MockInterview />} />
 <Route path='/documentation' element={<Documentation />} />
-<Route path='notice' element={<News />} />
+<Route path='/notice' element={<News />} />
 </Routes>
 </Router>
 </UserProvider>
