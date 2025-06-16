@@ -23,6 +23,7 @@ import UserInfo from './Auth/UserInfo'
 import AboutUs from './components/AboutUs'
 import LandingPage from './Landing/LandingPage'
 import LandingAboutus from './Landing/LandingAboutus'
+import LandingNews from './Landing/LandingNews'
 import TypingTest from './components/TypingTest'
 import SummarizeNote from './components/SummarizeNote'
 import MockInterview from './components/MockInterview'
@@ -64,6 +65,7 @@ return (
 <Route path='/mock-interview' element={<MockInterview />} />
 <Route path='/documentation' element={<Documentation />} />
 <Route path='/notice' element={<News />} />
+<Route path='/landingnotice' element={<LandingNews />} />
 </Routes>
 </Router>
 </UserProvider>
