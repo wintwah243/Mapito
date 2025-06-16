@@ -36,14 +36,14 @@ export default function LandingIntro() {
 
                     <Link
                         to="/signup"
-                        className="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-lg shadow-lg transition-all duration-300 text-base sm:text-xl border border-gray-600"
+                        className="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-lg shadow-lg transition-all duration-300 text-base sm:text-xl border border-gray-600 cursor-pointer"
                     >
                         Get started for free
                     </Link>
 
                     <button
                         onClick={handleLearnMore}
-                        className="w-full sm:w-auto flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-lg shadow-lg transition-all duration-300 text-base sm:text-xl"
+                        className="w-full sm:w-auto flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-lg shadow-lg transition-all duration-300 text-base sm:text-xl cursor-pointer"
                     >
                         <svg className="w-5 sm:w-6 h-5 sm:h-6 mr-2 sm:mr-3" fill="currentColor" viewBox="0 0 24 24">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12.93a1 1 0 00-1-1v-2a1 1 0 10-2 0v2a1 1 0 001 1h2zm4.364 12.364l-1.414 1.414a1 1 0 001.414 1.414l1.414-1.414a1 1 0 00-1.414-1.414zM18 10a1 1 0 00-1-1h-2a1 1 0 100 2h2a1 1 0 001-1zM6 10a1 1 0 00-1-1H3a1 1 0 100 2h2a1 1 0 001-1zm1.636 4.364l1.414-1.414a1 1 0 00-1.414-1.414l-1.414 1.414a1 1 0 001.414 1.414zM10 16a1 1 0 00-1 1v2a1 1 0 102 0v-2a1 1 0 00-1-1zm-4.364-1.636l1.414 1.414a1 1 0 001.414-1.414L7.636 12.364a1 1 0 00-1.414 1.414z" clipRule="evenodd" />
