@@ -120,7 +120,7 @@ export default function LandingNavbar() {
   </button>
 
     <button
-    onClick={() => navigate("/notice")}
+    onClick={() => navigate("/landingnotice")}
     className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer"
   >
     Notice Board
@@ -255,7 +255,7 @@ export default function LandingNavbar() {
           <button
                 onClick={() => {
                     toggleMenu();
-                    navigate("/notice");
+                    navigate("/landingnotice");
                 }}
               className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
               >
