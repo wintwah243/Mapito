@@ -36,7 +36,7 @@ export default function LandingNews() {
     };
 
     return (
-        <section className="min-h-screen mt-10 bg-gray-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+        <section className="min-h-screen mt-15 bg-gray-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
             <LandingNavbar />
         <div>
             <div className="w-full max-w-4xl bg-white rounded-xl shadow-lg p-6 sm:p-8 md:p-10 border border-gray-200">
