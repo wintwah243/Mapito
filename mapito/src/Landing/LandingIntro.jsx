@@ -17,7 +17,7 @@ export default function LandingIntro() {
                 <div className="inline-flex items-center bg-gray-800 bg-opacity-70 text-blue-300 text-xs sm:text-sm md:text-base font-medium py-1.5 px-3 md:px-4 rounded-full mb-4 sm:mb-6 border border-blue-500/30 flex-wrap justify-center text-center max-w-xs sm:max-w-full">
                     <span className="text-blue-400 mr-2 text-xs">●</span>
                     <span className="whitespace-nowrap">Pls read this before using - </span>
-                    <Link to="/notice" className="ml-1 underline whitespace-nowrap">notice board </Link>
+                    <Link to="/landingnotice" className="ml-1 underline whitespace-nowrap">notice board </Link>
                 </div>
 
                 {/* Main Heading */}
