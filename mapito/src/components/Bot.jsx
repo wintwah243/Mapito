@@ -5,6 +5,7 @@ import ChatbotIcon from './ChatbotIcon';
 import ChatMessage from './ChatMessage';
 import ChatForm from './ChatForm';
 import { projectInfo } from '../utils/projectInfo';
+import { BackupBotInfo } from '../utils/BackupBotInfo';
 
 const Bot = () => {
   const [chatHistory, setChatHistory] = useState([{
@@ -19,7 +20,7 @@ const Bot = () => {
   // backup responses for API fails
   const fallbackResponses = [
     "I'm sorry, I'm having trouble connecting to my knowledge base right now.",
-    "I can't access my full capabilities at the moment, but I can still help with basic questions.",
+    "I can't access my full capabilities at the moment.",
     "My AI service seems to be unavailable. Here's what I can tell you from my limited knowledge:",
     "Connection issue detected. While I work to reconnect, here's some general information:"
   ];
@@ -35,7 +36,7 @@ const Bot = () => {
 
     // If API previously failed, use fallback immediately
     if (apiFailed) {
-      updateHistory(`${getRandomFallback()} ${projectInfo}`);
+      updateHistory(`${getRandomFallback()} ${BackupBotInfo}`);
       return;
     }
 
@@ -63,7 +64,7 @@ const Bot = () => {
     } catch (error) {
       // Use fallback response when API fails
       setApiFailed(true);
-      updateHistory(`${getRandomFallback()} ${projectInfo}`, true);
+      updateHistory(`${getRandomFallback()} ${BackupBotInfo}`, true);
     }
   };
 
