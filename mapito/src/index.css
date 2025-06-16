@@ -159,6 +159,7 @@
   word-wrap: break-word;
   white-space: pre-line;
   font-size: 0.95rem;
+  text-align: left;
 }
 
 .chat-body .bot-message .message-text{
