@@ -47,6 +47,7 @@
 
 .chatbot-popup {
     position: fixed;
+    z-index: 1200;
     opacity: 0;
     pointer-events: none;
     bottom: 90px;
@@ -65,6 +66,8 @@
   opacity: 1;
   pointer-events: auto;
   transform: scale(1);
+  position: fixed;
+  z-index: 1200;
 }
 
 .chatbot-popup .chat-header{
@@ -313,7 +316,7 @@
     }
   
     .chat-body {
-      height: 300px; 
+      height: 400px; 
       padding: 20px 15px;
     }
   
