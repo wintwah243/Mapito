@@ -209,7 +209,7 @@ const TypingTest = () => {
               </div>
             )}
 
-            {history.length > 0 && (
+            {/* {history.length > 0 && (
               <div className="bg-white p-4 rounded-xl shadow-md mt-4">
                 <h2 className="text-lg font-semibold text-gray-700 mb-2">Personal Typing History</h2>
                 <ul className="space-y-1 text-sm text-gray-600">
@@ -221,7 +221,7 @@ const TypingTest = () => {
                   ))}
                 </ul>
               </div>
-            )}
+            )} */}
           </div>
         </div>
         <Footer />
