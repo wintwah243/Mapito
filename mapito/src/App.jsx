@@ -30,6 +30,7 @@ import MockInterview from './components/MockInterview'
 import Documentation from './components/Documentation'
 import ScrollToTop from './utils/ScrollToTop'
 import News from './components/News'
+import LandingDocumentation from './Landing/LandingDocumentation'
 
 const Home = () => (
 <>
@@ -45,28 +46,29 @@ const Home = () => (
 const App = () => {
 return (
 <UserProvider>
-<Router>
-<ScrollToTop />
-<Routes>
-<Route path='/' element={<LandingPage />} />
-<Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
-<Route path="/login" element={<Login />} />
-<Route path="/signup" element={<SignUp />} />
-<Route path="/google-auth" element={<GoogleAuthCallback />} />
-<Route path="/quiz" element={<Quiz />} />
-<Route path="/code" element={<CodeCompiler />} />
-<Route path='/aboutus' element={<AboutUs />} />
-<Route path="/password-reset" element={<PasswordReset />} />
-<Route path="/forgotpassword/:id/:token" element={<ForgotPassword />} />
-<Route path='userinfo' element={<UserInfo />} />
-<Route path="/landingaboutus" element={<LandingAboutus />}/>
-<Route path="/typing-test" element={<TypingTest />} />
-<Route path='/summarize' element={<SummarizeNote />} />
-<Route path='/mock-interview' element={<MockInterview />} />
-<Route path='/documentation' element={<Documentation />} />
-<Route path='/notice' element={<News />} />
-<Route path='/landingnotice' element={<LandingNews />} />
-</Routes>
+  <Router>
+  <ScrollToTop />
+  <Routes>
+    <Route path='/' element={<LandingPage />} />
+    <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/signup" element={<SignUp />} />
+    <Route path="/google-auth" element={<GoogleAuthCallback />} />
+    <Route path="/quiz" element={<Quiz />} />
+    <Route path="/code" element={<CodeCompiler />} />
+    <Route path='/aboutus' element={<AboutUs />} />
+    <Route path="/password-reset" element={<PasswordReset />} />
+    <Route path="/forgotpassword/:id/:token" element={<ForgotPassword />} />
+    <Route path='userinfo' element={<UserInfo />} />
+    <Route path="/landingaboutus" element={<LandingAboutus />}/>
+    <Route path="/typing-test" element={<TypingTest />} />
+    <Route path='/summarize' element={<SummarizeNote />} />
+    <Route path='/mock-interview' element={<MockInterview />} />
+    <Route path='/documentation' element={<Documentation />} />
+    <Route path='/notice' element={<News />} />
+    <Route path='/landingnotice' element={<LandingNews />} />
+    <Route path='/landingdocumentation' element={<LandingDocumentation />} />
+  </Routes>
 </Router>
 </UserProvider>
 )
