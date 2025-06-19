@@ -140,7 +140,7 @@ const LandingDocumentation = () => {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {documentationCategories.map((category, index) => (
             <div key={index} className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="px-4 py-5 sm:px-6 bg-indigo-500">
+              <div className="px-4 py-5 sm:px-6 bg-gray-900">
                 <h3 className="text-lg leading-6 font-medium text-white">
                   {category.title}
                 </h3>
