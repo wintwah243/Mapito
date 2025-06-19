@@ -7,35 +7,7 @@ import { ChevronDown } from "lucide-react";
 export default function LandingNavbar() {
   const [isOpen, setIsOpen] = useState(false); //for toggle menu
   const navigate = useNavigate();
-  const [dropdownOpen, setDropdownOpen] = useState(false); //for dropdown on desktop view
   const toggleMenu = () => setIsOpen(!isOpen); //for mobile view
-
-  // used for dropdown menu
-  const dropdownRef = useRef(null);
-  
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        //check user clicked item is inside the dropdown
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-          setDropdownOpen(false);
-        }
-      };
-      document.addEventListener('mousedown', handleClickOutside);
-      //cleanup function
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-     //for desktop view
-    const NavDropdownItem = ({ to, text, icon }) => (
-      <button
-        //no authentication check becos i have separated two files. Landing & Home
-        onClick={() => navigate("/signup")}
-        className="flex items-center w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
-      >
-        <span className="mr-3 text-gray-400">{icon}</span>
-        <span>{text}</span>
-      </button>
-    );
 
   return (
     <motion.nav
@@ -63,57 +35,8 @@ export default function LandingNavbar() {
     About us
   </button>
 
-  {/* Dropdown for various features */}
-  <div className="relative group" onMouseLeave={() => setDropdownOpen(false)}>
     <button
-      className="flex items-center gap-1 hover:text-indigo-600 transition-all duration-300 py-2"
-      onClick={() => setDropdownOpen(!dropdownOpen)}
-      aria-expanded={dropdownOpen}
-      aria-haspopup="true"
-    >
-      <span className="cursor-pointer">Features</span>
-      <ChevronDown
-        className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
-      />
-    </button>
-
-    {/* Dropdown Menu on desktop view */}
-    {dropdownOpen && (
-      <div
-        className="absolute left-0 mt-1 w-56 bg-white border border-gray-200 rounded-lg shadow-xl z-50 py-2"
-        ref={dropdownRef}
-      >
-        <NavDropdownItem
-          to="/quiz"
-          text="Quizzes"
-          icon={<FaClipboardList className="w-5 h-5" />}
-        />
-        <NavDropdownItem
-          to="/code"
-          text="Problems"
-          icon={<FaCode className="w-5 h-5" />}
-        />
-        <NavDropdownItem
-          to="/typing-test"
-          text="TypeTest"
-          icon={<FaKeyboard className="w-5 h-5" />}
-        />
-        <NavDropdownItem
-          to="/summarize"
-          text="QuickNotes"
-          icon={<FaStickyNote className="w-5 h-5" />}
-        />
-        <NavDropdownItem
-          to="/mock-interview"
-          text="Mock Interview"
-          icon={<FaUserFriends className="w-5 h-5" />}
-        />
-      </div>
-    )}
-  </div>
-
-    <button
-    onClick={() => navigate("/signup")}
+    onClick={() => navigate("/landingdocumentation")}
     className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer"
   >
     Documentations
@@ -184,74 +107,18 @@ export default function LandingNavbar() {
           <FaInfoCircle size={20} className="text-gray-600" />
          About us
         </button>
-         
-          <button
-            onClick={() => {
-              toggleMenu();
-              navigate("/signup");
-            }}
-            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
-          >
-            <FaClipboardList size={20} className="text-gray-600" />
-            Quizzes
-          </button>
-
-            <button
-                onClick={() => {
-                    toggleMenu();
-                    navigate("/signup");
-                }}
-              className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
-              >
-            <FaCode size={20} className="text-gray-600" />
-            Problems
-          </button>
 
           <button
                 onClick={() => {
                     toggleMenu();
-                    navigate("/signup");
-                }}
-              className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
-              >
-            <FaKeyboard size={20} className="text-gray-600" />
-            Typing test
-          </button>
-
-          <button
-                onClick={() => {
-                    toggleMenu();
-                    navigate("/signup");
-                }}
-              className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
-              >
-            <FaStickyNote size={20} className="text-gray-600" />
-            QuickNotes
-          </button>
-
-          <button
-                onClick={() => {
-                    toggleMenu();
-                    navigate("/signup");
-                }}
-              className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
-              >
-            <FaUserFriends size={20} className="text-gray-600" />
-            Mock Interview
-          </button>
-
-          <button
-                onClick={() => {
-                    toggleMenu();
-                    navigate("/signup");
+                    navigate("/landingdocumentation");
                 }}
               className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
               >
             <FaBook size={20} className="text-gray-600" />
             Documentation
           </button>
-
-
+          
           <button
                 onClick={() => {
                     toggleMenu();
