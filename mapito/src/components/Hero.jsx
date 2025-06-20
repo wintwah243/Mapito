@@ -93,7 +93,7 @@ const Hero = () => {
                 {/* Header */}
                 <motion.div className="w-full max-w-2xl text-center mb-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
                     <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 leading-tight">
-                        Get your AI-Powered <span className="text-indigo-600"> Roadmap</span>
+                        Get your AI-Powered <span className="text-blue-600"> Roadmap</span>
                     </h1>
                     <p className="text-base sm:text-lg text-gray-600 max-w-lg mx-auto">
                         Transform your learning goals into structured, actionable steps with personalized guidance.
