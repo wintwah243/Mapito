@@ -203,7 +203,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
         className="fixed top-0 left-0 h-full w-64 bg-white z-40 shadow-lg p-6 flex flex-col gap-6 md:hidden"
       >
         <div className="flex justify-between items-center">
-          <span className="text-2xl font-bold text-indigo-600">Mapito</span>
+          <span className="text-2xl font-bold text-black">Mapito</span>
           <button onClick={toggleMenu}>
             <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
