@@ -7,15 +7,22 @@ export default function LandingNews() {
             id: 1,
             type: 'System Weakness',
             title: 'Branded Loading Screen after Google Login',
-            description: 'ဒီပြသာနာကတော့UserကGoogleနဲ့Loginဝင်မယ်ဆိုရင်render websiteရဲ့ branded loading screenကစက္ကန့်၂၀လောက်ပေါ်နေတာကြောင့် ဒီsystemရဲ့main weaknessဖြစ်ပါတယ်။',
+            description: 'UserကGoogleနဲ့Loginဝင်မယ်ဆိုရင်render websiteရဲ့branded loading screenကစက္ကန့်၂၀လောက်ပေါ်နေတာကြောင့် ဒီsystemရဲ့main weaknessဖြစ်ပါတယ်။ branded loading screenပေါ်လာခဲ့လျှင်အချိန်တစ်ခဏစောင့်ဆိုင်းခြင်းအားဖြင့်ဖြေရှင်းနိုင်ပါတယ်။',
             severity: 'High'
         },
         {
             id: 2,
             type: 'Notice',
             title: 'AI Response Preparation',
-            description: 'AIကိုresponseကောင်းတွေပြန်ပေးဖို့promptပေးထားပေမဲ့userရဲ့vpn connection(သို့မဟုတ်)network errorကြောင့်ဖြစ်ဖြစ်AIရဲ့free tier limitပြည့်သွားလို့ဖြစ်ဖြစ်အခြေအနေမျိုုးတွေဖြစ်ခဲ့ရင်developerကြိုတင်စီမံထားတဲ့predefind responseတွေကိုသာuserတွေကရရှိမှာဖြစ်ပါတယ်။',
+            description: 'AIကိုresponseကောင်းတွေပြန်ပေးဖို့promptပေးထားပေမဲ့userရဲ့vpn connection(သို့မဟုတ်)network errorကြောင့်ဖြစ်ဖြစ်AIရဲ့free tier limitပြည့်သွားလို့ဖြစ်ဖြစ်အခြေအနေမျိုုးတွေဖြစ်ခဲ့ရင်developerကြိုတင်စီမံထားတဲ့predefined responseတွေကိုသာuserတွေကရရှိမှာဖြစ်ပါတယ်။',
             severity: 'Medium'
+        },
+        {
+            id: 3,
+            type: 'System Info',
+            title: 'Render Cold Start',
+            description: 'MapitoကိုuserကLogin or Account Creationလုပ်ခဲ့ရင်renderရဲ့cold startပြဿနာကြောင့် အချိန်ကြံ့ကြာမှုတွေ၊ userကvalid inputတွေထည့်ပါသော်လည်းlogin failedကိုကြုံတွေ့ရနိုင်ပါတယ်။ ဒါကြောင့်အချိန်အနည်းငယ်စောင့်ဆိုင်းခြင်း သိူ့မဟူတ် Google Loginကိုအသုံးပြုဖို့recommendလုပ်ပါတယ်။ ',
+            severity: 'Low'
         },
     ];
 
