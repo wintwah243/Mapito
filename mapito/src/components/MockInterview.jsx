@@ -279,7 +279,7 @@ function MockInterview() {
                 <button
                   onClick={handleStart}
                   disabled={loading}
-                  className="w-full flex items-center justify-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-70"
+                  className="w-full flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-70"
                 >
                   <FaPlay className="mr-2" />
                   {loading ? 'Starting...' : 'Start Interview'}
