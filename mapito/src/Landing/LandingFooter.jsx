@@ -16,13 +16,9 @@ export default function LandingFooter() {
           <h3 className="text-xl font-semibold mb-2">Quick Links</h3>
           <ul className="grid grid-cols-1 sm:grid-cols-2 space-y-1 text-sm">
             <li><a href="/" className="hover:text-gray-300">Home</a></li>
-            <li><a href="/landingaboutus" className="hover:text-gray-300">About</a></li>
-            <li><a href="/signup" className="hover:text-gray-300">Quiz</a></li>
-            <li><a href="/signup" className="hover:text-gray-300">Typing test</a></li>
-            <li><a href="/signup" className="hover:text-gray-300">Problems</a></li>
-            <li><a href="/signup" className="hover:text-gray-300">QuickNotes</a></li>
-            <li><a href="/signup" className="hover:text-gray-300">Mock Interview</a></li>
-             <li><a href="/signup" className="hover:text-gray-300">Documentation</a></li>
+            <li><a href="/landingaboutus" className="hover:text-gray-300">About us</a></li>
+            <li><a href="/landingdocumentation" className="hover:text-gray-300">Documentations</a></li>
+            <li><a href="/landingnotice" className="hover:text-gray-300">Notice Board</a></li>
           </ul>
         </div>
 
