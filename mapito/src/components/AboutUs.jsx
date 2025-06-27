@@ -12,7 +12,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import myPhoto from '../assets/images/mypf.JPG'
+import myPhoto from '../assets/images/mypf.JPG';
+import hsusan from '../assets/images/hsusanpf.jpg';
 
 const AboutUs = () => {
   const navigate = useNavigate();
@@ -170,7 +171,7 @@ const AboutUs = () => {
                     <p className="text-blue-600 font-medium mb-2">Founder & Developer of Mapito</p>
                     <p className="text-gray-600">
                       You can call me 'Shi' and I love coffee with coding. I describe myself as a person full of desire
-                      to learn. I am a fullstack developer and global learning enthusiast. I usually waste my time by exploring
+                      to learn. I am a web developer and a tech enthusiast. I usually waste my time by exploring
                       opportunities and learning new things.
                     </p>
                   </div>
@@ -182,16 +183,20 @@ const AboutUs = () => {
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
                     <img
-                      src="https://i.pinimg.com/736x/02/59/54/0259543779b1c2db9ba9d62d47e11880.jpg"
+                      src={hsusan}
                       alt="Another Member"
                       className="w-16 h-16 rounded-full object-cover"
                     />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900">Team member 2</h3>
-                    <p className="text-blue-600 font-medium mb-2">Upcoming</p>
+                    <h3 className="text-lg font-bold text-gray-900">Hsu San Win</h3>
+                    <p className="text-blue-600 font-medium mb-2">Creative Designer</p>
                     <p className="text-gray-600">
-                      Passionate about design and storytelling. I turn ideas into visual experiences and enjoy creating things that feel good and look better.
+                      I turn ideas into visual experiences and enjoy creating things that 
+                      feel good and look better. I enjoy exploring how people interact with 
+                      design and how stories can shape perception. From the first sketch to 
+                      the final pixel, I strive to make things that leave a lasting impression
+                      — designs that are not just seen, but felt.
                     </p>
                   </div>
                 </div>
