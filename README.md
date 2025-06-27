@@ -4,7 +4,7 @@ Mapito is an AI-powered learning and practice platform designed to help aspiring
 ---
 
 ## What problem it solves
-Many beginners and early-career developers struggle with not knowing what to learn as there are many programming languages to choose, in what order, and how to practice effectively. Mapito solves this by generating a AI-generated learning roadmap based on the user’s goals — such as becoming a frontend developer or learning a specific language like Python — and combining it with practical tools like quizzes, a live code compiler, and AI-based mock interviews.
+Many beginners and early-career developers struggle with not knowing what to learn as there are many programming languages to choose, in what order, and how to practice effectively. Mapito solves this by generating an AI-generated learning roadmap based on the user’s goals — such as becoming a frontend developer or learning a specific language like Python — and combining it with practical tools like quizzes, a live code compiler, and AI-based mock interviews.
 
 ## Who it’s for
 Mapito is built for:
