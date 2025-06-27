@@ -56,6 +56,11 @@ Unlike other platforms that focus only on video lessons or static content, Mapit
 
 ---
 
+## Live Demo
+https://mapito-df8g.onrender.com
+
+---
+
 ## Getting Started
 
 ### Prerequisites
