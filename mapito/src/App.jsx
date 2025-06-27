@@ -35,10 +35,9 @@ import LandingDocumentation from './Landing/LandingDocumentation'
 const Home = () => (
 <>
 <Navbar />
-<Intro />
-<Feature />
-<LearnMore />
+{/* <Intro /> */}
 <Hero />
+<LearnMore />
 <Footer />
 </>
 );
