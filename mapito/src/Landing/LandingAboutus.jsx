@@ -172,7 +172,7 @@ const LandingAboutus = () => {
                     <p className="text-blue-600 font-medium mb-2">Founder & Developer of Mapito</p>
                     <p className="text-gray-600">
                       You can call me 'Shi' and I love coffee with coding. I describe myself as a person full of desire
-                      to learn. I am a fullstack developer and tech enthusiast. I usually waste my time by exploring
+                      to learn. I am a web developer and a tech enthusiast. I usually waste my time by exploring
                       opportunities and learning new things.
                     </p>
                   </div>
@@ -191,7 +191,7 @@ const LandingAboutus = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-gray-900">Hsu San Win</h3>
-                    <p className="text-indigo-600 font-medium mb-2">Creative Designer</p>
+                    <p className="text-blue-600 font-medium mb-2">Creative Designer</p>
                     <p className="text-gray-600">
                       I turn ideas into visual experiences and enjoy creating things that 
                       feel good and look better. I enjoy exploring how people interact with 
