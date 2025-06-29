@@ -88,7 +88,7 @@ const Hero = () => {
     };
 
     return (
-        <section id='hero' className="bg-white mt-10 lg:mt-10">
+        <section id='hero' className="bg-white mt-10 lg:mt-20">
             <div className="flex flex-col items-center justify-center px-4 py-12 sm:p-6 lg:p-8">
                 {/* Header */}
                 <motion.div className="w-full max-w-2xl text-center mb-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
