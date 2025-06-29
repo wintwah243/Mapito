@@ -6,8 +6,6 @@ Routes,
   Navigate
 } from 'react-router-dom'
 import Hero from './components/Hero'
-import Intro from './components/Intro'
-import LearnMore from './components/LearnMore'
 import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 import Login from './Auth/Login'
@@ -31,13 +29,15 @@ import Documentation from './components/Documentation'
 import ScrollToTop from './utils/ScrollToTop'
 import News from './components/News'
 import LandingDocumentation from './Landing/LandingDocumentation'
+import FAQ from './components/FAQ'
+import Feature from './components/Feature'
 
 const Home = () => (
 <>
 <Navbar />
-{/* <Intro /> */}
 <Hero />
-<LearnMore />
+<Feature />
+<FAQ />
 <Footer />
 </>
 );
