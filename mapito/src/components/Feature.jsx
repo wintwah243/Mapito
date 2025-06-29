@@ -7,7 +7,7 @@ const features = [
   {
     id: 1,
     title: 'Documentation Resources',
-    description: 'Various resources to explore - all in one place.',
+    description: 'Various resources all in one place.',
     icon: <FaBrain className="text-blue-500 text-2xl" />,
     link: '/documentation',
   },
