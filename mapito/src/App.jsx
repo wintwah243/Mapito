@@ -30,7 +30,6 @@ import ScrollToTop from './utils/ScrollToTop'
 import News from './components/News'
 import LandingDocumentation from './Landing/LandingDocumentation'
 import FAQ from './components/FAQ'
-import Feature from './components/Feature'
 
 const Home = () => (
 <>
