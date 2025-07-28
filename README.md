@@ -20,13 +20,9 @@ Mapito stands out by integrating AI-generated roadmaps with a complete set of in
 
 An in-browser code compiler for hands-on practice.
 
-Adaptive quizzes that respond to progress.
-
 AI-powered features like note summarization and realistic mock interviews.
 
 Extra tools like typing tests and documentation resources.
-
-Unlike other platforms that focus only on video lessons or static content, Mapito provides a dynamic and supportive environment that grows with the learner, prioritizes ethical AI use, and protects user privacy.
 
 ---
 
