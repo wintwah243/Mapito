@@ -169,7 +169,7 @@ const LandingAboutus = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-gray-900">Wint Wah Kyaw Soe</h3>
-                    <p className="text-blue-600 font-medium mb-2">Founder & Developer of Mapito</p>
+                    <p className="text-blue-600 font-medium mb-2">Web Developer</p>
                     <p className="text-gray-600">
                       You can call me 'Shi' and I love coffee with coding. I describe myself as a person full of desire
                       to learn. I am a web developer and a tech enthusiast. I usually waste my time by exploring
