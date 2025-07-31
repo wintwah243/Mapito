@@ -274,7 +274,8 @@ function getPredefinedRoadmap(goal) {
     'data science': `Learn Python and data analysis (Pandas, NumPy)\n Study statistics fundamentals\n Learn data visualization (Matplotlib, Seaborn)\n Explore machine learning basics\n Work on real-world datasets`,
     'mobile': `Choose a platform (iOS/Swift or Android/Kotlin)\n Learn UI/UX principles\n Understand mobile architecture\n Study platform-specific APIs\n Publish an app to store`,
     'devops': `Learn Linux fundamentals\n Master version control (Git)\n Understand CI/CD pipelines\n Learn containerization (Docker)\n Study cloud platforms (AWS, GCP, Azure)`,
-    'ui/ux': `Study user psychology & behavior\n Learn Figma or Adobe XD for wireframing & prototyping\n Practice designing mobile-first and responsive layouts\n Understand UX research (surveys, interviews, testing)\n Create design systems and component libraries\n Build personal portfolio`
+    'ui/ux': `Study user psychology & behavior\n Learn Figma or Adobe XD for wireframing & prototyping\n Practice designing mobile-first and responsive layouts\n Understand UX research (surveys, interviews, testing)\n Create design systems and component libraries\n Build personal portfolio`,
+    'ai': `Learn Python programming (NumPy, Pandas)\n Understand linear algebra & calculus basics\n Study machine learning algorithms (supervised, unsupervised)\n Learn popular ML libraries (scikit-learn, TensorFlow, PyTorch)\n Practice model evaluation & tuning\n Build projects like image recognition or chatbots\n Explore AI ethics and real-world applications`,
   };
 
   // Find the best matching roadmap
