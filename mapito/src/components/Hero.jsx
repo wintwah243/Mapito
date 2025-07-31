@@ -119,7 +119,7 @@ const Hero = () => {
                         />
                         <button
                             onClick={handleGenerate}
-                            className="bg-gray-900 text-white rounded-lg p-3 font-medium text-sm sm:text-base duration-200 flex items-center justify-center gap-2"
+                            className="bg-gray-900 text-white rounded-lg p-3 font-medium text-sm sm:text-base duration-200 flex items-center justify-center gap-2 cursor-pointer"
                             disabled={loading}
                         >
                             {loading ? (
