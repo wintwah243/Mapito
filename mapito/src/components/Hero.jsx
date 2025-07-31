@@ -159,39 +159,21 @@ const Hero = () => {
                         </div>
 
                         <div className="relative">
-                            <div className="hidden sm:block absolute left-1/2 h-full w-0.5 bg-indigo-200 transform -translate-x-1/2"></div>
-                            <div className="sm:hidden absolute left-4 h-full w-1 bg-indigo-200"></div>
-
-                            {roadmap.map((step, index) => (
-                                <motion.div
-                                    key={index}
-                                    className="relative mb-10 pl-8 sm:pl-0"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.1, duration: 0.4 }}
-                                >
-                                    <div className="sm:hidden absolute left-0 top-6 w-4 h-4 rounded-full bg-indigo-500 border-4 border-white transform -translate-x-1/2"></div>
-                                    <div className={`bg-indigo-50 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow ${index % 2 === 0 ? 'sm:mr-auto sm:max-w-md' : 'sm:ml-auto sm:max-w-md'}`}>
-                                        <div className="flex items-start gap-3">
-                                            <div className="flex-shrink-0 mt-1 sm:hidden">
-                                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-700 flex items-center justify-center">
-                                                    {index === 0 ? <FaRocket className="text-white" size={14} /> : index === roadmap.length - 1 ? <FaCheckCircle className="text-white" size={14} /> : icons[index % icons.length]}
-                                                </div>
-                                            </div>
-                                            <div className="flex-1">
-                                                <div className="text-sm sm:text-base font-semibold text-indigo-800">
-                                                    <ReactMarkdown>{step}</ReactMarkdown>
-                                                </div>
-                                            </div>
-                                            <div className="hidden sm:block flex-shrink-0 ml-3">
-                                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-700 flex items-center justify-center">
-                                                    {index === 0 ? <FaRocket className="text-white" size={14} /> : index === roadmap.length - 1 ? <FaCheckCircle className="text-white" size={14} /> : icons[index % icons.length]}
-                                                </div>
-                                            </div>
+                           <div className="flex flex-col gap-4 w-full">
+                                {roadmap.map((step, index) => (
+                                    <button
+                                        key={index}
+                                        className={`flex items-center justify-start gap-4 px-4 py-3 rounded-xl shadow-sm transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] text-left ${index % 2 === 0 ? 'bg-purple-100' : 'bg-blue-100'
+                                            }`}
+                                        onClick={() => alert(`Step ${index + 1}: ${step}`)} 
+                                    >
+                                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white text-gray-900 font-bold border border-gray-300">
+                                            {index + 1}
                                         </div>
-                                    </div>
-                                </motion.div>
-                            ))}
+                                        <span className="text-gray-800 text-sm sm:text-base font-medium">{step}</span>
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 )}
