@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { jsPDF } from "jspdf";
 import { useNavigate } from 'react-router-dom';
+import Bot from './Bot';
 
 const Hero = () => {
     const [goal, setGoal] = useState('');
@@ -178,6 +179,7 @@ const Hero = () => {
                     </div>
                 )}
             </div>
+        <Bot />
  </section>
     );
 };
