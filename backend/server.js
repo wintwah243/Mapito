@@ -269,11 +269,12 @@ function getPredefinedRoadmap(goal) {
   const lowerGoal = goal.toLowerCase();
 
   const roadmaps = {
-    'frontend': `1. Learn HTML fundamentals\n2. Master CSS and responsive design\n3. Learn JavaScript (ES6+)\n4. Choose a framework (React, Vue, Angular)\n5. Build portfolio projects`,
-    'backend': `1. Learn a server language (Node.js, Python, Java)\n2. Understand databases (SQL & NoSQL)\n3. Learn API development (REST, GraphQL)\n4. Study authentication & security\n5. Build scalable applications`,
-    'data science': `1. Learn Python and data analysis (Pandas, NumPy)\n2. Study statistics fundamentals\n3. Learn data visualization (Matplotlib, Seaborn)\n4. Explore machine learning basics\n5. Work on real-world datasets`,
-    'mobile': `1. Choose a platform (iOS/Swift or Android/Kotlin)\n2. Learn UI/UX principles\n3. Understand mobile architecture\n4. Study platform-specific APIs\n5. Publish an app to store`,
-    'devops': `1. Learn Linux fundamentals\n2. Master version control (Git)\n3. Understand CI/CD pipelines\n4. Learn containerization (Docker). Study cloud platforms (AWS, GCP, Azure)`
+    'frontend': `Learn HTML fundamentals\n Master CSS and responsive design\n Learn JavaScript (ES6+)\ Choose a framework (React, Vue, Angular)\n Build portfolio projects\n Practice Interview questions`,
+    'backend': `Learn a server language (Node.js, Python, Java)\n Understand databases (SQL & NoSQL)\n Learn API development (REST, GraphQL)\n Study authentication & security\n Build scalable applications\n Practice Interview questions`,
+    'data science': `Learn Python and data analysis (Pandas, NumPy)\n Study statistics fundamentals\n Learn data visualization (Matplotlib, Seaborn)\n Explore machine learning basics\n Work on real-world datasets`,
+    'mobile': `Choose a platform (iOS/Swift or Android/Kotlin)\n Learn UI/UX principles\n Understand mobile architecture\n Study platform-specific APIs\n Publish an app to store`,
+    'devops': `Learn Linux fundamentals\n Master version control (Git)\n Understand CI/CD pipelines\n Learn containerization (Docker)\n Study cloud platforms (AWS, GCP, Azure)`,
+    'ui/ux': `Study user psychology & behavior\n Learn Figma or Adobe XD for wireframing & prototyping\n Practice designing mobile-first and responsive layouts\n Understand UX research (surveys, interviews, testing)\n Create design systems and component libraries\n Build personal portfolio`
   };
 
   // Find the best matching roadmap
