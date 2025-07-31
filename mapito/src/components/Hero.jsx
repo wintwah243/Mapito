@@ -145,7 +145,7 @@ const Hero = () => {
                             <div className="flex gap-3">
                                 <button
                                     onClick={handleDownload}
-                                    className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center gap-2"
+                                    className="bg-blue-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center gap-2 cursor-pointer"
                                 >
                                     <FaDownload /> Download PDF
                                 </button>
