@@ -105,6 +105,69 @@ app.use('/api/generate-roadmap', apiLimiter);
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+const roadmapDetails = {
+  frontend: [
+    "HTML is the skeleton of webpages. Learn tags, elements, and semantics.",
+    "CSS controls style and layout. Master flexbox, grids, and media queries.",
+    "JavaScript powers interactivity. Focus on ES6+ features like promises and async.",
+    "React, Vue, and Angular are popular frameworks for building UI.",
+    "Build projects like portfolio sites to showcase your skills.",
+    "Practice common interview questions on frontend concepts and coding.",
+  ],
+  backend: [
+    "Pick a backend language and learn its syntax and ecosystem deeply.",
+    "Understand relational and non-relational databases and how to query them.",
+    "Learn how to create APIs that frontend can consume via REST or GraphQL.",
+    "Implement user authentication and secure your backend with best practices.",
+    "Explore scaling apps using load balancing, caching, and microservices.",
+  ],
+  "data science": [
+    "Learn Python libraries like Pandas and NumPy for data analysis.",
+    "Study foundational statistics concepts critical to data science.",
+    "Visualize data effectively using Matplotlib and Seaborn.",
+    "Explore basic machine learning algorithms and their applications.",
+    "Work with real datasets to gain practical experience.",
+  ],
+  mobile: [
+    "Decide between iOS (Swift) or Android (Kotlin) development.",
+    "Understand mobile-specific UI/UX design principles.",
+    "Learn mobile app architecture and lifecycle.",
+    "Study platform APIs to access device hardware and features.",
+    "Publish your app to the Apple App Store or Google Play Store.",
+  ],
+  devops: [
+    "Get comfortable with Linux command line and administration.",
+    "Master Git version control for collaborative development.",
+    "Understand continuous integration and deployment pipelines.",
+    "Learn containerization technologies like Docker.",
+    "Explore cloud platforms: AWS, GCP, and Azure fundamentals.",
+  ],
+  uiux: [
+  "UI/UX starts with understanding user needs and behaviors through research.",
+  "Wireframing helps structure content clearly before visual design begins.",
+  "Use tools like Figma, Sketch, or Adobe XD to design interfaces.",
+  "Focus on color theory, typography, spacing, and visual hierarchy.",
+  "Test designs with users to gather feedback and improve usability.",
+  "Build a portfolio showing your design process from idea to prototype."
+  ],
+  ai: [
+  "Start with Python, the most widely used language in AI development.",
+  "Learn linear algebra, calculus, probability, and statistics foundations.",
+  "Understand machine learning concepts like supervised and unsupervised learning.",
+  "Explore popular libraries like NumPy, Pandas, Scikit-learn, and TensorFlow.",
+  "Build small projects like image classifiers or sentiment analyzers.",
+  "Practice solving real-world problems and study AI ethics and limitations."
+  ],
+  cloud: [
+  "Understand the basics of cloud computing and its service models (IaaS, PaaS, SaaS).",
+  "Learn core services of major providers like AWS, Azure, or Google Cloud.",
+  "Get hands-on with virtual machines, storage, and networking in the cloud.",
+  "Study DevOps tools like Docker, Kubernetes, and CI/CD pipelines.",
+  "Practice deploying web apps and managing cloud infrastructure.",
+  "Prepare for certifications like AWS Certified Cloud Practitioner or Azure Fundamentals."
+  ],
+};
+
 // API route
 app.post('/api/generate-roadmap', async (req, res) => {
   const { goal } = req.body;
@@ -114,8 +177,8 @@ app.post('/api/generate-roadmap', async (req, res) => {
       error: 'Invalid input',
       details: 'Goal must be a non-empty string'
     });
-  }
-
+  };
+  
   // Process the goal input
   const processedGoal = goal.trim().substring(0, 100); // Limit length
 
@@ -127,7 +190,7 @@ app.post('/api/generate-roadmap', async (req, res) => {
     const response = await result.response;
     const roadmapText = response.text();
 
-    // Save to DB
+    // Save to database
     const roadmap = new Roadmap({
       goal: processedGoal,
       content: roadmapText,
@@ -140,126 +203,47 @@ app.post('/api/generate-roadmap', async (req, res) => {
       source: 'gemini'
     });
 
-
-    return res.json({
-      roadmap: roadmapText,
-      source: 'gemini'
-    });
-
   } catch (geminiError) {
     console.error('Gemini API error:', geminiError);
 
-    // Fallback 1: Try Hugging Face API with different model options
+    // if AI fails, Predefined roadmaps
     try {
-      if (!process.env.HF_API_KEY) {
-        throw new Error('Hugging Face API key not configured');
-      }
+      const predefinedRoadmap = getPredefinedRoadmap(processedGoal);
+      const lowerGoal = processedGoal.toLowerCase();
 
-      // Try multiple Hugging Face models in sequence
-      const hfModels = [
-        'facebook/bart-large-cnn',         // Good for summarization
-        'google/flan-t5-base',             // Smaller but more accessible
-        'gpt2',                           // Basic text generation
-        'tiiuae/falcon-7b-instruct'       // Instruction following
-      ];
+      let details = [];
 
-      let hfError;
-
-      for (const model of hfModels) {
-        try {
-          const hfResponse = await axios.post(
-            `https://api-inference.huggingface.co/models/${model}`,
-            {
-              inputs: `Generate a 5-step learning path for becoming a ${processedGoal}. Format as numbered steps.`
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${process.env.HF_API_KEY}`,
-                'Content-Type': 'application/json'
-              },
-              timeout: 8000
-            }
-          );
-
-          if (hfResponse.data?.error) {
-            hfError = hfResponse.data.error;
-            continue; // Try next model
-          }
-
-          if (!hfResponse.data || !hfResponse.data[0]?.generated_text) {
-            hfError = 'Invalid response format';
-            continue;
-          }
-
-          const hfRoadmap = formatRoadmapResponse(hfResponse.data[0].generated_text);
-
-          // Save to DB
-          const roadmap = new Roadmap({
-            goal: processedGoal,
-            content: hfRoadmap,
-            source: `huggingface:${model}`
-          });
-          await roadmap.save();
-
-          return res.json({
-            roadmap: hfRoadmap,
-            source: `huggingface:${model}`,
-            warning: 'Using alternative AI service'
-          });
-
-        } catch (err) {
-          hfError = err.message;
-          continue;
+      for (const key of Object.keys(roadmapDetails)) {
+        if (lowerGoal.includes(key)) {
+          details = roadmapDetails[key];
+          break;
         }
       }
+      // Save to DB
+      const roadmap = new Roadmap({
+        goal: processedGoal,
+        details,
+        content: predefinedRoadmap,
+        source: 'predefined'
+      });
+      await roadmap.save();
 
-      throw new Error(`All Hugging Face models failed: ${hfError}`);
-
-    } catch (hfError) {
-      console.error('Hugging Face fallback failed:', hfError);
-
-      // Fallback 2: Local AI service (if available)
-      try {
-        const localAIRoadmap = await tryLocalAIService(processedGoal);
-        if (localAIRoadmap) {
-          return res.json({
-            roadmap: localAIRoadmap,
-            source: 'local-ai',
-            warning: 'Using local AI service'
-          });
-        }
-      } catch (localError) {
-        console.error('Local AI fallback failed:', localError);
-      }
-
-      // Fallback 3: Predefined roadmaps
-      try {
-        const predefinedRoadmap = getPredefinedRoadmap(processedGoal);
-        // Save to DB
-        const roadmap = new Roadmap({
-          goal: processedGoal,
-          content: predefinedRoadmap,
-          source: 'predefined'
-        });
-        await roadmap.save();
-
-        return res.json({
-          roadmap: predefinedRoadmap,
-          source: 'predefined',
-          warning: 'Using generic roadmap template'
-        });
-      } catch (finalError) {
-        console.error('All fallbacks failed:', finalError);
-        return res.status(500).json({
-          error: 'Failed to generate roadmap',
-          details: {
-            geminiError: geminiError.message,
-            hfError: hfError.message,
-            finalError: finalError.message
-          },
-          suggestion: 'Please try again later or with a different goal description'
-        });
-      }
+      return res.json({
+        roadmap: predefinedRoadmap,
+        source: 'predefined',
+        details,
+        warning: 'Using generic roadmap template'
+      });
+    } catch (finalError) {
+      console.error('All fallbacks failed:', finalError);
+      return res.status(500).json({
+        error: 'Failed to generate roadmap',
+        details: {
+          geminiError: geminiError.message,
+          finalError: finalError.message
+        },
+        suggestion: 'Please try again later or with a different goal description'
+      });
     }
   }
 });
