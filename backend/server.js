@@ -177,20 +177,36 @@ app.post('/api/generate-roadmap', async (req, res) => {
       error: 'Invalid input',
       details: 'Goal must be a non-empty string'
     });
-  };
-  
+  }
+
   // Process the goal input
   const processedGoal = goal.trim().substring(0, 100); // Limit length
 
   try {
     // Try Gemini first
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
-    const prompt = `Create a 5-step learning roadmap for becoming a ${processedGoal}`;
+    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
+    const prompt = `
+Create a 8-step learning roadmap for becoming a ${processedGoal}.
+For each step, include:
+- A title
+- A brief description of what should be learned or done at this step and time duration to complete this step
+
+Format it like this:
+1. Step Title - Description
+2. Step Title - Description
+3. Step Title - Description
+4. Step Title - Description
+5. Step Title - Description
+6. Step Title - Description
+7. Step Title - Description
+8. Step Title - Description
+`;
+
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const roadmapText = response.text();
 
-    // Save to database
+    // Save to Database
     const roadmap = new Roadmap({
       goal: processedGoal,
       content: roadmapText,
@@ -206,7 +222,7 @@ app.post('/api/generate-roadmap', async (req, res) => {
   } catch (geminiError) {
     console.error('Gemini API error:', geminiError);
 
-    // if AI fails, Predefined roadmaps
+    // if ai fails, Predefined roadmaps
     try {
       const predefinedRoadmap = getPredefinedRoadmap(processedGoal);
       const lowerGoal = processedGoal.toLowerCase();
@@ -253,7 +269,7 @@ function getPredefinedRoadmap(goal) {
   const lowerGoal = goal.toLowerCase();
 
   const roadmaps = {
-    'frontend': `Learn HTML fundamentals\n Master CSS and responsive design\n Learn JavaScript (ES6+)\ Choose a framework (React, Vue, Angular)\n Build portfolio projects\n Practice Interview questions`,
+    'frontend': `Learn HTML fundamentals\n Master CSS and responsive design\n Learn JavaScript (ES6+)\n Choose a framework (React, Vue, Angular)\n Build portfolio projects\n Practice Interview questions`,
     'backend': `Learn a server language (Node.js, Python, Java)\n Understand databases (SQL & NoSQL)\n Learn API development (REST, GraphQL)\n Study authentication & security\n Build scalable applications\n Practice Interview questions`,
     'data science': `Learn Python and data analysis (Pandas, NumPy)\n Study statistics fundamentals\n Learn data visualization (Matplotlib, Seaborn)\n Explore machine learning basics\n Work on real-world datasets`,
     'mobile': `Choose a platform (iOS/Swift or Android/Kotlin)\n Learn UI/UX principles\n Understand mobile architecture\n Study platform-specific APIs\n Publish an app to store`,
