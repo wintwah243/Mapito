@@ -8,7 +8,7 @@ import Bot from './Bot';
 const Hero = () => {
     const [goal, setGoal] = useState('');
     const [roadmap, setRoadmap] = useState([]);
-    const [details, setDetails] = useState([]);           
+    const [details, setDetails] = useState([]);          
     const [loading, setLoading] = useState(false);
     const [expandedIndex, setExpandedIndex] = useState(null);  
     const navigate = useNavigate();
@@ -43,14 +43,33 @@ const Hero = () => {
 
             const data = await response.json();
 
-            const steps = data.roadmap
+            const lines = data.roadmap
                 .split('\n')
-                .map(step => step.trim())
-                .filter(step => step.length > 0);
+                .map(line => line.replace(/\*/g, '').trim())
+                .filter(line => line.length > 0 && /^[1-9]\./.test(line));
+
+            const steps = [];
+            const parsedDescriptions = [];
+
+            lines.forEach(line => {
+                const match = line.match(/^\d+\.\s*(.+?)\s*-\s*(.+)$/);
+                if (match) {
+                    steps.push(match[1].trim());
+                    parsedDescriptions.push(match[2].trim());
+                } else {
+                    steps.push(line);
+                    parsedDescriptions.push("No description available.");
+                }
+            });
+
+            // Prefer backend `details` if available and length matches
+            const finalDescriptions =
+                Array.isArray(data.details) && data.details.length === steps.length
+                    ? data.details
+                    : parsedDescriptions;
 
             setRoadmap(steps);
-
-            setDetails(Array.isArray(data.details) ? data.details : new Array(steps.length).fill('No description available.'));
+            setDetails(finalDescriptions);
 
             await fetch('https://mapito.onrender.com/api/roadmaps', {
                 method: 'POST',
@@ -66,6 +85,7 @@ const Hero = () => {
             setLoading(false);
         }
     };
+
 
     const handleDownload = () => {
         const doc = new jsPDF();
@@ -100,7 +120,7 @@ const Hero = () => {
     };
 
     return (
-        <section id='hero' className="bg-white mt-10">
+        <section id='hero' className="bg-white mt-20">
             <div className="flex flex-col items-center justify-center px-4 py-12 sm:p-6 lg:p-8">
                 {/* Feature Tag */}
                 <div className="inline-flex items-center bg-gray-800 bg-opacity-70 text-blue-300 text-xs sm:text-sm md:text-base font-medium py-1.5 px-3 md:px-4 rounded-full mb-4 sm:mb-6 border border-blue-500/30 flex-wrap justify-center text-center max-w-xs sm:max-w-full">
@@ -111,7 +131,7 @@ const Hero = () => {
                 <motion.div className="w-full max-w-2xl text-center mb-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
 
                     <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 leading-tight">
-                        Get your AI-Powered <span className="text-blue-600"> Roadmap</span>
+                        Get your AI-Powered <span className="text-indigo-600"> Roadmap</span>
                     </h1>
                     <p className="text-base sm:text-lg text-gray-600 max-w-lg mx-auto">
                         Transform your learning goals into structured, actionable steps with personalized guidance.
@@ -131,7 +151,7 @@ const Hero = () => {
                         />
                         <button
                             onClick={handleGenerate}
-                            className="bg-gray-900 text-white rounded-lg p-3 font-medium text-sm sm:text-base duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                            className="bg-gray-900 text-white rounded-lg p-3 font-medium text-sm sm:text-base duration-200 flex items-center justify-center gap-2"
                             disabled={loading}
                         >
                             {loading ? (
@@ -157,7 +177,7 @@ const Hero = () => {
                             <div className="flex gap-3">
                                 <button
                                     onClick={handleDownload}
-                                    className="bg-blue-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center gap-2 cursor-pointer"
+                                    className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center gap-2"
                                 >
                                     <FaDownload /> Download PDF
                                 </button>
