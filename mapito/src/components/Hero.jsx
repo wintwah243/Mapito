@@ -9,7 +9,9 @@ import Bot from './Bot';
 const Hero = () => {
     const [goal, setGoal] = useState('');
     const [roadmap, setRoadmap] = useState([]);
+    const [details, setDetails] = useState([]);  
     const [loading, setLoading] = useState(false);
+    const [expandedIndex, setExpandedIndex] = useState(null); 
     const navigate = useNavigate();
 
     const icons = [
@@ -47,6 +49,7 @@ const Hero = () => {
                 .filter(step => step.length > 0);
 
             setRoadmap(steps);
+            setDetails(Array.isArray(data.details) ? data.details : new Array(steps.length).fill('No description available.'));
            await fetch('https://mapito.onrender.com/api/roadmaps', {
             method: 'POST',
             headers: {
@@ -160,20 +163,32 @@ const Hero = () => {
                         </div>
 
                         <div className="relative">
-                           <div className="flex flex-col gap-4 w-full">
-                                {roadmap.map((step, index) => (
-                                    <button
-                                        key={index}
-                                        className={`flex items-center justify-start gap-4 px-4 py-3 rounded-xl shadow-sm transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] text-left ${index % 2 === 0 ? 'bg-purple-100' : 'bg-blue-100'
-                                            }`}
-                                        onClick={() => alert(`Step ${index + 1}: ${step}`)} 
-                                    >
-                                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white text-gray-900 font-bold border border-gray-300">
-                                            {index + 1}
+                            <div className="flex flex-col gap-4 w-full">
+                                {roadmap.map((step, index) => {
+                                    const isExpanded = expandedIndex === index;
+                                    return (
+                                        <div
+                                            key={index}
+                                            onClick={() => setExpandedIndex(isExpanded ? null : index)}
+                                            className={`cursor-pointer rounded-xl shadow-sm transition-transform duration-200
+                                                ${index % 2 === 0 ? 'bg-purple-100' : 'bg-blue-100'} 
+                                                ${isExpanded ? 'scale-[1.02]' : ''}`}
+                                            style={{ padding: '12px 16px' }}
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white text-gray-900 font-bold border border-gray-300 select-none">
+                                                    {index + 1}
+                                                </div>
+                                                <span className="text-gray-800 text-sm sm:text-base font-medium">{step}</span>
+                                            </div>
+                                            {isExpanded && (
+                                                <p className="mt-3 text-gray-700 text-sm sm:text-base whitespace-pre-line">
+                                                    {details[index] || "No description available."}
+                                                </p>
+                                            )}
                                         </div>
-                                        <span className="text-gray-800 text-sm sm:text-base font-medium">{step}</span>
-                                    </button>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
