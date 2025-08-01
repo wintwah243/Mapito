@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FaRocket, FaLightbulb, FaCode, FaTools, FaCheckCircle, FaDownload } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import ReactMarkdown from 'react-markdown';
 import { jsPDF } from "jspdf";
 import { useNavigate } from 'react-router-dom';
 import Bot from './Bot';
@@ -9,9 +8,9 @@ import Bot from './Bot';
 const Hero = () => {
     const [goal, setGoal] = useState('');
     const [roadmap, setRoadmap] = useState([]);
-    const [details, setDetails] = useState([]);  
+    const [details, setDetails] = useState([]);           
     const [loading, setLoading] = useState(false);
-    const [expandedIndex, setExpandedIndex] = useState(null); 
+    const [expandedIndex, setExpandedIndex] = useState(null);  
     const navigate = useNavigate();
 
     const icons = [
@@ -43,21 +42,24 @@ const Hero = () => {
             });
 
             const data = await response.json();
+
             const steps = data.roadmap
                 .split('\n')
                 .map(step => step.trim())
                 .filter(step => step.length > 0);
 
             setRoadmap(steps);
+
             setDetails(Array.isArray(data.details) ? data.details : new Array(steps.length).fill('No description available.'));
-           await fetch('https://mapito.onrender.com/api/roadmaps', {
-            method: 'POST',
-            headers: {
+
+            await fetch('https://mapito.onrender.com/api/roadmaps', {
+                method: 'POST',
+                headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
-            },
-           body: JSON.stringify({ goal, roadmap: steps.join('\n') }),
-        });
+                },
+                body: JSON.stringify({ goal, roadmap: steps.join('\n') }),
+            });
         } catch (error) {
             console.error('Error generating roadmap:', error);
         } finally {
@@ -88,20 +90,26 @@ const Hero = () => {
 
     const handleClearRoadmap = () => {
         setRoadmap([]);
+        setDetails([]);
         setGoal('');
+        setExpandedIndex(null);
+    };
+
+    const toggleExpand = (index) => {
+        setExpandedIndex(prevIndex => (prevIndex === index ? null : index));
     };
 
     return (
-        <section id='hero' className="bg-white mt-10 lg:mt-20">
+        <section id='hero' className="bg-white">
             <div className="flex flex-col items-center justify-center px-4 py-12 sm:p-6 lg:p-8">
                 {/* Feature Tag */}
                 <div className="inline-flex items-center bg-gray-800 bg-opacity-70 text-blue-300 text-xs sm:text-sm md:text-base font-medium py-1.5 px-3 md:px-4 rounded-full mb-4 sm:mb-6 border border-blue-500/30 flex-wrap justify-center text-center max-w-xs sm:max-w-full">
                     <span className="text-blue-400 mr-2 text-xs">●</span>
                     <span className="whitespace-nowrap"> You've successfully logged in!  </span>
-                    {/* <Link to="/notice" className="ml-1 underline whitespace-nowrap">Mapito </Link> */}
                 </div>
                 {/* Header */}
                 <motion.div className="w-full max-w-2xl text-center mb-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+
                     <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 leading-tight">
                         Get your AI-Powered <span className="text-blue-600"> Roadmap</span>
                     </h1>
@@ -149,7 +157,7 @@ const Hero = () => {
                             <div className="flex gap-3">
                                 <button
                                     onClick={handleDownload}
-                                    className="bg-blue-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center gap-2 cursor-pointer"
+                                    className="bg-blue-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center gap-2 cursor-pointer"
                                 >
                                     <FaDownload /> Download PDF
                                 </button>
@@ -194,8 +202,8 @@ const Hero = () => {
                     </div>
                 )}
             </div>
-        <Bot />
- </section>
+            <Bot />
+        </section>
     );
 };
 
