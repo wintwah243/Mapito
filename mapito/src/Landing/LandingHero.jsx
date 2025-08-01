@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { FaRocket, FaLightbulb, FaCode, FaTools, FaCheckCircle } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 export default function Hero() {
     const [goal, setGoal] = useState('');
+    const navigate = useNavigate();
 
     const demoRoadmap = [
         "Learn HTML & CSS Fundamentals",
@@ -14,13 +15,6 @@ export default function Hero() {
         "Understand APIs and HTTP Requests",
         "Practice Responsive Design",
         "Prepare for Interviews"
-    ];
-    const icons = [
-        <FaRocket className="text-white" size={18} />,
-        <FaLightbulb className="text-white" size={18} />,
-        <FaCode className="text-white" size={18} />,
-        <FaTools className="text-white" size={18} />,
-        <FaCheckCircle className="text-white" size={18} />
     ];
 
     return (
@@ -89,4 +83,4 @@ export default function Hero() {
             </div>
         </section>
     );
-};
+}
