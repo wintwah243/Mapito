@@ -276,6 +276,7 @@ function getPredefinedRoadmap(goal) {
     'devops': `Learn Linux fundamentals\n Master version control (Git)\n Understand CI/CD pipelines\n Learn containerization (Docker)\n Study cloud platforms (AWS, GCP, Azure)`,
     'ui/ux': `Study user psychology & behavior\n Learn Figma or Adobe XD for wireframing & prototyping\n Practice designing mobile-first and responsive layouts\n Understand UX research (surveys, interviews, testing)\n Create design systems and component libraries\n Build personal portfolio`,
     'ai': `Learn Python programming (NumPy, Pandas)\n Understand linear algebra & calculus basics\n Study machine learning algorithms (supervised, unsupervised)\n Learn popular ML libraries (scikit-learn, TensorFlow, PyTorch)\n Practice model evaluation & tuning\n Build projects like image recognition or chatbots\n Explore AI ethics and real-world applications`,
+    'clouc': `Understand cloud fundamentals (IaaS, PaaS, SaaS)\n Learn a cloud platform (AWS, Azure, GCP)\n Study core services (compute, storage, networking)\n Practice deploying apps using cloud services\n Learn CI/CD and infrastructure as code (Terraform, CloudFormation)\n Understand cloud security and compliance\n Prepare for cloud certifications (e.g., AWS Certified Cloud Practitioner)`,
   };
 
   // Find the best matching roadmap
