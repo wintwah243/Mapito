@@ -196,8 +196,7 @@ app.post('/api/generate-roadmap', async (req, res) => {
 Create an 8-step learning roadmap for becoming a ${processedGoal}.
 For each step, include:
 - A title with 3 or 4 words
-- A brief description of what should be learned or done at this step and time duration to complete this step
-- A resource link to learn for this step
+- A brief description of what should be learned or done at this step and time duration to complete this step and resource link to learn like w3 school
 
 Format it like this:
 1. Step Title - Description
