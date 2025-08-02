@@ -191,7 +191,7 @@ app.post('/api/generate-roadmap', async (req, res) => {
   const processedGoal = goal.trim().substring(0, 100).toLowerCase();
 
   try {
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
     const prompt = `
 Create an 8-step learning roadmap for becoming a ${processedGoal}.
 For each step, include:
