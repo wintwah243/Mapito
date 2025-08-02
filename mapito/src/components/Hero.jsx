@@ -131,7 +131,7 @@ const Hero = () => {
                 <motion.div className="w-full max-w-2xl text-center mb-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
 
                     <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 leading-tight">
-                        Get your AI-Powered <span className="text-indigo-600"> Roadmap</span>
+                        Get your AI-Powered <span className="text-blue-600"> Roadmap</span>
                     </h1>
                     <p className="text-base sm:text-lg text-gray-600 max-w-lg mx-auto">
                         Transform your learning goals into structured, actionable steps with personalized guidance.
@@ -151,7 +151,7 @@ const Hero = () => {
                         />
                         <button
                             onClick={handleGenerate}
-                            className="bg-gray-900 text-white rounded-lg p-3 font-medium text-sm sm:text-base duration-200 flex items-center justify-center gap-2"
+                            className="bg-gray-900 text-white rounded-lg p-3 font-medium text-sm sm:text-base duration-200 flex items-center justify-center gap-2 cursor-pointer"
                             disabled={loading}
                         >
                             {loading ? (
@@ -177,7 +177,7 @@ const Hero = () => {
                             <div className="flex gap-3">
                                 <button
                                     onClick={handleDownload}
-                                    className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center gap-2"
+                                    className="bg-blue-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center gap-2"
                                 >
                                     <FaDownload /> Download PDF
                                 </button>
