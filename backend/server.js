@@ -201,7 +201,7 @@ Just generate an 8-step learning roadmap for becoming a ${processedGoal}.
 
 Each step must have:
 - A short title (3–4 words)
-- A short description of what to learn/do and time duration (e.g., 2-3 weeks)
+- A brief description of what should be learned or done at this step and time duration (e.g., 2-3 weeks)
 
 Format:
 1. Step Title - Description (Time: X weeks) 
