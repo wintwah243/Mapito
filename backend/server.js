@@ -212,6 +212,7 @@ Format it like this:
       source: 'gemini'
     }).save();
 
+
     return res.json({ roadmap: roadmapText, source: 'gemini' });
 
   } catch (geminiError) {
@@ -241,7 +242,6 @@ Format it like this:
         details,
         warning: 'Using predefined fallback roadmap'
       });
-
     } catch (finalError) {
       console.error('All fallbacks failed:', finalError.message);
       return res.status(500).json({
