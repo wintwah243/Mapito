@@ -46,7 +46,7 @@ const Hero = () => {
             const lines = data.roadmap
                 .split('\n')
                 .map(line => line.replace(/\*/g, '').trim())
-                .filter(line => line.length > 0 && /^[1-9]\./.test(line));
+                .filter(line => line.length > 0); 
 
             const steps = [];
             const parsedDescriptions = [];
