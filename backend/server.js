@@ -141,34 +141,43 @@ const roadmapDetails = {
     "Understand continuous integration and deployment pipelines.",
     "Learn containerization technologies like Docker.",
     "Explore cloud platforms: AWS, GCP, and Azure fundamentals.",
-  ],
-  uiux: [
-  "UI/UX starts with understanding user needs and behaviors through research.",
-  "Wireframing helps structure content clearly before visual design begins.",
-  "Use tools like Figma, Sketch, or Adobe XD to design interfaces.",
-  "Focus on color theory, typography, spacing, and visual hierarchy.",
-  "Test designs with users to gather feedback and improve usability.",
-  "Build a portfolio showing your design process from idea to prototype."
-  ],
-  ai: [
-  "Start with Python, the most widely used language in AI development.",
-  "Learn linear algebra, calculus, probability, and statistics foundations.",
-  "Understand machine learning concepts like supervised and unsupervised learning.",
-  "Explore popular libraries like NumPy, Pandas, Scikit-learn, and TensorFlow.",
-  "Build small projects like image classifiers or sentiment analyzers.",
-  "Practice solving real-world problems and study AI ethics and limitations."
-  ],
-  cloud: [
-  "Understand the basics of cloud computing and its service models (IaaS, PaaS, SaaS).",
-  "Learn core services of major providers like AWS, Azure, or Google Cloud.",
-  "Get hands-on with virtual machines, storage, and networking in the cloud.",
-  "Study DevOps tools like Docker, Kubernetes, and CI/CD pipelines.",
-  "Practice deploying web apps and managing cloud infrastructure.",
-  "Prepare for certifications like AWS Certified Cloud Practitioner or Azure Fundamentals."
-  ],
+  ]
 };
 
-// API route
+function getPredefinedRoadmap(goal) {
+  const lowerGoal = goal.toLowerCase();
+
+  const roadmaps = {
+    frontend: `Learn HTML fundamentals\n Master CSS and responsive design\n Learn JavaScript (ES6+)\n Choose a framework (React, Vue, Angular)\n Build portfolio projects\n Practice interview questions`,
+    backend: `Learn a server language (Node.js, Python, Java)\n Understand databases (SQL & NoSQL)\n Learn API development (REST, GraphQL)\n Study authentication & security\n Build scalable applications`,
+    data: `Learn Python and data analysis (Pandas, NumPy)\n Study statistics fundamentals\n Learn data visualization (Matplotlib, Seaborn)\n Explore machine learning basics\n Work on real-world datasets`,
+    mobile: `Choose a platform (iOS/Swift or Android/Kotlin)\n Learn UI/UX principles\n Understand mobile architecture\n Study platform-specific APIs\n Publish an app to store`,
+    devops: `Learn Linux fundamentals\n Master version control (Git)\n Understand CI/CD pipelines\n Learn containerization (Docker)\n Study cloud platforms (AWS, GCP, Azure)`
+  };
+
+  for (const [key, roadmap] of Object.entries(roadmaps)) {
+    if (lowerGoal.includes(key)) {
+      return roadmap;
+    }
+  }
+
+  // Generic fallback roadmap
+  return `Research ${goal} fundamentals\n Find quality learning resources\n Practice consistently\n Build small projects\n Seek feedback and iterate`;
+}
+
+function getGenericFallbackSteps(goal) {
+  return [
+    `Understand the basics of ${goal}`,
+    `Find quality tutorials or courses about ${goal}`,
+    `Practice core concepts regularly`,
+    `Start small projects using ${goal}`,
+    `Explore real-world use cases`,
+    `Join communities or forums around ${goal}`,
+    `Get feedback and improve your work`,
+    `Prepare a final project to showcase your ${goal} skills`
+  ];
+}
+
 app.post('/api/generate-roadmap', async (req, res) => {
   const { goal } = req.body;
 
@@ -179,79 +188,62 @@ app.post('/api/generate-roadmap', async (req, res) => {
     });
   }
 
-  // Process the goal input
-  const processedGoal = goal.trim().substring(0, 100); // Limit length
+  const processedGoal = goal.trim().substring(0, 100).toLowerCase();
 
   try {
-    // Try Gemini first
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
     const prompt = `
-Create a 8-step learning roadmap for becoming a ${processedGoal}.
+Create an 8-step learning roadmap for becoming a ${processedGoal}.
 For each step, include:
 - A title
 - A brief description of what should be learned or done at this step and time duration to complete this step
 
 Format it like this:
 1. Step Title - Description
-2. Step Title - Description
-3. Step Title - Description
-4. Step Title - Description
-5. Step Title - Description
-6. Step Title - Description
-7. Step Title - Description
-8. Step Title - Description
-`;
-
+...
+    `;
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const roadmapText = response.text();
 
-    // Save to Database
-    const roadmap = new Roadmap({
+    await new Roadmap({
       goal: processedGoal,
       content: roadmapText,
       source: 'gemini'
-    });
-    await roadmap.save();
+    }).save();
 
-    return res.json({
-      roadmap: roadmapText,
-      source: 'gemini'
-    });
+    return res.json({ roadmap: roadmapText, source: 'gemini' });
 
   } catch (geminiError) {
-    console.error('Gemini API error:', geminiError);
+    console.error('Gemini API error:', geminiError.message);
 
-    // if ai fails, Predefined roadmaps
     try {
-      const predefinedRoadmap = getPredefinedRoadmap(processedGoal);
-      const lowerGoal = processedGoal.toLowerCase();
+      const matchedKey = Object.keys(roadmapDetails).find(key =>
+        processedGoal.includes(key)
+      );
 
-      let details = [];
+      const details = matchedKey
+        ? roadmapDetails[matchedKey]
+        : getGenericFallbackSteps(processedGoal);
 
-      for (const key of Object.keys(roadmapDetails)) {
-        if (lowerGoal.includes(key)) {
-          details = roadmapDetails[key];
-          break;
-        }
-      }
-      // Save to DB
-      const roadmap = new Roadmap({
+      const roadmap = getPredefinedRoadmap(matchedKey || processedGoal);
+
+      await new Roadmap({
         goal: processedGoal,
-        details,
-        content: predefinedRoadmap,
-        source: 'predefined'
-      });
-      await roadmap.save();
+        content: roadmap,
+        source: 'predefined',
+        details
+      }).save();
 
       return res.json({
-        roadmap: predefinedRoadmap,
+        roadmap,
         source: 'predefined',
         details,
-        warning: 'Using generic roadmap template'
+        warning: 'Using predefined fallback roadmap'
       });
+
     } catch (finalError) {
-      console.error('All fallbacks failed:', finalError);
+      console.error('All fallbacks failed:', finalError.message);
       return res.status(500).json({
         error: 'Failed to generate roadmap',
         details: {
@@ -263,32 +255,6 @@ Format it like this:
     }
   }
 });
-
-// Enhanced predefined roadmaps
-function getPredefinedRoadmap(goal) {
-  const lowerGoal = goal.toLowerCase();
-
-  const roadmaps = {
-    'frontend': `Learn HTML fundamentals\n Master CSS and responsive design\n Learn JavaScript (ES6+)\n Choose a framework (React, Vue, Angular)\n Build portfolio projects\n Practice Interview questions`,
-    'backend': `Learn a server language (Node.js, Python, Java)\n Understand databases (SQL & NoSQL)\n Learn API development (REST, GraphQL)\n Study authentication & security\n Build scalable applications\n Practice Interview questions`,
-    'data science': `Learn Python and data analysis (Pandas, NumPy)\n Study statistics fundamentals\n Learn data visualization (Matplotlib, Seaborn)\n Explore machine learning basics\n Work on real-world datasets`,
-    'mobile': `Choose a platform (iOS/Swift or Android/Kotlin)\n Learn UI/UX principles\n Understand mobile architecture\n Study platform-specific APIs\n Publish an app to store`,
-    'devops': `Learn Linux fundamentals\n Master version control (Git)\n Understand CI/CD pipelines\n Learn containerization (Docker)\n Study cloud platforms (AWS, GCP, Azure)`,
-    'ui/ux': `Study user psychology & behavior\n Learn Figma or Adobe XD for wireframing & prototyping\n Practice designing mobile-first and responsive layouts\n Understand UX research (surveys, interviews, testing)\n Create design systems and component libraries\n Build personal portfolio`,
-    'ai': `Learn Python programming (NumPy, Pandas)\n Understand linear algebra & calculus basics\n Study machine learning algorithms (supervised, unsupervised)\n Learn popular ML libraries (scikit-learn, TensorFlow, PyTorch)\n Practice model evaluation & tuning\n Build projects like image recognition or chatbots\n Explore AI ethics and real-world applications`,
-    'cloud': `Understand cloud fundamentals (IaaS, PaaS, SaaS)\n Learn a cloud platform (AWS, Azure, GCP)\n Study core services (compute, storage, networking)\n Practice deploying apps using cloud services\n Learn CI/CD and infrastructure as code (Terraform, CloudFormation)\n Understand cloud security and compliance\n Prepare for cloud certifications (e.g., AWS Certified Cloud Practitioner)`,
-  };
-
-  // Find the best matching roadmap
-  for (const [key, roadmap] of Object.entries(roadmaps)) {
-    if (lowerGoal.includes(key)) {
-      return roadmap;
-    }
-  }
-
-  // Generic fallback roadmap
-  return `1. Research ${goal} fundamentals\n2. Find quality learning resources\n3. Practice consistently\n4. Build small projects\n5. Seek feedback and iterate`;
-}
 
 // Format the roadmap response consistently
 function formatRoadmapResponse(text) {
