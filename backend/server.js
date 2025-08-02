@@ -193,15 +193,23 @@ app.post('/api/generate-roadmap', async (req, res) => {
   try {
     const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
     const prompt = `
-Create an 8-step learning roadmap for becoming a ${processedGoal}.
-For each step, include:
-- A title with 3 or 4 words
-- A brief description of what should be learned or done at this step and time duration to complete this step and resource link to learn like w3 school
+You are an expert instructor.
 
-Format it like this:
-1. Step Title - Description
-...
-    `;
+Do not explain or interpret the topic.
+
+Just generate an 8-step learning roadmap for becoming a ${processedGoal}.
+
+Each step must have:
+- A short title (3–4 words)
+- A short description of what to learn/do
+- Estimated time duration (e.g., 2-3 weeks)
+- A resource link (e.g., W3Schools)
+
+Format:
+1. Step Title - Description (Time: X weeks) [Resource Link]
+2. ...
+Only include the steps. Do not add anything before or after the list.
+`;
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const roadmapText = response.text();
