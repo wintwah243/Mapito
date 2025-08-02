@@ -201,12 +201,10 @@ Just generate an 8-step learning roadmap for becoming a ${processedGoal}.
 
 Each step must have:
 - A short title (3–4 words)
-- A short description of what to learn/do
-- Estimated time duration (e.g., 2-3 weeks)
-- A resource link (e.g., W3Schools)
+- A short description of what to learn/do and time duration (e.g., 2-3 weeks)
 
 Format:
-1. Step Title - Description (Time: X weeks) [Resource Link]
+1. Step Title - Description (Time: X weeks) 
 2. ...
 Only include the steps. Do not add anything before or after the list.
 `;
