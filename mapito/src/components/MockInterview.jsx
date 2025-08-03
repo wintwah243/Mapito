@@ -5,7 +5,6 @@ import {
   FaPlay,
   FaStop,
   FaMicrophone,
-  FaVideo,
   FaPaperPlane,
   FaRobot,
   FaUser,
@@ -18,7 +17,7 @@ function MockInterview() {
   const [started, setStarted] = useState(false);
   const [error, setError] = useState('');
   const [isRecording, setIsRecording] = useState(false);
-  const [videoEnabled, setVideoEnabled] = useState(false);
+  const videoEnabled = true;
   const [interimTranscript, setInterimTranscript] = useState('');
   const [finalTranscript, setFinalTranscript] = useState('');
 
@@ -121,46 +120,36 @@ function MockInterview() {
     setIsRecording(!isRecording);
   };
 
-  const initMedia = async () => {
+  const handleStart = async () => {
+  if (!role.trim()) return setError('Please enter a job role');
+  setError('');
+  setStarted(true);
+  setLoading(true);
+
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: videoEnabled,
-      audio: true,
+    await initMedia(); 
+
+    initSpeechRecognition();
+
+    const res = await fetch('https://mapito.onrender.com/api/mock-interview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role }),
     });
-    if (videoEnabled && videoRef.current) {
-      videoRef.current.srcObject = stream;
+
+    const data = await res.json();
+    if (res.ok) {
+      setConversation([{ from: 'ai', text: data.message }]);
+    } else {
+      setError(data.error || 'Failed to start interview');
     }
   } catch {
-    setError('Could not access microphone/camera');
+    setError('Network error');
   }
+
+  setLoading(false);
 };
 
-  const handleStart = async () => {
-    if (!role.trim()) return setError('Please enter a job role');
-    setError('');
-    setStarted(true);
-    setLoading(true);
-    try {
-      await initMedia();
-      initSpeechRecognition();
-
-      const res = await fetch('https://mapito.onrender.com/api/mock-interview', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role }),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        setConversation([{ from: 'ai', text: data.message }]);
-      } else {
-        setError(data.error || 'Failed to start interview');
-      }
-    } catch {
-      setError('Network error');
-    }
-    setLoading(false);
-  };
 
   const handleSendAnswer = async () => {
     const answer = (finalTranscript + ' ' + interimTranscript).trim();
@@ -249,7 +238,7 @@ function MockInterview() {
           <div className="bg-white shadow-md rounded-xl p-6 md:p-10">
             <h1 className="text-3xl font-semibold text-gray-800 flex items-center mb-2">
               <FaRobot className="text-blue-600 mr-3" />
-              Improve Your Coding Interview Skills
+              Practice Your Job Interview Skills
             </h1>
             <p className="text-gray-600 mb-8">
               Practice your job interview skills using AI. Get instant feedback on your spoken or
@@ -274,20 +263,6 @@ function MockInterview() {
                     onChange={(e) => setRole(e.target.value)}
                     disabled={loading}
                   />
-                </div>
-
-                <div className="flex gap-4 items-center">
-                  <button
-                    onClick={() => setVideoEnabled(!videoEnabled)}
-                    disabled={loading}
-                    className={`px-4 py-2 rounded-lg font-medium flex items-center gap-2 ${videoEnabled
-                        ? 'bg-green-100 text-green-800 border border-green-300'
-                        : 'bg-gray-100 text-gray-700 border border-gray-300'
-                      }`}
-                  >
-                    <FaVideo />
-                    {videoEnabled ? 'Video On' : 'Video Off'}
-                  </button>
                 </div>
 
                 <button
@@ -409,7 +384,6 @@ function MockInterview() {
       <Footer />
     </section>
   );
-
 }
 
-export default MockInterview;
+export default MockInterview
