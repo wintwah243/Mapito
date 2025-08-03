@@ -20,7 +20,7 @@ const ForgotPassword = () => {
   const userValid = async () => {
     try {
       //sends a GET request to the backend with a user ID and token to handle password reset verification
-      const res = await fetch(`http://localhost:8000/api/auth/forgotpassword/${id}/${token}`, {
+      const res = await fetch(`https://mapito.onrender.com/api/auth/forgotpassword/${id}/${token}`, {
         //it is GET method but header is needed because forgotpassword route has authentication
         method: "GET",
         headers: {
