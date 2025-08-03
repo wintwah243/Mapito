@@ -92,6 +92,19 @@ const Login = () => {
         Let AI create your perfect path forward – welcome to Mapito, your intelligent learning platform.
         </p>
 
+        {/* Google Sign In */}
+        <button
+          onClick={loginWithGoogle}
+          className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-md py-2 px-4 text-sm font-medium text-gray-700 hover:shadow-md transition duration-150 mb-6"
+        >
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google logo"
+            className="w-5 h-5"
+          />
+          Sign in with Google
+        </button>
+
         <form onSubmit={handleLogin}>
           <Input
             value={email}
@@ -121,8 +134,6 @@ const Login = () => {
             <Link className='font-medium text-indigo-700 underline' to="/signup">Signup</Link>
           </p>
         </form>
-
-        <button className='google-btn mt-4' onClick={loginWithGoogle}>Sign in with Google</button>
       </div>
     </AuthLayout>
   );
