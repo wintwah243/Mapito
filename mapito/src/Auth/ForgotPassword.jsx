@@ -65,7 +65,7 @@ const ForgotPassword = () => {
 
     try {
       //send a POST request to the backend with id and token
-      const res = await fetch(`http://localhost:8000/api/auth/${id}/${token}`, {
+      const res = await fetch(`https://mapito.onrender.com/api/auth/${id}/${token}`, {
         //header is needed becos of POST method
         method: "POST",
         headers: {
