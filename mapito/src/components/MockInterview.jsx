@@ -48,19 +48,21 @@ function MockInterview() {
     setInterimTranscript('');
   };
 
-  const initWebcam = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    } catch {
-      setError('Could not access camera/microphone');
+  const initMedia = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+    if (videoRef.current) {
+      videoRef.current.srcObject = stream;
     }
-  };
+  } catch (err) {
+    console.error('media error', err);
+    setError('Could not access camera or microphone');
+    throw err;
+  }
+};
 
   const initSpeechRecognition = () => {
     const SpeechRecognition =
