@@ -413,7 +413,6 @@ function getPredefinedInterviewResponse(role, answer, history) {
     'devops': 'DevOps Engineer'
   };
 
-  // Normalize role
   const normalizedRole = Object.keys(roles).find(key =>
     role.toLowerCase().includes(key)) || 'technical';
 
@@ -450,31 +449,46 @@ function getPredefinedInterviewResponse(role, answer, history) {
     ]
   };
 
+  const followUpPrompt = "Do you have any questions for me about this role?";
+  const closingStatement = "Thanks for the great conversation. That concludes our mock interview session. Good luck!";
+
   // If no answer provided, return first question
   if (!answer) {
     return questions[normalizedRole][0];
   }
 
-  // If answer provided, give generic feedback and next question
-  const usedQuestions = history ?
-    questions[normalizedRole].filter(q => history.includes(q)) : [];
+  const usedQuestions = history
+    ? questions[normalizedRole].filter(q => history.includes(q))
+    : [];
 
   const availableQuestions = questions[normalizedRole].filter(
     q => !usedQuestions.includes(q)
   );
 
-  const nextQuestion = availableQuestions.length > 0
-    ? availableQuestions[0]
-    : "Do you have any questions for me about this role?";
+  // If all questions have been asked and follow-up was already sent, end the interview
+  if (availableQuestions.length === 0 && history?.includes(followUpPrompt)) {
+    return closingStatement;
+  }
 
-  return `Thanks for your answer. ${[
+  // If all technical questions are done, send follow-up prompt
+  if (availableQuestions.length === 0) {
+    return followUpPrompt;
+  }
+
+  // Otherwise, continue with next question
+  const nextQuestion = availableQuestions[0];
+  const feedbacks = [
     "That's an interesting perspective.",
     "Good approach to the problem.",
     "Thanks for explaining your thought process.",
     "That's a valid way to look at it.",
     "I appreciate your detailed response."
-  ][Math.floor(Math.random() * 5)]} Next question: ${nextQuestion}`;
-}
+  ];
+
+  return `Thanks for your answer. ${
+    feedbacks[Math.floor(Math.random() * feedbacks.length)]
+  } Next question: ${nextQuestion}`;
+};
 
 //api route for summarize note
 app.post('/api/summarize-note', async (req, res) => {
