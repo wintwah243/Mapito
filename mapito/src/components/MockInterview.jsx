@@ -20,24 +20,30 @@ function MockInterview() {
   const videoEnabled = true;
   const [interimTranscript, setInterimTranscript] = useState('');
   const [finalTranscript, setFinalTranscript] = useState('');
+  const maxQuestions = 5;
+  const [questionCount, setQuestionCount] = useState(0);
+  const [interviewType, setInterviewType] = useState('ai'); 
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const predefinedQuestions = [
+    'Tell me about yourself.',
+    'What are your strengths and weaknesses?',
+    'Why do you want this job?',
+    'Describe a challenging project you worked on.',
+    'Where do you see yourself in 5 years?',
+  ];
 
   const videoRef = useRef(null);
   const recognitionRef = useRef(null);
 
   const handleStop = () => {
-    // Stop webcam
     if (videoRef.current?.srcObject) {
       videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
       videoRef.current.srcObject = null;
     }
-
-    // Stop speech recognition
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       recognitionRef.current = null;
     }
-
-    // Reset states
     setStarted(false);
     setConversation([]);
     setRole('');
@@ -46,27 +52,12 @@ function MockInterview() {
     setError('');
     setFinalTranscript('');
     setInterimTranscript('');
+    setQuestionCount(0);
+    setCurrentQuestionIndex(0);
   };
 
-  const initMedia = async () => {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream;
-    }
-  } catch (err) {
-    console.error('media error', err);
-    setError('Could not access camera or microphone');
-    throw err;
-  }
-};
-
   const initSpeechRecognition = () => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition)
       return setError('Speech recognition not supported in this browser');
 
@@ -89,9 +80,7 @@ function MockInterview() {
       }
 
       if (final) {
-        // Append final transcript to finalTranscript state
         setFinalTranscript((prev) => (prev ? prev + ' ' + final.trim() : final.trim()));
-        // Clear interim transcript when final transcript is appended
         setInterimTranscript('');
       } else {
         setInterimTranscript(interim);
@@ -111,76 +100,114 @@ function MockInterview() {
 
   const toggleRecording = () => {
     if (!recognitionRef.current) return;
-
     if (isRecording) {
       recognitionRef.current.stop();
     } else {
-      setFinalTranscript(''); // Reset final transcript on new recording start
+      setFinalTranscript('');
       recognitionRef.current.start();
       setError('');
     }
     setIsRecording(!isRecording);
   };
 
-  const handleStart = async () => {
-  if (!role.trim()) return setError('Please enter a job role');
-  setError('');
-  setStarted(true);
-  setLoading(true);
-
-  try {
-    await initMedia(); 
-
-    initSpeechRecognition();
-
-    const res = await fetch('https://mapito.onrender.com/api/mock-interview', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ role }),
-    });
-
-    const data = await res.json();
-    if (res.ok) {
-      setConversation([{ from: 'ai', text: data.message }]);
-    } else {
-      setError(data.error || 'Failed to start interview');
+  const initMedia = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      if (videoRef.current) videoRef.current.srcObject = stream;
+    } catch {
+      setError('Could not access camera/microphone');
     }
-  } catch {
-    setError('Network error');
-  }
+  };
 
-  setLoading(false);
-};
-
-
-  const handleSendAnswer = async () => {
-    const answer = (finalTranscript + ' ' + interimTranscript).trim();
-    if (!answer) return;
-
+  const handleStart = async () => {
+    if (!role.trim()) return setError('Please enter a job role');
+    setError('');
+    setQuestionCount(0);
+    setStarted(true);
     setLoading(true);
-    const history = conversation.map((msg) => `${msg.from}: ${msg.text}`).join('\n');
 
     try {
-      const res = await fetch('https://mapito.onrender.com/api/mock-interview', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role, answer, history }),
-      });
+      await initMedia();
+      initSpeechRecognition();
 
-      const data = await res.json();
-      if (res.ok) {
-        setConversation((prev) => [
-          ...prev,
-          { from: 'user', text: answer },
-          { from: 'ai', text: data.message },
-        ]);
-        setFinalTranscript('');
-        setInterimTranscript('');
+      if (interviewType === 'ai') {
+        const res = await fetch('https://mapito.onrender.com/api/mock-interview', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role }),
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          setConversation([{ from: 'ai', text: data.message }]);
+        } else {
+          setError(data.error || 'Failed to start interview');
+        }
       } else {
-        setError(data.error || 'Failed to process answer');
+        setConversation([{ from: 'ai', text: predefinedQuestions[0] }]);
       }
     } catch {
       setError('Network error');
+    }
+
+    setLoading(false);
+  };
+
+  const handleSendAnswer = async () => {
+    const answer = (finalTranscript + ' ' + interimTranscript).trim();
+    if (!answer || loading) return;
+    setLoading(true);
+
+    if (interviewType === 'ai') {
+      const history = conversation.map((msg) => `${msg.from}: ${msg.text}`).join('\n');
+
+      try {
+        const res = await fetch('https://mapito.onrender.com/api/mock-interview', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role, answer, history }),
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          const newCount = questionCount + 1;
+
+          setConversation((prev) => [
+            ...prev,
+            { from: 'user', text: answer },
+            { from: 'ai', text: data.message },
+          ]);
+          setQuestionCount(newCount);
+          setFinalTranscript('');
+          setInterimTranscript('');
+
+          if (newCount >= maxQuestions) {
+            setTimeout(() => handleStop(), 2000);
+          }
+        } else {
+          setError(data.error || 'Failed to process answer');
+        }
+      } catch {
+        setError('Network error');
+      }
+    } else {
+      const newIndex = currentQuestionIndex + 1;
+      const nextQuestion = predefinedQuestions[newIndex];
+
+      setConversation((prev) => [
+        ...prev,
+        { from: 'user', text: answer },
+        nextQuestion ? { from: 'ai', text: nextQuestion } : null,
+      ].filter(Boolean));
+
+      setCurrentQuestionIndex(newIndex);
+      setQuestionCount(newIndex);
+      setFinalTranscript('');
+      setInterimTranscript('');
+
+      if (newIndex >= maxQuestions) {
+        setTimeout(() => handleStop(), 2000);
+      }
     }
 
     setLoading(false);
@@ -240,7 +267,7 @@ function MockInterview() {
           <div className="bg-white shadow-md rounded-xl p-6 md:p-10">
             <h1 className="text-3xl font-semibold text-gray-800 flex items-center mb-2">
               <FaRobot className="text-blue-600 mr-3" />
-              Practice Your Job Interview Skills
+              Improve Your Coding Interview Skills
             </h1>
             <p className="text-gray-600 mb-8">
               Practice your job interview skills using AI. Get instant feedback on your spoken or
@@ -386,6 +413,7 @@ function MockInterview() {
       <Footer />
     </section>
   );
+
 }
 
 export default MockInterview
