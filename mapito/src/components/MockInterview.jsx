@@ -121,13 +121,27 @@ function MockInterview() {
     setIsRecording(!isRecording);
   };
 
+  const initMedia = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: videoEnabled,
+      audio: true,
+    });
+    if (videoEnabled && videoRef.current) {
+      videoRef.current.srcObject = stream;
+    }
+  } catch {
+    setError('Could not access microphone/camera');
+  }
+};
+
   const handleStart = async () => {
     if (!role.trim()) return setError('Please enter a job role');
     setError('');
     setStarted(true);
     setLoading(true);
     try {
-      if (videoEnabled) await initWebcam();
+      await initMedia();
       initSpeechRecognition();
 
       const res = await fetch('https://mapito.onrender.com/api/mock-interview', {
