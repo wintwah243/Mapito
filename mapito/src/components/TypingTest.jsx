@@ -16,6 +16,7 @@ const TypingTest = () => {
   const [charStats, setCharStats] = useState({ correct: 0, incorrect: 0 });
   const [wpmData, setWpmData] = useState([]);
   const [history, setHistory] = useState([]);
+  const [showTimeUpBox, setShowTimeUpBox] = useState(false);
 
   const inputRef = useRef();
   const timerRef = useRef(null);
@@ -73,6 +74,7 @@ const TypingTest = () => {
           const wordsTyped = charStats.correct / 5;
           const currentWpm = Math.round(wordsTyped / minutes);
           setWpmData((data) => [...data, { time: elapsedSeconds, wpm: currentWpm }]);
+          setWpm(currentWpm);
           return prev - 1;
         });
       }, 1000);
@@ -83,6 +85,9 @@ const TypingTest = () => {
   }, [testActive, timeLeft, testComplete]);
 
   const handleChange = (e) => {
+
+    if (testComplete || timeLeft <= 0) return;
+
     const value = e.target.value;
     setUserInput(value);
     if (!testActive && value.length > 0) {
@@ -108,19 +113,33 @@ const TypingTest = () => {
   };
 
   const finishTest = () => {
+    setShowTimeUpBox(true);
+    setTimeout(() => setShowTimeUpBox(false), 3000);
     setTestActive(false);
     clearTimer();
+
+    if (!startTime) {
+      setWpm(0);
+      setAccuracy(0);
+      return;
+    }
+
     const endTime = Date.now();
     const minutes = (endTime - startTime) / 1000 / 60;
     const words = charStats.correct / 5;
     const acc = userInput.length > 0 ? (charStats.correct / userInput.length) * 100 : 0;
-    const result = { date: new Date().toLocaleString(), wpm: Math.round(words / minutes), accuracy: Math.round(acc) };
+    const result = {
+      date: new Date().toLocaleString(),
+      wpm: Math.round(words / minutes),
+      accuracy: Math.round(acc),
+    };
     const updatedHistory = [result, ...history.slice(0, 9)];
     localStorage.setItem("typingHistory", JSON.stringify(updatedHistory));
     setHistory(updatedHistory);
     setWpm(result.wpm);
     setAccuracy(result.accuracy);
   };
+
 
   const getCharClass = (char, i) => {
     if (!userInput[i]) return "text-gray-400";
@@ -209,23 +228,26 @@ const TypingTest = () => {
               </div>
             )}
 
-            {/* {history.length > 0 && (
-              <div className="bg-white p-4 rounded-xl shadow-md mt-4">
-                <h2 className="text-lg font-semibold text-gray-700 mb-2">Personal Typing History</h2>
-                <ul className="space-y-1 text-sm text-gray-600">
-                  {history.map((item, index) => (
-                    <li key={index} className="flex justify-between">
-                      <span>{item.date}</span>
-                      <span>{item.wpm} WPM, {item.accuracy}% Accuracy</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )} */}
           </div>
         </div>
         <Footer />
       </div>
+
+      {showTimeUpBox && (
+        <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
+            <h2 className="text-2xl font-bold text-red-600 mb-4">⏰ Time is up! Good luck next time!</h2>
+            <p className="text-gray-700 mb-4">Your typing test has ended.</p>
+            <button
+              onClick={() => setShowTimeUpBox(false)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
     </section>
   );
 };
