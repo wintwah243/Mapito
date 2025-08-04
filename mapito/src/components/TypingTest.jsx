@@ -113,32 +113,36 @@ const TypingTest = () => {
   };
 
   const finishTest = () => {
+  if (timeLeft === 0 && !testComplete) {
     setShowTimeUpBox(true);
-    setTimeout(() => setShowTimeUpBox(false), 3000);
-    setTestActive(false);
-    clearTimer();
+    setTimeout(() => setShowTimeUpBox(false), 9000);
+  }
 
-    if (!startTime) {
-      setWpm(0);
-      setAccuracy(0);
-      return;
-    }
+  setTestActive(false);
+  clearTimer();
 
-    const endTime = Date.now();
-    const minutes = (endTime - startTime) / 1000 / 60;
-    const words = charStats.correct / 5;
-    const acc = userInput.length > 0 ? (charStats.correct / userInput.length) * 100 : 0;
-    const result = {
-      date: new Date().toLocaleString(),
-      wpm: Math.round(words / minutes),
-      accuracy: Math.round(acc),
-    };
-    const updatedHistory = [result, ...history.slice(0, 9)];
-    localStorage.setItem("typingHistory", JSON.stringify(updatedHistory));
-    setHistory(updatedHistory);
-    setWpm(result.wpm);
-    setAccuracy(result.accuracy);
+  if (!startTime) {
+    setWpm(0);
+    setAccuracy(0);
+    return;
+  }
+
+  const endTime = Date.now();
+  const minutes = (endTime - startTime) / 1000 / 60;
+  const words = charStats.correct / 5;
+  const acc = userInput.length > 0 ? (charStats.correct / userInput.length) * 100 : 0;
+  const result = {
+    date: new Date().toLocaleString(),
+    wpm: Math.round(words / minutes),
+    accuracy: Math.round(acc),
   };
+  const updatedHistory = [result, ...history.slice(0, 9)];
+  localStorage.setItem("typingHistory", JSON.stringify(updatedHistory));
+  setHistory(updatedHistory);
+  setWpm(result.wpm);
+  setAccuracy(result.accuracy);
+};
+
 
 
   const getCharClass = (char, i) => {
@@ -158,7 +162,7 @@ const TypingTest = () => {
             <p className="text-gray-600 text-sm md:text-base">Improve your typing skills with random quotes</p>
           </div>
 
-          {/* Guidelines / Tips */}
+          {/* Guidelines */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div className="bg-white p-4 shadow rounded-lg">
               <h2 className="font-semibold text-lg mb-2 text-blue-700">How It Works?</h2>
@@ -240,7 +244,7 @@ const TypingTest = () => {
             <p className="text-gray-700 mb-4">Your typing test has ended.</p>
             <button
               onClick={() => setShowTimeUpBox(false)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
               Close
             </button>
