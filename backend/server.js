@@ -12,7 +12,7 @@ import authRoutes from './routes/authRoutes.js';
 import userdb from './models/User.js';
 import rateLimit from 'express-rate-limit';
 import axios from 'axios';
-
+import authenticate from './middleware/authenticate.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import Roadmap from './models/Roadmap.js';
@@ -53,7 +53,7 @@ passport.use(
   new OAuthStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://mapito.onrender.com/api/auth/google/callback",
+    callbackURL: "/api/auth/google/callback",
     scope: ["profile", "email"]
   },
     async (accessToken, refreshToken, profile, done) => {
@@ -92,6 +92,7 @@ passport.deserializeUser((user, done) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 
 // Add rate limiting middleware
 const apiLimiter = rateLimit({
@@ -178,7 +179,7 @@ function getGenericFallbackSteps(goal) {
   ];
 }
 
-app.post('/api/generate-roadmap', async (req, res) => {
+app.post('/api/generate-roadmap', authenticate, async (req, res) => {
   const { goal } = req.body;
 
   if (!goal || typeof goal !== 'string') {
@@ -191,28 +192,23 @@ app.post('/api/generate-roadmap', async (req, res) => {
   const processedGoal = goal.trim().substring(0, 100).toLowerCase();
 
   try {
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
     const prompt = `
-You are an expert instructor.
+Create an 8-step learning roadmap for becoming a ${processedGoal}.
+For each step, include:
+- A title
+- A brief description of what should be learned or done at this step and time duration to complete this step
 
-Do not explain or interpret the topic.
-
-Just generate an 8-step learning roadmap for becoming a ${processedGoal}.
-
-Each step must have:
-- A short title (3–4 words)
-- A brief description of what should be learned or done at this step and time duration (e.g., 2-3 weeks)
-
-Format:
-1. Step Title - Description (Time: X weeks) 
-2. ...
-Only include the steps. Do not add anything before or after the list.
-`;
+Format it like this:
+1. Step Title - Description
+...
+    `;
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const roadmapText = response.text();
 
     await new Roadmap({
+      userId: req.user?._id,
       goal: processedGoal,
       content: roadmapText,
       source: 'gemini'
@@ -236,10 +232,11 @@ Only include the steps. Do not add anything before or after the list.
       const roadmap = getPredefinedRoadmap(matchedKey || processedGoal);
 
       await new Roadmap({
+        userId: req.user._id,
         goal: processedGoal,
         content: roadmap,
         source: 'predefined',
-        details
+        details: JSON.stringify(details)
       }).save();
 
       return res.json({
@@ -378,7 +375,7 @@ app.post('/api/mock-interview', async (req, res) => {
           source: 'predefined',
           warning: 'Using generic interview questions'
         });
-        
+
       } catch (finalError) {
         console.error('All fallbacks failed:', finalError);
         return res.status(500).json({
@@ -605,8 +602,70 @@ function simpleFallbackSummary(text) {
   }
 
   return importantSentences.join('. ') + '.';
-}
+};
 
+// Save roadmap to DB
+app.post('/api/save-roadmap', async (req, res) => {
+  try {
+    const { goal, content, source, details } = req.body;
+    const roadmap = new Roadmap({ goal, content, source, details });
+    await roadmap.save();
+    res.status(201).json(roadmap);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to save roadmap' });
+  }
+});
+
+// Get all saved roadmaps
+app.get('/api/roadmaps', async (req, res) => {
+  try {
+    const roadmaps = await Roadmap.find().sort({ createdAt: -1 });
+    res.json(roadmaps);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch roadmaps' });
+  }
+});
+
+app.post('/api/roadmaps', authenticate, async (req, res) => {
+  try {
+    const { goal, roadmap, details } = req.body;
+
+    const newRoadmap = new Roadmap({
+      userId: req.user._id,
+      goal,
+      roadmap,
+      details,
+    });
+
+    await newRoadmap.save();
+
+    res.status(201).json({ message: 'Roadmap saved successfully', roadmap: newRoadmap });
+  } catch (error) {
+    console.error('Error saving roadmap:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/api/roadmaps/latest', authenticate, async (req, res) => {
+  try {
+    const user = req.user;
+
+    const latest = await Roadmap.findOne({ userId: user._id }).sort({ createdAt: -1 });
+
+    if (!latest) {
+      return res.json({});
+    }
+
+    res.json({
+      goal: latest.goal,
+      roadmap: latest.content,
+      details: latest.details || []
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 // Start server
 app.listen(port, () => {
