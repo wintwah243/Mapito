@@ -15,7 +15,6 @@ const roadmapSchema = new mongoose.Schema({
     },
     details: {
         type: String,
-        required: true
     },
     createdAt: {
         type: Date,
