@@ -1,25 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaRocket, FaLightbulb, FaCode, FaTools, FaCheckCircle, FaDownload } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { jsPDF } from "jspdf";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Bot from './Bot';
 
 const Hero = () => {
     const [goal, setGoal] = useState('');
     const [roadmap, setRoadmap] = useState([]);
-    const [details, setDetails] = useState([]);          
+    const [details, setDetails] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [expandedIndex, setExpandedIndex] = useState(null);  
+    const [expandedIndex, setExpandedIndex] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const icons = [
-        <FaRocket className="text-white" size={14} />,
-        <FaLightbulb className="text-white" size={14} />,
-        <FaCode className="text-white" size={14} />,
-        <FaTools className="text-white" size={14} />,
-        <FaCheckCircle className="text-white" size={14} />,
-    ];
+    const getUserId = () => {
+        const token = localStorage.getItem('token');
+        if (!token) return null;
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.id || payload.userId || payload.sub; 
+        } catch {
+            return null;
+        }
+    };
 
     const handleGenerate = async () => {
         const token = localStorage.getItem('token');
@@ -46,7 +50,7 @@ const Hero = () => {
             const lines = data.roadmap
                 .split('\n')
                 .map(line => line.replace(/\*/g, '').trim())
-                .filter(line => line.length > 0); 
+                .filter(line => line.length > 0);
 
             const steps = [];
             const parsedDescriptions = [];
@@ -62,7 +66,6 @@ const Hero = () => {
                 }
             });
 
-            // Prefer backend `details` if available and length matches
             const finalDescriptions =
                 Array.isArray(data.details) && data.details.length === steps.length
                     ? data.details
@@ -71,14 +74,24 @@ const Hero = () => {
             setRoadmap(steps);
             setDetails(finalDescriptions);
 
+            const userId = getUserId();
+            if (userId) {
+                localStorage.setItem(`roadmap_${userId}`, JSON.stringify({
+                    goal,
+                    roadmap: steps,
+                    details: finalDescriptions
+                }));
+            }
+
             await fetch('https://mapito.onrender.com/api/roadmaps', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ goal, roadmap: steps.join('\n') }),
+                body: JSON.stringify({ goal, roadmap: steps.join('\n'), details: finalDescriptions }),
             });
+
         } catch (error) {
             console.error('Error generating roadmap:', error);
         } finally {
@@ -86,6 +99,90 @@ const Hero = () => {
         }
     };
 
+    const isTokenValid = (token) => {
+        if (!token) return false;
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.exp * 1000 > Date.now();
+        } catch {
+            return false;
+        }
+    };
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!isTokenValid(token)) {
+            navigate('/signup');
+        }
+    }, [navigate]);
+
+    useEffect(() => {
+        const fetchSavedRoadmap = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const response = await fetch('https://mapito.onrender.com/api/roadmaps/latest', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) throw new Error();
+
+                const data = await response.json();
+                if (!data.goal || !data.roadmap) throw new Error();
+
+                setGoal(data.goal);
+
+                const lines = data.roadmap
+                    .split('\n')
+                    .map(line => line.replace(/\*/g, '').trim())
+                    .filter(line => line.length > 0);
+
+                const steps = [];
+                const parsedDescriptions = [];
+
+                lines.forEach(line => {
+                    const match = line.match(/^\d+\.\s*(.+?)\s*-\s*(.+)$/);
+                    if (match) {
+                        steps.push(match[1].trim());
+                        parsedDescriptions.push(match[2].trim());
+                    } else {
+                        steps.push(line);
+                        parsedDescriptions.push("No description available.");
+                    }
+                });
+
+                const finalDescriptions =
+                    Array.isArray(data.details) && data.details.length === steps.length
+                        ? data.details
+                        : parsedDescriptions;
+
+                setRoadmap(steps);
+                setDetails(finalDescriptions);
+            } catch {
+                // fallback to localStorage
+                const userId = getUserId();
+                if (!userId) return;
+
+                const cached = localStorage.getItem(`roadmap_${userId}`);
+                if (!cached) return;
+
+                try {
+                    const parsed = JSON.parse(cached);
+                    if (!parsed || !parsed.roadmap?.length) return;
+                    setGoal(parsed.goal || '');
+                    setRoadmap(parsed.roadmap || []);
+                    setDetails(parsed.details || []);
+                } catch (err) {
+                    console.error("Failed to parse cached roadmap:", err);
+                }
+            }
+        };
+
+        fetchSavedRoadmap();
+    }, [location]);
 
     const handleDownload = () => {
         const doc = new jsPDF();
@@ -98,7 +195,6 @@ const Hero = () => {
             const cleanStep = step.replace(/[*#-]/g, '').trim();
             doc.text(`${index + 1}. ${cleanStep}`, 10, yPosition);
             yPosition += 10;
-
             if (yPosition > 280) {
                 doc.addPage();
                 yPosition = 20;
@@ -113,6 +209,11 @@ const Hero = () => {
         setDetails([]);
         setGoal('');
         setExpandedIndex(null);
+
+        const userId = getUserId();
+        if (userId) {
+            localStorage.removeItem(`roadmap_${userId}`);
+        }
     };
 
     const toggleExpand = (index) => {
@@ -120,7 +221,7 @@ const Hero = () => {
     };
 
     return (
-        <section id='hero' className="bg-white mt-20">
+        <section id='hero' className="bg-white">
             <div className="flex flex-col items-center justify-center px-4 py-12 sm:p-6 lg:p-8">
                 {/* Feature Tag */}
                 <div className="inline-flex items-center bg-gray-800 bg-opacity-70 text-blue-300 text-xs sm:text-sm md:text-base font-medium py-1.5 px-3 md:px-4 rounded-full mb-4 sm:mb-6 border border-blue-500/30 flex-wrap justify-center text-center max-w-xs sm:max-w-full">
@@ -131,7 +232,7 @@ const Hero = () => {
                 <motion.div className="w-full max-w-2xl text-center mb-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
 
                     <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 leading-tight">
-                        Get your AI-Powered <span className="text-blue-600"> Roadmap</span>
+                        Get your AI-Powered <span className="text-indigo-600"> Roadmap</span>
                     </h1>
                     <p className="text-base sm:text-lg text-gray-600 max-w-lg mx-auto">
                         Transform your learning goals into structured, actionable steps with personalized guidance.
@@ -151,7 +252,7 @@ const Hero = () => {
                         />
                         <button
                             onClick={handleGenerate}
-                            className="bg-gray-900 text-white rounded-lg p-3 font-medium text-sm sm:text-base duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                            className="bg-gray-900 text-white rounded-lg p-3 font-medium text-sm sm:text-base duration-200 flex items-center justify-center gap-2"
                             disabled={loading}
                         >
                             {loading ? (
@@ -177,7 +278,7 @@ const Hero = () => {
                             <div className="flex gap-3">
                                 <button
                                     onClick={handleDownload}
-                                    className="bg-blue-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center gap-2"
+                                    className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center gap-2"
                                 >
                                     <FaDownload /> Download PDF
                                 </button>
