@@ -221,7 +221,7 @@ const Hero = () => {
     };
 
     return (
-        <section id='hero' className="bg-white">
+        <section id='hero' className="bg-white mt-20">
             <div className="flex flex-col items-center justify-center px-4 py-12 sm:p-6 lg:p-8">
                 {/* Feature Tag */}
                 <div className="inline-flex items-center bg-gray-800 bg-opacity-70 text-blue-300 text-xs sm:text-sm md:text-base font-medium py-1.5 px-3 md:px-4 rounded-full mb-4 sm:mb-6 border border-blue-500/30 flex-wrap justify-center text-center max-w-xs sm:max-w-full">
