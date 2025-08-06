@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaDownload, FaCheckCircle } from 'react-icons/fa';
+import { FaDownload } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { jsPDF } from "jspdf";
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -11,7 +11,6 @@ const Hero = () => {
   const [details, setDetails] = useState([]);
   const [loading, setLoading] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState(null);
-  const [completed, setCompleted] = useState([]); 
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,37 +26,11 @@ const Hero = () => {
     }
   };
 
-  const progressPct = roadmap.length
-    ? Math.round((completed.filter(Boolean).length / roadmap.length) * 100)
-    : 0;
-
   const saveRoadmapCache = (userId, nextGoal, steps, finalDescriptions) => {
     localStorage.setItem(
       `roadmap_${userId}`,
       JSON.stringify({ goal: nextGoal, roadmap: steps, details: finalDescriptions })
     );
-  };
-
-  const saveProgress = (userId, arr) => {
-    localStorage.setItem(`roadmap_${userId}_progress`, JSON.stringify(arr));
-  };
-
-  const loadProgress = (userId, stepsLen) => {
-    const raw = localStorage.getItem(`roadmap_${userId}_progress`);
-    if (!raw) return Array(stepsLen).fill(false);
-    try {
-      const parsed = JSON.parse(raw);
-      if (!Array.isArray(parsed)) return Array(stepsLen).fill(false);
-      // ensure length matches steps
-      if (parsed.length !== stepsLen) {
-        const copy = Array(stepsLen).fill(false);
-        for (let i = 0; i < Math.min(parsed.length, stepsLen); i++) copy[i] = !!parsed[i];
-        return copy;
-      }
-      return parsed.map(Boolean);
-    } catch {
-      return Array(stepsLen).fill(false);
-    }
   };
 
   const handleGenerate = async () => {
@@ -111,11 +84,7 @@ const Hero = () => {
 
       const userId = getUserId();
       if (userId) {
-        // reset progress for a new roadmap
-        const freshProgress = Array(steps.length).fill(false);
-        setCompleted(freshProgress);
         saveRoadmapCache(userId, goal, steps, finalDescriptions);
-        saveProgress(userId, freshProgress);
       }
 
       await fetch('https://mapito.onrender.com/api/roadmaps', {
@@ -194,11 +163,6 @@ const Hero = () => {
 
         setRoadmap(steps);
         setDetails(finalDescriptions);
-
-        // load progress
-        const userId = getUserId();
-        const prog = userId ? loadProgress(userId, steps.length) : Array(steps.length).fill(false);
-        setCompleted(prog);
       } catch {
         // fallback to localStorage
         const userId = getUserId();
@@ -213,7 +177,6 @@ const Hero = () => {
           setGoal(parsed.goal || '');
           setRoadmap(parsed.roadmap || []);
           setDetails(parsed.details || []);
-          setCompleted(loadProgress(userId, (parsed.roadmap || []).length));
         } catch (err) {
           console.error("Failed to parse cached roadmap:", err);
         }
@@ -223,86 +186,67 @@ const Hero = () => {
     fetchSavedRoadmap();
   }, [location]);
 
-  // download roadmap
+  // download roadmap 
   const handleDownload = () => {
-  const doc = new jsPDF();
-  const marginX = 12;
-  const maxWidth = doc.internal.pageSize.getWidth() - marginX * 2;
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const lineGap = 6;  
-  const sectionGap = 8; 
+    const doc = new jsPDF();
+    const marginX = 12;
+    const maxWidth = doc.internal.pageSize.getWidth() - marginX * 2;
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const lineGap = 6;
+    const sectionGap = 8;
 
-  doc.setFontSize(18);
-  doc.text(goal || "My Roadmap", marginX, 18);
+    doc.setFontSize(18);
+    doc.text(goal || "My Roadmap", marginX, 18);
 
-  const total = roadmap.length || 0;
-  const done = completed?.filter(Boolean).length || 0;
-  if (total > 0) {
-    doc.setFontSize(11);
-    doc.text(`Progress: ${done}/${total} steps completed`, marginX, 26);
-  }
+    doc.setFontSize(12);
+    let y = 30;
 
-  doc.setFontSize(12);
-  let y = 36;
+    const addPageIfNeeded = (neededHeight = 0) => {
+      if (y + neededHeight > pageHeight - 15) {
+        doc.addPage();
+        y = 20;
+      }
+    };
 
-  const addPageIfNeeded = (neededHeight = 0) => {
-    if (y + neededHeight > pageHeight - 15) {
-      doc.addPage();
-      y = 20;
-    }
+    roadmap.forEach((step, i) => {
+      const cleanStep = (step || '').replace(/[*#-]/g, '').trim();
+      const detailRaw = (details?.[i] || 'No description available.').toString();
+
+      doc.setFont(undefined, 'bold');
+      const titleLines = doc.splitTextToSize(`${i + 1}. ${cleanStep}`, maxWidth);
+      addPageIfNeeded(titleLines.length * lineGap + sectionGap);
+      titleLines.forEach(line => {
+        doc.text(line, marginX, y);
+        y += lineGap;
+      });
+
+      doc.setFont(undefined, 'normal');
+      const detailLines = doc.splitTextToSize(detailRaw, maxWidth);
+      detailLines.forEach(() => {
+        addPageIfNeeded(lineGap);
+      });
+      // Re-loop to actually draw after page checks
+      detailLines.forEach(line => {
+        doc.text(line, marginX + 4, y);
+        y += lineGap;
+      });
+
+      y += sectionGap;
+    });
+
+    doc.save(`${goal || "roadmap"}.pdf`);
   };
-
-  roadmap.forEach((step, i) => {
-    const cleanStep = (step || '').replace(/[*#-]/g, '').trim();
-    const prefix = completed?.[i] ? '✔ ' : '';
-    const detailRaw = (details?.[i] || 'No description available.').toString();
-
-    doc.setFont(undefined, 'bold');
-    const titleLines = doc.splitTextToSize(`${i + 1}. ${prefix}${cleanStep}`, maxWidth);
-    addPageIfNeeded(titleLines.length * lineGap + sectionGap);
-    titleLines.forEach(line => {
-      doc.text(line, marginX, y);
-      y += lineGap;
-    });
-
-    doc.setFont(undefined, 'normal');
-    const detailLines = doc.splitTextToSize(detailRaw, maxWidth);
-    // If details are long, break across pages 
-    detailLines.forEach((line, idx) => {
-      addPageIfNeeded(lineGap);
-      doc.text(line, marginX + 4, y); // slight indent for details
-      y += lineGap;
-    });
-
-    // Space between steps
-    y += sectionGap;
-  });
-
-  doc.save(`${goal || "roadmap"}.pdf`);
-};
 
   const handleClearRoadmap = () => {
     setRoadmap([]);
     setDetails([]);
     setGoal('');
     setExpandedIndex(null);
-    setCompleted([]);
 
     const userId = getUserId();
     if (userId) {
       localStorage.removeItem(`roadmap_${userId}`);
-      localStorage.removeItem(`roadmap_${userId}_progress`);
     }
-  };
-
-  const toggleComplete = (index) => {
-    const userId = getUserId();
-    setCompleted(prev => {
-      const next = [...prev];
-      next[index] = !next[index];
-      if (userId) saveProgress(userId, next);
-      return next;
-    });
   };
 
   return (
@@ -363,22 +307,6 @@ const Hero = () => {
           </div>
         </motion.div>
 
-        {/* Overall Progress Bar */}
-        {roadmap.length > 0 && (
-          <div className="w-full max-w-4xl px-2 sm:px-6 mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-700">Overall Progress</span>
-              <span className="text-sm font-medium text-gray-900">{progressPct}%</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
-              <div
-                className="h-3 rounded-full bg-blue-600 transition-all duration-300"
-                style={{ width: `${progressPct}%` }}
-              />
-            </div>
-          </div>
-        )}
-
         {/* Roadmap */}
         {roadmap.length > 0 && (
           <div className="w-full max-w-4xl px-2 sm:px-6">
@@ -406,7 +334,6 @@ const Hero = () => {
               <div className="flex flex-col gap-4 w-full">
                 {roadmap.map((step, index) => {
                   const isExpanded = expandedIndex === index;
-                  const isDone = !!completed[index];
                   return (
                     <div
                       key={index}
@@ -420,17 +347,12 @@ const Hero = () => {
                         className="flex items-center gap-4 cursor-pointer"
                         onClick={() => setExpandedIndex(isExpanded ? null : index)}
                       >
-                        <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-white text-gray-900 font-bold border ${isDone ? 'border-green-500' : 'border-gray-300'} select-none`}>
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white text-gray-900 font-bold border border-gray-300 select-none">
                           {index + 1}
                         </div>
-                        <span className={`text-gray-800 text-sm sm:text-base font-medium ${isDone ? 'line-through' : ''}`}>
+                        <span className="text-gray-800 text-sm sm:text-base font-medium">
                           {step}
                         </span>
-                        {isDone && (
-                          <span className="ml-auto inline-flex items-center gap-1 text-green-700 text-xs font-semibold">
-                            <FaCheckCircle /> Completed
-                          </span>
-                        )}
                       </div>
 
                       {/* Expandable details */}
@@ -439,38 +361,6 @@ const Hero = () => {
                           <p className="text-gray-700 text-sm sm:text-base whitespace-pre-line mb-3">
                             {details[index] || "No description available."}
                           </p>
-
-                          {/* Step progress bar */}
-                          <div className="mb-3">
-                            <div className="w-full bg-white/70 border border-white/60 rounded-full h-2">
-                              <div
-                                className={`h-2 rounded-full ${isDone ? 'bg-green-500' : 'bg-gray-300'}`}
-                                style={{ width: isDone ? '100%' : '0%' }}
-                              />
-                            </div>
-                            <div className="text-xs mt-1 text-gray-600">
-                              {isDone ? '100% complete' : 'Not started'}
-                            </div>
-                          </div>
-
-                          {/* Complete / Undo button */}
-                          <div className="flex gap-2">
-                            {!isDone ? (
-                              <button
-                                className="px-3 py-1.5 text-sm rounded-md bg-gray-900 text-white hover:bg-gray-800"
-                                onClick={(e) => { e.stopPropagation(); toggleComplete(index); }}
-                              >
-                                Mark as Complete
-                              </button>
-                            ) : (
-                              <button
-                                className="px-3 py-1.5 text-sm rounded-md bg-white border border-gray-300 hover:bg-gray-50"
-                                onClick={(e) => { e.stopPropagation(); toggleComplete(index); }}
-                              >
-                                Undo
-                              </button>
-                            )}
-                          </div>
                         </div>
                       )}
                     </div>
