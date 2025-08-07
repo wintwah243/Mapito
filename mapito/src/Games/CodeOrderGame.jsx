@@ -11,6 +11,7 @@ import {
     useSensor,
     useSensors,
     DragOverlay,
+    TouchSensor,
 } from '@dnd-kit/core';
 import {
     SortableContext,
@@ -81,15 +82,25 @@ const SortableItem = ({ id, value, index }) => {
         transform: CSS.Transform.toString(transform),
         transition,
         opacity: isDragging ? 0.5 : 1,
+        touchAction: 'none', // Prevent scrolling while dragging
     };
 
     return (
         <div
             ref={setNodeRef}
             style={style}
-            className="p-3 bg-gray-900 rounded-md border border-gray-700 font-mono text-sm cursor-move hover:bg-gray-800 transition-all"
+            className="p-3 bg-gray-900 rounded-md border border-gray-700 font-mono text-sm cursor-move hover:bg-gray-800 transition-all select-none"
         >
-            <div className="flex items-center" {...attributes} {...listeners}>
+            <div 
+                className="flex items-center"
+                {...attributes}
+                {...listeners}
+                onTouchStart={(e) => {
+                    // Prevent default to avoid scrolling
+                    if (e.cancelable) e.preventDefault();
+                    listeners.onTouchStart(e);
+                }}
+            >
                 <span className="text-gray-500 mr-2 cursor-move">☰</span>
                 <span className="text-gray-500 mr-2">{index + 1}.</span>
                 <span className="text-blue-300">{value.text}</span>
@@ -113,12 +124,21 @@ const CodeOrderGame = () => {
     const [activeId, setActiveId] = useState(null);
 
     const sensors = useSensors(
-        useSensor(PointerSensor),
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 5, // Require 5px movement before dragging starts
+            },
+        }),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 250, // Delay before dragging starts (ms)
+                tolerance: 5, // Allow some movement before cancelling
+            },
+        }),
         useSensor(KeyboardSensor, {
             coordinateGetter: sortableKeyboardCoordinates,
         })
     );
-
     useEffect(() => {
         if (gameStatus !== 'playing') return;
 
@@ -249,7 +269,7 @@ const CodeOrderGame = () => {
     const activeItem = activeId ? codeLines.find(item => item.id === activeId) : null;
 
     return (
-        <section className="min-h-screen bg-white text-white">
+        <section className="min-h-screen bg-white text-white mt-20">
             {showConfetti && <Confetti width={width} height={height} recycle={false} />}
             <Navbar />
             <div className="container mx-auto px-4 py-8">
@@ -280,7 +300,7 @@ const CodeOrderGame = () => {
                     </div>
                 )}
 
-                {/* Header - Only show when not in intro */}
+                {/* Header */}
                 {gameStatus !== 'intro' && (
                     <div className="flex justify-between items-center mb-6 p-4 bg-black bg-opacity-50 rounded-lg">
                         <div className="text-center">
