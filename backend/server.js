@@ -17,6 +17,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import Roadmap from './models/Roadmap.js';
 import MockInterview from './models/MockInterview.js';
+import { roadmapDetails } from './utils/data.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -106,54 +107,27 @@ app.use('/api/generate-roadmap', apiLimiter);
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const roadmapDetails = {
-  frontend: [
-    "HTML is the skeleton of webpages. Learn tags, elements, and semantics.",
-    "CSS controls style and layout. Master flexbox, grids, and media queries.",
-    "JavaScript powers interactivity. Focus on ES6+ features like promises and async.",
-    "React, Vue, and Angular are popular frameworks for building UI.",
-    "Build projects like portfolio sites to showcase your skills.",
-    "Practice common interview questions on frontend concepts and coding.",
-  ],
-  backend: [
-    "Pick a backend language and learn its syntax and ecosystem deeply.",
-    "Understand relational and non-relational databases and how to query them.",
-    "Learn how to create APIs that frontend can consume via REST or GraphQL.",
-    "Implement user authentication and secure your backend with best practices.",
-    "Explore scaling apps using load balancing, caching, and microservices.",
-  ],
-  "data science": [
-    "Learn Python libraries like Pandas and NumPy for data analysis.",
-    "Study foundational statistics concepts critical to data science.",
-    "Visualize data effectively using Matplotlib and Seaborn.",
-    "Explore basic machine learning algorithms and their applications.",
-    "Work with real datasets to gain practical experience.",
-  ],
-  mobile: [
-    "Decide between iOS (Swift) or Android (Kotlin) development.",
-    "Understand mobile-specific UI/UX design principles.",
-    "Learn mobile app architecture and lifecycle.",
-    "Study platform APIs to access device hardware and features.",
-    "Publish your app to the Apple App Store or Google Play Store.",
-  ],
-  devops: [
-    "Get comfortable with Linux command line and administration.",
-    "Master Git version control for collaborative development.",
-    "Understand continuous integration and deployment pipelines.",
-    "Learn containerization technologies like Docker.",
-    "Explore cloud platforms: AWS, GCP, and Azure fundamentals.",
-  ]
-};
-
 function getPredefinedRoadmap(goal) {
   const lowerGoal = goal.toLowerCase();
 
   const roadmaps = {
-    frontend: `Learn HTML fundamentals\n Master CSS and responsive design\n Learn JavaScript (ES6+)\n Choose a framework (React, Vue, Angular)\n Build portfolio projects\n Practice interview questions`,
-    backend: `Learn a server language (Node.js, Python, Java)\n Understand databases (SQL & NoSQL)\n Learn API development (REST, GraphQL)\n Study authentication & security\n Build scalable applications`,
-    data: `Learn Python and data analysis (Pandas, NumPy)\n Study statistics fundamentals\n Learn data visualization (Matplotlib, Seaborn)\n Explore machine learning basics\n Work on real-world datasets`,
-    mobile: `Choose a platform (iOS/Swift or Android/Kotlin)\n Learn UI/UX principles\n Understand mobile architecture\n Study platform-specific APIs\n Publish an app to store`,
-    devops: `Learn Linux fundamentals\n Master version control (Git)\n Understand CI/CD pipelines\n Learn containerization (Docker)\n Study cloud platforms (AWS, GCP, Azure)`
+    frontend: `Learn HTML fundamentals\n Master CSS and responsive design\n Learn JavaScript (ES6+)\n Choose a framework (React, Vue, Angular)\n Build portfolio projects\n Practice interview questions\n Explore UI libraries and material\n Learn web performance and WCAG guidelines`,
+    backend: `Learn a server language (Node.js, Python, Java)\n Understand databases (SQL & NoSQL)\n Learn API development (REST, GraphQL)\n Study authentication & security\n Build scalable applications\n Explore cloud platforms for deployment\n Learn backend testing to ensure reliability\n Learn how to set up logging`,
+    data: `Understand the basics of data analysis\n Master Microsoft Excel and Google Sheets\n Learn SQL for data querying\n Get started with data visualization\n Learn a programming language like Python or R\n Understand statistics and probability\n Practice data wrangling and cleaning\n Work on real-world projects and portfolios`,
+    mobile: `Understand mobile development basics\n Choose a development platform\n Learn front-end development tools and programming\n Build simple mobile apps\n Learn mobile APIs and device integration\n Implement backend integration\n Understand app performance and testing\n Publish and maintain your app`,
+    devops: `Understand DevOps fundamentals\n Learn version control with Git\n Gain proficiency in Linux and command-line\n Learn continuous integration (CI) tools\n Get familiar with containerization using Docker\n Study container orchestration with Kubernetes\n Learn cloud platforms and infrastructure as code\n Set up monitoring, logging, and alerting`,
+    software: `Choose one or more languages(e.g., Python, Java, C++)\n Learn object-oriented programming (OOP)\n Learn data structures and algorithms\n Explore version control systems like Git\n Understand software development methodologies\n Practice building real-world projects\n software testing and quality assurance\n problem-solving and system design skills`,
+    cyber: `Learn the fundamentals of cybersecurity\n Understand computer networks and protocols\n Master operating system security\n Learn cryptography basics\n Get hands-on with penetration testing\n Understand web application security\n Learn incident detection and response\n Explore advanced security and career specialization`,
+    business: `Learn the fundamentals of business analysis\n Master requirement elicitation techniques\n Understand process modeling and documentation\n Develop strong soft skills and stakeholder management\n Learn data analysis basics\n Explore business intelligence tools and software\n Understand Agile and Scrum methodologies\n Practice real-world projects and case studies`,
+    ai: `Build a strong foundation in mathematics\n Learn programming languages (e.g., Python)\n Master machine learning fundamentals\n Get hands-on with deep learning\n Understand data preprocessing and feature engineering\n Work on real-world AI projects\n Learn about AI model deployment\n Explore ethical AI and latest research trends`,
+    web: `Learn HTML fundamentals\n Master CSS for styling webpages\n Learn JavaScript for frontend interactivity\n Choose a framework (React, Vue, Angular)\n Understand backend basics\n Explore how databases work\n Deploy web applications\n Improve web performance and security`,
+    full:`Master frontend fundamentals\n Learn a modern frontend framework\n Understand backend development\n Learn working with databases\n Explore user authentication and authorization\n Learn deployment and DevOps basics\n Practice full-stack project development\n Focus on performance, testing, and maintenance`,
+    ui:`Learn the fundamentals of design principles\n Understand user interface components and patterns\n Get proficient with design tools\n Study user experience (UX) basics\n Practice creating wireframes and prototypes\n Learn accessibility standards\n Collaborate with developers\n Build a strong portfolio`,
+    ux:`Learn the fundamentals of user experience design\n Master user research techniques\n Understand personas and user journey mapping\n Practice wireframing and prototyping\n Learn usability testing and analysis\n Explore information architecture and interaction design\n Understand accessibility and inclusive design\n Build a strong portfolio`,
+    uiux:`Learn design fundamentals\n Master user research and analysis\n Understand wireframing and prototyping\n Develop strong UI design skills\n Learn information architecture and interaction design\n Learn accessibility and inclusive design principles\n Collaborate with stakeholders and developers\n Build a UI/UX portfolio`,
+    cloud:`Understand cloud computing basics.\n Get hands-on with major cloud providers\n Learn virtual machines and containerization\n Master cloud networking concepts\n Understand cloud storage and databases\n Learn automation and infrastructure as code (IaC)\n Explore security and compliance\n Deploying and managing cloud applications`,
+    solution:`Understand the fundamentals of software architecture\n Gain deep knowledge of cloud platforms\n Learn about system design and scalability\n Master integration patterns and APIs\n Develop skills in security architecture\n Understand DevOps and infrastructure automation\n Practice architecture documentation and communication\n Build real-world solution architecture projects`,
+    project:`Learn the fundamentals of project management\n Master project planning\n Develop scheduling and budgeting skills\n Enhance communication and leadership skills\n Understand risk management\n Learn project tracking and monitoring\n Get familiar with quality management\n Apply project management in real-world scenarios`,
   };
 
   for (const [key, roadmap] of Object.entries(roadmaps)) {
@@ -197,7 +171,7 @@ app.post('/api/generate-roadmap', authenticate, async (req, res) => {
 Create an 8-step learning roadmap for becoming a ${processedGoal}.
 For each step, include:
 - A title
-- A brief description of what should be learned or done at this step and time duration to complete this step
+- A brief description of what should be learned at this step and time duration to complete this step and resource (e.g., w3school)
 
 Format it like this:
 1. Step Title - Description
