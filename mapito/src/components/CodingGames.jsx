@@ -26,7 +26,7 @@ const CodingGames = () => {
   };
 
   return (
-    <section className="min-h-screen bg-white">
+    <section className="min-h-screen bg-white mt-20">
       <Navbar />
       <div className="p-8 max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold mb-2 text-center text-gray-800">
