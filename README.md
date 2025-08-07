@@ -27,14 +27,14 @@ Extra tools like typing tests and documentation resources.
 ---
 
 ## Key Features
-- Generate roadmap presented in a linear branching visual format with AI
+- AI generated roadmap
 - Download roapmap with PDF file
-- Take quizzesssss
+- Take quizz
 - Chat with Mapito assistant chatbot
 - Solve Problems and Run in Code Editor
 - Test (or play) Typing Speed game For Fun with WPM calculation bar chart
-- Summarize user's long note with AI
-- AI mock interview with Camera ON or OFF
+- Summarize developer documentation long note with AI
+- AI mock interview 
 - Documentation links for different resources
 - Reset Password with Nodemailer
 - Google Login
