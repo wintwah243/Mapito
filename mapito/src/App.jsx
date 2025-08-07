@@ -30,6 +30,8 @@ import ScrollToTop from './utils/ScrollToTop'
 import News from './components/News'
 import LandingDocumentation from './Landing/LandingDocumentation'
 import FAQ from './components/FAQ'
+import CodingGames from './components/CodingGames'
+import GuessOutputGame from './Games/GuessOutputGame'
 
 const Home = () => (
 <>
@@ -66,6 +68,8 @@ return (
     <Route path='/notice' element={<News />} />
     <Route path='/landingnotice' element={<LandingNews />} />
     <Route path='/landingdocumentation' element={<LandingDocumentation />} />
+    <Route path='/codinggame' element={<CodingGames />} />
+    <Route path='/games/game1' element={<GuessOutputGame />} />
   </Routes>
 </Router>
 </UserProvider>
