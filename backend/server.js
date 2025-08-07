@@ -273,7 +273,7 @@ app.post('/api/mock-interview', async (req, res) => {
 
   try {
     // we will use gemini first
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
     const prompt = `
       You are a professional interviewer for ${role} positions.
       ${history ? `Conversation history:\n${history}\n` : ''}
