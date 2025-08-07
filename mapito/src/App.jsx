@@ -24,7 +24,6 @@ import LandingAboutus from './Landing/LandingAboutus'
 import LandingNews from './Landing/LandingNews'
 import TypingTest from './components/TypingTest'
 import SummarizeNote from './components/SummarizeNote'
-import MockInterview from './components/MockInterview'
 import Documentation from './components/Documentation'
 import ScrollToTop from './utils/ScrollToTop'
 import News from './components/News'
@@ -32,6 +31,7 @@ import LandingDocumentation from './Landing/LandingDocumentation'
 import FAQ from './components/FAQ'
 import CodingGames from './components/CodingGames'
 import GuessOutputGame from './Games/GuessOutputGame'
+import CodeOrderGame from './Games/CodeOrderGame'
 
 const Home = () => (
 <>
@@ -63,13 +63,13 @@ return (
     <Route path="/landingaboutus" element={<LandingAboutus />}/>
     <Route path="/typing-test" element={<TypingTest />} />
     <Route path='/summarize' element={<SummarizeNote />} />
-    <Route path='/mock-interview' element={<MockInterview />} />
     <Route path='/documentation' element={<Documentation />} />
     <Route path='/notice' element={<News />} />
     <Route path='/landingnotice' element={<LandingNews />} />
     <Route path='/landingdocumentation' element={<LandingDocumentation />} />
     <Route path='/codinggame' element={<CodingGames />} />
     <Route path='/games/game1' element={<GuessOutputGame />} />
+    <Route path='/games/game2' element={<CodeOrderGame />} />
   </Routes>
 </Router>
 </UserProvider>
