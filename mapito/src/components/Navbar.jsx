@@ -123,9 +123,9 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
                 icon={<FaStickyNote className="w-5 h-5" />}
               />
               <NavDropdownItem
-                to="/mock-interview"
+                to="/codinggame"
                 isAuthenticated={isAuthenticated}
-                text="Mock Interview"
+                text="Coding Games"
                 icon={<FaUserFriends className="w-5 h-5" />}
               />
             </div>
@@ -269,12 +269,12 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
           <button
             onClick={() => {
               toggleMenu();
-              isAuthenticated ? navigate("/mock-interview") : navigate("/signup");
+              isAuthenticated ? navigate("/codinggame") : navigate("/signup");
             }}
             className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
           >
             <FaUserFriends size={20} className="text-gray-600" />
-            Mock Interview
+            Coding games
           </button>
 
            <button
