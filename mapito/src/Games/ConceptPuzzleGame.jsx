@@ -136,7 +136,7 @@ const runCode = () => {
         let testResults = '';
         
         try {
-            // Extract function name from the solution (improved version)
+            // Extract function name from the solution 
             const functionNameMatch = puzzle.solution.match(/function\s+(\w+)\s*\(/) || 
                                     puzzle.solution.match(/(?:const|let|var)\s+(\w+)\s*=\s*function\s*\(/) ||
                                     puzzle.solution.match(/(?:const|let|var)\s+(\w+)\s*=\s*\([^)]*\)\s*=>/);
@@ -229,7 +229,7 @@ const runCode = () => {
     return (
         <section>
             <Navbar />
-            <div className="min-h-screen flex items-center justify-center bg-white p-4 font-mono">
+            <div className="min-h-screen flex items-center justify-center bg-white p-4 font-mono mt-10">
                 <div className="bg-white shadow-2xl rounded-xl p-6 max-w-4xl w-full relative overflow-hidden">
                     {/* Decorative elements */}
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500"></div>
@@ -243,10 +243,10 @@ const runCode = () => {
                             </h1>
                             {gameState === 'playing' && (
                                 <div className="flex gap-4 items-center">
-                                    <div className="bg-gray-700 px-3 py-1 rounded-full text-green-400 font-medium border border-gray-600">
+                                    <div className="px-3 py-1 text-black font-medium">
                                         Puzzle {currentPuzzle + 1}/{codingPuzzles.length}
                                     </div>
-                                    <div className="bg-gray-700 px-3 py-1 rounded-full text-yellow-400 font-medium border border-gray-600">
+                                    <div className="px-3 py-1 text-black font-medium">
                                         Score: {score}
                                     </div>
                                 </div>
