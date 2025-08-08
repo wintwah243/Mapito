@@ -47,8 +47,8 @@ const LandingAboutus = () => {
     },
     {
       icon: <FaUserTie className="text-3xl text-gray-400" />,
-      title: "Mock Interview",
-      description: "Practice job interviews with AI-powered questions tailored to your career goals"
+      title: "Coding Games",
+      description: "Sharpen your coding skills with fun mini coding games designed to match your learning goals."
     }
   ];
 
@@ -86,7 +86,7 @@ const LandingAboutus = () => {
                   hands-on coding experience to create the most effective learning platform.
                 </p>
                 <p className="text-gray-600 mb-6">
-                  Whether you're preparing for interviews, learning new technologies, or sharpening your skills,
+                  Whether you're preparing for learning new technologies, or sharpening your skills,
                   Mapito provides the tools and structure to help you succeed.
                 </p>
               </div>
@@ -109,7 +109,7 @@ const LandingAboutus = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-white">AI-generated learning path</p>
-                        <p className="text-xs text-white">Provide from a roadmap to interview stage</p>
+                        <p className="text-xs text-white">Provide from a roadmap to job-ready stage</p>
                       </div>
                     </div>
                   </div>
@@ -151,7 +151,7 @@ const LandingAboutus = () => {
                 Meet the People Behind <span className='text-blue-600'>Mapito</span>
               </h2>
               <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-                Our team brings together educators, tech lovers, and problem-solvers who care about making education easier for everyone.
+                Our team brings together tech lovers, and problem-solvers who care about making education easier for everyone.
               </p>
             </div>
 
