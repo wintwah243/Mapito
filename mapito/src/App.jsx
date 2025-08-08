@@ -35,6 +35,7 @@ import CodeOrderGame from './Games/CodeOrderGame'
 import FindBugGame from './Games/FindBugGame'
 import FillInTheBlanksGame from './Games/FillInTheBlanksGame'
 import TrueOrFalseGame from './Games/TrueOrFalseGame'
+import CodeFlashcardsGame from './Games/CodeFlashcardsGame'
 
 const Home = () => (
 <>
@@ -76,6 +77,7 @@ return (
     <Route path='/games/game3' element={<FindBugGame />} />
     <Route path='/games/game4' element={<FillInTheBlanksGame />} />
     <Route path='/games/game5' element={<TrueOrFalseGame />} />
+    <Route path='/games/game6' element={<CodeFlashcardsGame />} />
   </Routes>
 </Router>
 </UserProvider>
