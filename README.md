@@ -1,10 +1,10 @@
 # Mapito
-Mapito is an AI-powered learning and practice platform designed to help aspiring and beginner developers grow faster with AI-generated roadmaps and hands-on tools.
+Mapito is an AI-powered learning and practice platform designed to help aspiring and beginner developers grow faster with AI-generated roadmaps and hands-on tools and fun mini games.
 
 ---
 
 ## What problem it solves
-Many beginners and early-career developers struggle with not knowing what to learn as there are many programming languages to choose, in what order, and how to practice effectively. Mapito solves this by generating an AI-generated learning roadmap based on the user’s goals — such as becoming a frontend developer or learning a specific language like Python — and combining it with practical tools like quizzes, a live code compiler, and AI-based mock interviews.
+Many beginners and early-career developers struggle with not knowing what to learn as there are many programming languages to choose, in what order, and how to practice effectively. Mapito solves this by generating an AI-generated learning roadmap based on the user’s goals — such as becoming a frontend developer or learning a specific language like Python — and combining it with practical tools like quizzes, a live code compiler, and coding games.
 
 ## Who it’s for
 Mapito is built for:
@@ -13,16 +13,16 @@ Students and self-taught developers looking for clear guidance.
 
 Beginner developers who want to strengthen their skills.
 
-Anyone preparing for technical interviews or switching into tech careers.
+Anyone preparing for switching into tech careers.
 
 ## What makes it unique or different
 Mapito stands out by integrating AI-generated roadmaps with a complete set of interactive tools, all in one place:
 
-An in-browser code compiler for hands-on practice.
+An in-browser code compiler for hands-on practice with problems.
 
-AI-powered features like note summarization and realistic mock interviews.
+AI-powered features like note summarization for developer documentations.
 
-Extra tools like typing tests and documentation resources.
+Extra tools like typing tests and coding mini games.
 
 ---
 
@@ -34,7 +34,7 @@ Extra tools like typing tests and documentation resources.
 - Solve Problems and Run in Code Editor
 - Test (or play) Typing Speed game For Fun with WPM calculation bar chart
 - Summarize developer documentation long note with AI
-- AI mock interview 
+- Coding mini fun games [New feature - Working in Progress]
 - Documentation links for different resources
 - Reset Password with Nodemailer
 - Google Login
