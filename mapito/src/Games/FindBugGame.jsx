@@ -452,7 +452,7 @@ const BugGame = () => {
 
                 {/* Level Complete Screen */}
                 {gameState === 'won' && (
-                    <div className="bg-gray-800 rounded-xl p-8 border border-gray-700 shadow-2xl text-center">
+                    <div className="bg-gray-800 rounded-xl p-8 border border-gray-700 shadow-2xl text-center mt-20">
                         <div className="text-6xl mb-4">🎉</div>
                         <h2 className="text-3xl font-bold text-green-400 mb-2">Level Complete!</h2>
                         <p className="text-xl mb-6">
