@@ -10,10 +10,8 @@ const games = [
   { id: 4, title: "Fill in the Blanks", description: "Complete the missing parts of code." },
   { id: 5, title: "True or False", description: "Decide whether the statements about code are true or false." },
   { id: 6, title: "Match the Output", description: "Match code snippets with their correct output." },
-  { id: 7, title: "Code Typing Speed", description: "Type code snippets accurately and quickly." },
-  { id: 8, title: "Debug Console", description: "Simulated console to test and debug mini code snippets." },
-  { id: 9, title: "Code Flashcards", description: "Flip flashcards to review coding questions and answers." },
-  { id: 10, title: "Concept Puzzle", description: "Solve puzzles based on programming concepts." },
+  { id: 7, title: "Code Flashcards", description: "Flip flashcards to review coding questions and answers." },
+  { id: 8, title: "Concept Puzzle", description: "Solve puzzles based on programming concepts." },
 ];
 
 const icons = [Puzzle, Layers, Bug, Keyboard, Terminal]; 
