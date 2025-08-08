@@ -278,7 +278,7 @@ const TrueOrFalseGame = () => {
             onClick={restart}
             className="text-gray-500 hover:text-gray-700 text-sm flex items-center"
           >
-            ↻ Restart
+            Stop game
           </button>
           <div className="text-sm text-gray-600">
             Score: <span className="font-bold">{score}</span>
