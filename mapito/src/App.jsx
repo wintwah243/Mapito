@@ -32,6 +32,7 @@ import FAQ from './components/FAQ'
 import CodingGames from './components/CodingGames'
 import GuessOutputGame from './Games/GuessOutputGame'
 import CodeOrderGame from './Games/CodeOrderGame'
+import FindBugGame from './Games/FindBugGame'
 
 const Home = () => (
 <>
@@ -70,6 +71,7 @@ return (
     <Route path='/codinggame' element={<CodingGames />} />
     <Route path='/games/game1' element={<GuessOutputGame />} />
     <Route path='/games/game2' element={<CodeOrderGame />} />
+    <Route path='/games/game3' element={<FindBugGame />} />
   </Routes>
 </Router>
 </UserProvider>
