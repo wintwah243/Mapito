@@ -138,7 +138,8 @@ const doubled = numbers.map(num => ____ * 2);`,
                 {gameState.showConfetti && <Confetti recycle={false} numberOfPieces={500} />}
 
                 <div className="w-full min-h-screen bg-white mt-20 flex justify-center items-center px-4">
-                     <div className="w-full max-w-xl bg-gray-800 rounded-xl shadow-2xl overflow-hidden sm:px-6 py-8">
+                    <div className="w-full max-w-4xl bg-gray-800 rounded-xl shadow-2xl overflow-hidden sm:px-6 py-6">
+                        
                     {/* Header */}
                     <div className="bg-gray-700 px-6 py-4 border-b border-gray-600">
                         <div className="flex justify-between items-center">
