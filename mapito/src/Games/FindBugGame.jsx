@@ -259,7 +259,7 @@ const BugGame = () => {
     }, [timer]);
 
     return (
-        <div className="min-h-screen bg-white text-white">
+        <div className="min-h-screen bg-white text-white mt-20">
             {showConfetti && <Confetti width={width} height={height} recycle={false} />}
 
             {/* Header */}
