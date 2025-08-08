@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
+import { useNavigate } from 'react-router-dom';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import { arrayMoveImmutable } from 'array-move';
@@ -91,7 +92,7 @@ const SortableItem = ({ id, value, index }) => {
             style={style}
             className="p-3 bg-gray-900 rounded-md border border-gray-700 font-mono text-sm cursor-move hover:bg-gray-800 transition-all select-none"
         >
-            <div 
+            <div
                 className="flex items-center"
                 {...attributes}
                 {...listeners}
@@ -122,6 +123,7 @@ const CodeOrderGame = () => {
     const [hintUsed, setHintUsed] = useState(false);
     const [timer, setTimer] = useState(null);
     const [activeId, setActiveId] = useState(null);
+    const navigate = useNavigate();
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -281,26 +283,26 @@ const CodeOrderGame = () => {
                                 onClick={stopGame}
                                 className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-bold transition-all"
                             >
-                                ⏸️ Pause Game
+                                Pause Game
                             </button>
                         ) : (
                             <button
                                 onClick={resumeGame}
                                 className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-bold transition-all"
                             >
-                                ▶️ Resume Game
+                                 Resume Game
                             </button>
                         )}
                         <button
                             onClick={resetGame}
                             className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg font-bold transition-all"
                         >
-                            🔄 Reset Game
+                             Reset Game
                         </button>
                     </div>
                 )}
 
-                {/* Header */}
+                {/* Header - Only show when not in intro */}
                 {gameStatus !== 'intro' && (
                     <div className="flex justify-between items-center mb-6 p-4 bg-black bg-opacity-50 rounded-lg">
                         <div className="text-center">
@@ -324,18 +326,18 @@ const CodeOrderGame = () => {
 
                 {/* Intro Screen */}
                 {gameStatus === 'intro' && (
-                    <div className="max-w-3xl mx-auto p-8 bg-gray-500 bg-opacity-80 rounded-xl shadow-2xl border border-gray-700 text-center">
-                        <h1 className="text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-red-500">
+                    <div className="max-w-3xl mx-auto p-8 bg-white bg-opacity-80 rounded-xl shadow-2xl border border-gray-700 text-center">
+                        <h1 className="text-4xl font-extrabold mb-6 text-black">
                             Code Order Game
                         </h1>
                         <div className="mb-8 text-left">
                             <h2 className="text-2xl font-bold text-yellow-400 mb-4">Welcome to the Code Order Game!</h2>
-                            <p className="mb-4">
+                            <p className="mb-4 text-black">
                                 Test your programming knowledge by rearranging shuffled code lines back to their correct order.
                                 Complete levels under time pressure to earn maximum points!
                             </p>
                             <h3 className="text-xl font-bold text-green-400 mt-6 mb-2">Game Features:</h3>
-                            <ul className="list-disc pl-5 space-y-2 mb-6">
+                            <ul className="list-disc pl-5 space-y-2 mb-6 text-black">
                                 <li>Multiple levels with increasing difficulty</li>
                                 <li>Timed challenges to test your speed</li>
                                 <li>Point system with penalties for multiple attempts</li>
@@ -343,19 +345,27 @@ const CodeOrderGame = () => {
                                 <li>Pause and resume functionality</li>
                             </ul>
                             <h3 className="text-xl font-bold text-blue-400 mt-6 mb-2">How to Play:</h3>
-                            <ol className="list-decimal pl-5 space-y-2">
+                            <ol className="list-decimal pl-5 space-y-2 text-black">
                                 <li>Drag and drop code lines to reconstruct the function</li>
                                 <li>Complete before time runs out to earn maximum points</li>
                                 <li>Each attempt reduces your potential score by 5 points</li>
                                 <li>Use hints wisely as they cost 20 points</li>
                             </ol>
                         </div>
-                        <button
-                            onClick={startGame}
-                            className="px-8 py-4 bg-blue-600 hover:bg-green-700 rounded-lg font-bold text-xl transition-all transform hover:scale-105"
-                        >
-                            Start Game
-                        </button>
+                        <div className="flex flex-col md:flex-row gap-4 justify-center items-center mt-8">
+                            <button
+                                onClick={startGame}
+                                className="w-64 px-8 py-4 bg-black hover:bg-green-700 text-white rounded-lg transition-all transform hover:scale-105 text-center"
+                            >
+                                Start Game
+                            </button>
+                            <button
+                                onClick={() => navigate('/codinggame')}
+                                className="w-64 px-8 py-4 bg-blue-600 hover:bg-green-700 text-white rounded-lg transition-all transform hover:scale-105 text-center"
+                            >
+                                Go Back to Home
+                            </button>
+                        </div>
                     </div>
                 )}
 
@@ -425,13 +435,13 @@ const CodeOrderGame = () => {
                                 onClick={resumeGame}
                                 className="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-bold transition-all transform hover:scale-105"
                             >
-                                Resume Game ▶️
+                                Resume Game 
                             </button>
                             <button
                                 onClick={resetGame}
                                 className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-bold transition-all transform hover:scale-105"
                             >
-                                Quit Game 🚪
+                                Quit Game 
                             </button>
                         </div>
                     </div>
@@ -457,7 +467,7 @@ const CodeOrderGame = () => {
                                     onClick={retryLevel}
                                     className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold transition-all transform hover:scale-105"
                                 >
-                                    Replay Level 🔄
+                                    Replay Level 
                                 </button>
                             </div>
                         </div>
@@ -478,13 +488,13 @@ const CodeOrderGame = () => {
                                     onClick={retryLevel}
                                     className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-bold transition-all transform hover:scale-105"
                                 >
-                                    Try Again 🔄
+                                    Try Again 
                                 </button>
                                 <button
                                     onClick={resetGame}
                                     className="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg font-bold transition-all transform hover:scale-105"
                                 >
-                                    Main Menu 🏠
+                                    Main Menu 
                                 </button>
                             </div>
                         </div>
@@ -494,7 +504,7 @@ const CodeOrderGame = () => {
                 {/* Instructions - Only show during gameplay */}
                 {gameStatus === 'playing' && (
                     <div className="max-w-3xl mx-auto mt-6 p-4 bg-black bg-opacity-50 rounded-lg text-sm text-gray-300">
-                        <h3 className="text-lg font-bold text-yellow-400 mb-2">📜 How to Play:</h3>
+                        <h3 className="text-lg font-bold text-yellow-400 mb-2">How to Play:</h3>
                         <ul className="list-disc pl-5 space-y-1">
                             <li>Drag and drop the code lines to reconstruct the function</li>
                             <li>Complete before time runs out to earn maximum points</li>
