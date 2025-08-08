@@ -265,25 +265,6 @@ const BugGame = () => {
             {/* Header */}
             <Navbar />
 
-            {(gameState === 'playing' || gameState === 'paused') && (
-                <div className="flex items-center space-x-4 mt-20">
-                    <div className="flex items-center bg-gray-700 px-3 py-1 rounded-full">
-                        <span className="text-yellow-400 mr-1">Trophy-</span>
-                        <span className="font-bold">{score}</span>
-                    </div>
-                    <div className="flex items-center bg-gray-700 px-3 py-1 rounded-full">
-                        <span className="text-red-400 mr-1">Time-</span>
-                        <span className={`font-bold ${timeLeft < 10 ? 'text-red-400 animate-pulse' : 'text-green-400'}`}>
-                            {timeLeft}s
-                        </span>
-                    </div>
-                    <div className="flex items-center bg-gray-700 px-3 py-1 rounded-full">
-                        <span className="text-blue-400 mr-1"></span>
-                        <span className="font-bold">Attempts: {attempts}</span>
-                    </div>
-                </div>
-            )}
-
 
             {/* Main Game Area */}
             <main className="container mx-auto px-4 py-8 max-w-4xl">
@@ -341,6 +322,20 @@ const BugGame = () => {
                 {/* Game Screen */}
                 {gameState === 'playing' && (
                     <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-2xl">
+                        {(gameState === 'playing' || gameState === 'paused') && (
+                            <div className="flex items-center space-x-4">
+                                <div className="flex items-center bg-gray-700 px-3 py-1 rounded-full">
+                                    <span className="text-yellow-400 mr-1">Trophy-</span>
+                                    <span className="font-bold">{score}</span>
+                                </div>
+                                <div className="flex items-center bg-gray-700 px-3 py-1 rounded-full">
+                                    <span className="text-red-400 mr-1">Time-</span>
+                                    <span className={`font-bold ${timeLeft < 10 ? 'text-red-400 animate-pulse' : 'text-green-400'}`}>
+                                        {timeLeft}s
+                                    </span>
+                                </div>
+                            </div>
+                        )}
                         <div className="flex justify-between items-center mb-6">
                             <div>
                                 <h2 className="text-2xl font-bold text-blue-400">{levels[currentLevel].title}</h2>
@@ -359,8 +354,8 @@ const BugGame = () => {
                                         key={line.line}
                                         onClick={() => toggleLineSelection(line.line)}
                                         className={`px-3 py-2 rounded cursor-pointer transition-colors line-${line.line} ${selectedLines.includes(line.line)
-                                                ? 'bg-yellow-900 bg-opacity-50 border border-yellow-700'
-                                                : 'bg-gray-800 hover:bg-gray-700'
+                                            ? 'bg-yellow-900 bg-opacity-50 border border-yellow-700'
+                                            : 'bg-gray-800 hover:bg-gray-700'
                                             }`}
                                     >
                                         <span className="text-gray-500 mr-4">{line.line} |</span>
@@ -387,8 +382,8 @@ const BugGame = () => {
                                 onClick={useHint}
                                 disabled={hintUsed}
                                 className={`px-4 py-2 rounded-lg font-medium flex items-center ${hintUsed
-                                        ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                                        : 'bg-purple-600 hover:bg-purple-700'
+                                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                                    : 'bg-purple-600 hover:bg-purple-700'
                                     }`}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -412,8 +407,8 @@ const BugGame = () => {
                                     onClick={submitAnswer}
                                     disabled={selectedLines.length === 0}
                                     className={`px-4 py-2 rounded-lg font-medium flex items-center ${selectedLines.length === 0
-                                            ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                                            : 'bg-green-600 hover:bg-green-700'
+                                        ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                                        : 'bg-green-600 hover:bg-green-700'
                                         }`}
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -562,6 +557,9 @@ const BugGame = () => {
                                 onClick={() => setGameState('intro')}
                                 className="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg font-bold flex items-center"
                             >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 100-2H9V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                                </svg>
                                 Back to Home
                             </button>
                         </div>
