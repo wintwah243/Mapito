@@ -128,7 +128,7 @@ const doubled = numbers.map(num => ____ * 2);`,
         return () => clearTimeout(timer);
     }, [gameState.timeLeft, gameState.timerActive]);
 
-    const progress = ((gameState.currentQuestion + 1) / questions.length) * 100;
+
     const currentQuestionData = questions[gameState.currentQuestion];
 
     return (
@@ -137,7 +137,8 @@ const doubled = numbers.map(num => ____ * 2);`,
             <div className="min-h-screen bg-white mt-20">
                 {gameState.showConfetti && <Confetti recycle={false} numberOfPieces={500} />}
 
-                <div className="max-w-4xl mx-auto bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
+                <div className="w-full min-h-screen bg-white mt-20 flex justify-center items-center px-4">
+                     <div className="w-full max-w-xl bg-gray-800 rounded-xl shadow-2xl overflow-hidden sm:px-6 py-8">
                     {/* Header */}
                     <div className="bg-gray-700 px-6 py-4 border-b border-gray-600">
                         <div className="flex justify-between items-center">
@@ -170,7 +171,7 @@ const doubled = numbers.map(num => ____ * 2);`,
                                         Complete the missing parts of the code snippets. You'll have {questions.length} questions with 30 seconds each.
                                     </p>
                                 </div>
-                                <div className="flex justify-center gap-4">
+                                <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                                     <button
                                         onClick={startGame}
                                         className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold text-lg shadow-lg transition-all transform hover:scale-105 active:scale-95"
@@ -216,7 +217,7 @@ const doubled = numbers.map(num => ____ * 2);`,
                                     <h2 className="text-xl font-bold text-white mb-4">
                                         Fill in the missing part:
                                     </h2>
-                                    <pre className="bg-gray-900 border border-gray-700 text-green-400 rounded-lg p-6 mb-6 font-mono text-sm overflow-x-auto whitespace-pre-wrap relative">
+                                   <pre className="text-xs sm:text-sm md:text-base bg-gray-900 border border-gray-700 text-green-400 rounded-lg p-4 sm:p-6 mb-6 font-mono overflow-x-auto whitespace-pre-wrap">
                                         <code>
                                             {currentQuestionData.code.split('____').map((part, i) => (
                                                 <React.Fragment key={i}>
@@ -240,7 +241,7 @@ const doubled = numbers.map(num => ____ * 2);`,
                                         </label>
                                         <input
                                             type="text"
-                                            className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                                            className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-gray-700 text-sm sm:text-base border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                                             value={gameState.userAnswer}
                                             onChange={(e) => setGameState(prev => ({ ...prev, userAnswer: e.target.value }))}
                                             placeholder="Type the missing code..."
@@ -326,6 +327,7 @@ const doubled = numbers.map(num => ____ * 2);`,
                                 </div>
                             </>
                         )}
+                    </div>
                     </div>
                 </div>
             </div>
