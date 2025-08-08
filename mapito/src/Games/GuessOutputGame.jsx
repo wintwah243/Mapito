@@ -136,7 +136,7 @@ const GuessOutputGame = () => {
 
   if (showIntro) {
     return (
-      <section className="min-h-screen bg-white">
+      <section className="min-h-screen bg-white mt-10">
         <Navbar />
         <div className="max-w-2xl mx-auto p-8 bg-white rounded-2xl shadow-xl mt-12 text-center border border-gray-100 relative overflow-hidden">
           <motion.div
