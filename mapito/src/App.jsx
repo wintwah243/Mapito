@@ -36,6 +36,7 @@ import FindBugGame from './Games/FindBugGame'
 import FillInTheBlanksGame from './Games/FillInTheBlanksGame'
 import TrueOrFalseGame from './Games/TrueOrFalseGame'
 import CodeFlashcardsGame from './Games/CodeFlashcardsGame'
+import ConceptPuzzleGame from './Games/ConceptPuzzleGame'
 
 const Home = () => (
 <>
@@ -78,6 +79,7 @@ return (
     <Route path='/games/game4' element={<FillInTheBlanksGame />} />
     <Route path='/games/game5' element={<TrueOrFalseGame />} />
     <Route path='/games/game6' element={<CodeFlashcardsGame />} />
+    <Route path='/games/game7' element={<ConceptPuzzleGame />} />
   </Routes>
 </Router>
 </UserProvider>
