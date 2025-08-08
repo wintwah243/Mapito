@@ -72,7 +72,7 @@ const CodeFlashcardsGame = () => {
   const card = flashcards[currentIndex];
 
   return (
-    <section className="min-h-screen bg-white">
+    <section className="min-h-screen bg-white mt-20">
       <Navbar />
       <div className="container mx-auto px-4 py-12 flex flex-col items-center">
         {/* Header with character */}
