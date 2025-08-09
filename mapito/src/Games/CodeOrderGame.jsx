@@ -350,17 +350,16 @@ const CodeOrderGame = () => {
                         {gameStatus !== 'intro' && (
                     <div className="flex justify-between items-center mb-6 p-4 bg-transparent bg-opacity-50 rounded-lg">
                         <div className="text-center">
-                            <h2 className="text-2xl text-white">Score:{score}</h2>
+                            <h2 className="text-lg text-white">Score:{score}</h2>
                         </div>
                         <div className="text-center">
                             <h1 className="text-xl font-extrabold bg-clip-text text-transparent bg-white">
                                 {levels[currentLevel].name}
                             </h1>
-                            {/* <p className="text-sm text-gray-300">{levels[currentLevel].description}</p> */}
                         </div>
                         <div className="text-center">
                             {gameStatus === 'playing' && (
-                                <div className="text-xl font-bold flex items-center justify-center">
+                                <div className="text-lg font-bold flex items-center justify-center">
                                      <span className={timeLeft < 10 ? 'text-red-500 animate-pulse' : 'text-green-400'}>{timeLeft}s</span>
                                 </div>
                             )}
