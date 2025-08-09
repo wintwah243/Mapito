@@ -282,12 +282,10 @@ const CodeOrderGame = () => {
                             Code Order Game
                         </h1>
                         <div className="mb-8 text-left">
-                            <h2 className="text-2xl font-bold text-purple-400 mb-4">Welcome to the Code Order Game!</h2>
                             <p className="mb-4 text-black">
                                 Test your programming knowledge by rearranging shuffled code lines back to their correct order.
-                                Complete levels under time pressure to earn maximum points!
                             </p>
-                            <h3 className="text-xl font-bold text-green-400 mt-6 mb-2">Game Features:</h3>
+                            <h3 className="text-xl font-bold text-black mt-6 mb-2">Game Features:</h3>
                             <ul className="list-disc pl-5 space-y-2 mb-6 text-black">
                                 <li>Multiple levels with increasing difficulty</li>
                                 <li>Timed challenges to test your speed</li>
@@ -295,7 +293,7 @@ const CodeOrderGame = () => {
                                 <li>Hints available (with point cost)</li>
                                 <li>Pause and resume functionality</li>
                             </ul>
-                            <h3 className="text-xl font-bold text-blue-400 mt-6 mb-2">How to Play:</h3>
+                            <h3 className="text-xl font-bold text-black mt-6 mb-2">How to Play:</h3>
                             <ol className="list-decimal pl-5 space-y-2 text-black">
                                 <li>Drag and drop code lines to reconstruct the function</li>
                                 <li>Complete before time runs out to earn maximum points</li>
@@ -306,15 +304,15 @@ const CodeOrderGame = () => {
                         <div className="flex flex-col md:flex-row gap-4 justify-center items-center mt-8">
                             <button
                                 onClick={startGame}
-                                className="w-64 px-8 py-4 bg-black hover:bg-green-700 text-white rounded-lg transition-all transform hover:scale-105 text-center"
+                                className="w-64 px-8 py-4 bg-black hover:bg-green-700 text-white rounded-lg transition-all transform hover:scale-105 text-center cursor-pointer"
                             >
                                 Start Game
                             </button>
                             <button
                                 onClick={() => navigate('/codinggame')}
-                                className="w-64 px-8 py-4 bg-purple-600 hover:bg-green-700 text-white rounded-lg transition-all transform hover:scale-105 text-center"
+                                className="w-64 px-8 py-4 bg-white text-black border border-color-black rounded-lg transition-all transform hover:scale-105 text-center cursor-pointer"
                             >
-                                Go Back to Home
+                                Go Back to Games
                             </button>
                         </div>
                     </div>
