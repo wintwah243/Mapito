@@ -8,6 +8,8 @@ import monkeySad from '../assets/images/monkey-sad.jpg';
 import monkeyThinking from '../assets/images/monkey-thinking.jpg';
 import monkeySurprised from '../assets/images/monkey-suprised.png';
 import bananaImage from '../assets/images/banana.png';
+import useBackgroundMusic from '../utils/useBackgroundMusic';
+import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
 
 const Monkey = ({ expression = 'default', size = 150 }) => {
   const expressionImages = {
@@ -75,6 +77,7 @@ const questions = [
 
 const GuessOutputGame = () => {
   const navigate = useNavigate();
+  const { toggleMute, isMuted } = useBackgroundMusic('https://commondatastorage.googleapis.com/codeskulptor-demos/pyman_assets/ateapill.ogg');
   const [monkeyExpression, setMonkeyExpression] = useState('default');
   const [showBanana, setShowBanana] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
@@ -301,6 +304,15 @@ const GuessOutputGame = () => {
               >
                 Back to Games
               </motion.button>
+              
+              {/* Background sound mute button */}
+              <button
+                    onClick={toggleMute}
+                    className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
+                    aria-label={isMuted ? "Unmute" : "Mute"}
+                >
+                    {isMuted ? <FaVolumeMute size={20} /> : <FaVolumeUp size={20} />}
+              </button>
             </div>
           </header>
 
