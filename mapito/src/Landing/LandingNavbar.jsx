@@ -54,9 +54,15 @@ export default function LandingNavbar() {
       <div className="hidden md:flex items-center gap-4">
         <Link
           to="/signup"
-          className="bg-blue-600 text-white py-2 px-5 rounded-lg text-sm font-medium transition-all duration-300"
+          className="bg-blue-600 text-white py-2 px-5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer"
         >
           Sign Up Free
+        </Link>
+         <Link
+          to="/login"
+          className="bg-white text-black border border-color-black py-2 px-5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer"
+        >
+          Login
         </Link>
       </div>
 
@@ -131,6 +137,7 @@ export default function LandingNavbar() {
           </button>
 
           {/* mobile view signup button */}
+          <div className="flex flex-col gap-3 w-full">
           <Link
             to="/signup"
             onClick={toggleMenu}
@@ -138,6 +145,15 @@ export default function LandingNavbar() {
           >
             Sign Up Free
           </Link>
+            
+          <Link
+            to="/login"
+            onClick={toggleMenu}
+            className="flex items-center justify-center bg-white border border-color-black text-black py-2 px-5 rounded-lg text-sm font-medium"
+          >
+            Login
+          </Link>
+          </div>
           
         </div>
       </motion.div>
