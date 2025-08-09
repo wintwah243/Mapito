@@ -86,7 +86,7 @@ const TrueOrFalseGame = () => {
       setFeedback('');
       setExpression('thinking');
       setShowExplanation(true);
-      
+
       setTimeout(() => {
         if (current + 1 < questions.length) {
           setCurrent(current + 1);
@@ -97,9 +97,9 @@ const TrueOrFalseGame = () => {
         setShowExplanation(false);
         setExpression('idle');
       }, 3000);
-    }, 2000);
+    }, 1500);
   };
-
+  
   const restart = () => {
     setStarted(false);
     setCurrent(0);
@@ -234,6 +234,10 @@ const TrueOrFalseGame = () => {
             >
               {feedback}
             </motion.div>
+          ) : showExplanation ? (
+            <p className="text-lg text-gray-700 font-medium">
+              {questions[current].statement}
+            </p>
           ) : (
             <p className="text-lg text-gray-700 font-medium">
               {questions[current].statement}
@@ -252,26 +256,29 @@ const TrueOrFalseGame = () => {
           </motion.div>
         )}
         
-        <div className="flex justify-center gap-4 mb-4">
-          <motion.button
-            onClick={() => handleAnswer(true)}
-            className="px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition font-bold text-lg shadow-md flex-1"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            disabled={!!feedback}
-          >
-            True
-          </motion.button>
-          <motion.button
-            onClick={() => handleAnswer(false)}
-            className="px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition font-bold text-lg shadow-md flex-1"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            disabled={!!feedback}
-          >
-            False
-          </motion.button>
-        </div>
+       {/* true or false button only appear when explanation is not displayed */}
+        {!showExplanation && (
+          <div className="flex justify-center gap-4 mb-4">
+            <motion.button
+              onClick={() => handleAnswer(true)}
+              className="px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition font-bold text-lg shadow-md flex-1"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              disabled={!!feedback}
+            >
+              True
+            </motion.button>
+            <motion.button
+              onClick={() => handleAnswer(false)}
+              className="px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition font-bold text-lg shadow-md flex-1"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              disabled={!!feedback}
+            >
+              False
+            </motion.button>
+          </div>
+        )}
         
         <div className="flex justify-between items-center mt-4">
           <button 
