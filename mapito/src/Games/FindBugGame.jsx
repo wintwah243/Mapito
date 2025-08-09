@@ -259,7 +259,7 @@ const BugGame = () => {
     }, [timer]);
 
     return (
-        <div className="min-h-screen bg-white text-white mt-20">
+        <div className="min-h-screen bg-white text-white mt-10">
             {showConfetti && <Confetti width={width} height={height} recycle={false} />}
 
             {/* Header */}
@@ -276,7 +276,6 @@ const BugGame = () => {
                         </h1>
 
                         <div className="mb-8">
-                            <h2 className="text-2xl font-bold text-blue-400 mb-4">Welcome to the Bug Hunter Challenge!</h2>
                             <p className="mb-4">
                                 Test your debugging skills by finding errors in code snippets. Each level presents a piece of code with one or more bugs.
                                 Your task is to identify the problematic lines before time runs out!
