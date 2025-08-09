@@ -74,7 +74,7 @@ const CodeFlashcardsGame = () => {
   return (
     <section className="min-h-screen bg-white mt-20">
       <Navbar />
-      <div className="container mx-auto px-4 py-12 flex flex-col items-center">
+      <div className="container mx-auto px-4 py-12 flex flex-col items-center shadow-xl">
         {/* Header with character */}
         <div className="flex flex-col items-center mb-8">
           <motion.img 
@@ -176,7 +176,7 @@ const CodeFlashcardsGame = () => {
                 </div>
 
                 {/* Back */}
-                <div className="absolute w-full h-full backface-hidden bg-gradient-to-r from-yellow-400 to-green-500 text-white rounded-xl shadow-lg p-6 flex flex-col transform rotate-y-180 border-2 border-blue-300" style={{ backfaceVisibility: "hidden" }}>
+                <div className="absolute w-full h-full backface-hidden bg-gradient-to-r from-purple-500 to-red-600 text-white rounded-xl shadow-lg p-6 flex flex-col transform rotate-y-180 border-2 border-blue-300" style={{ backfaceVisibility: "hidden" }}>
                   <div className="flex-grow flex items-center">
                     <p className="text-white text-sm sm:text-base">{card.answer}</p>
                   </div>
