@@ -16,7 +16,7 @@ export default function LandingNavbar() {
       transition={{ duration: 0.6 }}
       className="bg-white w-full flex items-center justify-between py-4 px-6 md:px-12 fixed top-0 left-0 z-50 shadow"
     >
-      {/* header--projectName */}
+      {/* header */}
       <div className="text-2xl font-bold text-gray-900 cursor-pointer">Mapito</div>
 
       {/* Desktop Links */}
@@ -54,13 +54,13 @@ export default function LandingNavbar() {
       <div className="hidden md:flex items-center gap-4">
         <Link
           to="/signup"
-          className="bg-blue-600 text-white py-2 px-5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer"
+          className="bg-blue-600 text-white py-2 px-5 rounded-lg text-sm font-bold transition-all duration-300 cursor-pointer"
         >
           Sign Up Free
         </Link>
          <Link
           to="/login"
-          className="bg-white text-black border border-color-black py-2 px-5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer"
+          className="bg-black text-white py-2 px-5 rounded-lg text-sm font-bold transition-all duration-300 cursor-pointer"
         >
           Login
         </Link>
@@ -90,11 +90,11 @@ export default function LandingNavbar() {
       >
         <div className="flex justify-between items-center">
           <span className="text-2xl font-bold text-black">Mapito</span>
-          <button onClick={toggleMenu}>
-            <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+{/*  <button onClick={toggleMenu}>
+       <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
+          </button> */}
         </div>
 
         <div className="flex flex-col gap-4">
@@ -141,7 +141,7 @@ export default function LandingNavbar() {
           <Link
             to="/signup"
             onClick={toggleMenu}
-            className="flex items-center justify-center bg-blue-600 text-white py-2 px-5 rounded-lg text-sm font-medium"
+            className="flex items-center justify-center bg-blue-600 text-white py-2 px-5 rounded-lg text-sm font-bold"
           >
             Sign Up Free
           </Link>
@@ -149,7 +149,7 @@ export default function LandingNavbar() {
           <Link
             to="/login"
             onClick={toggleMenu}
-            className="flex items-center justify-center bg-white border border-color-black text-black py-2 px-5 rounded-lg text-sm font-medium"
+            className="flex items-center justify-center bg-black text-white py-2 px-5 rounded-lg text-sm font-bold"
           >
             Login
           </Link>
