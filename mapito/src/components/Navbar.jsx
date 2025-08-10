@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import CharAvatar from "../utils/CharAvatar";
-import { FaHome, FaInfoCircle, FaClipboardList, FaCode, FaKeyboard, FaStickyNote, FaUserFriends, FaBook, FaBell  } from 'react-icons/fa';
+import { FaHome, FaInfoCircle, FaClipboardList, FaCode, FaKeyboard, FaStickyNote, FaGamepad, FaBook, FaBell  } from 'react-icons/fa';
 import { ChevronDown } from "lucide-react";
 
 export default function Navbar() {
@@ -126,7 +126,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
                 to="/codinggame"
                 isAuthenticated={isAuthenticated}
                 text="Coding Games"
-                icon={<FaUserFriends className="w-5 h-5" />}
+                icon={<FaGamepad className="w-5 h-5" />}
               />
             </div>
           )}
@@ -204,11 +204,11 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
       >
         <div className="flex justify-between items-center">
           <span className="text-2xl font-bold text-black">Mapito</span>
-          <button onClick={toggleMenu}>
+{/*           <button onClick={toggleMenu}>
             <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
+          </button> */}
         </div>
 
         <div className="flex flex-col gap-4">
@@ -273,7 +273,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
             }}
             className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
           >
-            <FaUserFriends size={20} className="text-gray-600" />
+            <FaGamepad size={20} className="text-gray-600" />
             Coding games
           </button>
 
