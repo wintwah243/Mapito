@@ -189,7 +189,7 @@ const UserInfo = () => {
 return (
     <>
       <Navbar />
-      <div className="max-w-6xl mx-auto px-4 py-8 mb-20 mt-12 flex flex-col md:flex-row gap-6">
+      <div className="max-w-6xl mx-auto px-4 py-8 mb-20 mt-20 flex flex-col md:flex-row gap-6">
         {/* User Info Box - Left Column */}
         <div className="bg-white rounded-lg shadow-sm overflow-hidden flex-1">
           <div className="bg-gradient-to-r from-gray-600 to-blue-700 p-6">
