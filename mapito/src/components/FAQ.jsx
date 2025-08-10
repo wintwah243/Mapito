@@ -19,7 +19,7 @@ const FAQ = () => {
     },
     {
       question: "What makes Mapito different?",
-      answer: "Mapito blends AI-generated plans with hands-on tools like a live code editor, quiz engine, typing test, summarize notes and mock interviews — all in one place."
+      answer: "Mapito blends AI-generated plans with hands-on tools like a live code editor, quiz engine, typing test, summarize notes and mini-coding games — all in one place."
     }
   ];
 
