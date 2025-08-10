@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaBrain, FaLaptopCode, FaClipboardCheck, FaFileAlt, FaKeyboard, FaComments } from 'react-icons/fa';
+import { FaBrain, FaLaptopCode, FaClipboardCheck, FaFileAlt, FaKeyboard, FaGamepad } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const features = [
@@ -21,29 +21,29 @@ const features = [
   {
     id: 3,
     title: 'Smart Quizzes',
-    description: 'Test your understanding with quizzes that adapt to your progress.',
+    description: 'Test your understanding with quizzes that is designed to improve your knowledge.',
     icon: <FaClipboardCheck className="text-blue-500 text-2xl" />,
     link: '/quiz',
   },
   {
     id: 4,
     title: 'AI Note Summarizer',
-    description: 'Turn long study notes into quick, readable summaries instantly.',
+    description: 'Turn long study notes or documentation into quick, readable summaries instantly.',
     icon: <FaFileAlt className="text-blue-500 text-2xl" />,
     link: '/summarize',
   },
   {
     id: 5,
     title: 'Typing Speed Test',
-    description: 'Track and improve your typing speed with real-time feedback.',
+    description: 'Track and improve your typing speed with real-time charts.',
     icon: <FaKeyboard className="text-blue-500 text-2xl" />,
     link: '/typing-test',
   },
   {
     id: 6,
-    title: 'AI Mock Interview',
-    description: 'Practice with job-specific questions and improve your interview skills.',
-    icon: <FaComments className="text-blue-500 text-2xl" />,
+    title: 'Mini Coding Games',
+    description: 'Enjoy interactive coding challenges while having fun and unwinding.',
+    icon: <FaGamepad className="text-blue-500 text-2xl" />,
     link: '/mock-interview',
   },
 ];
