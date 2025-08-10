@@ -6,7 +6,6 @@ const generateToken = (id) => {
 }
 
 export const registerUser = async(req,res) => {
-    console.log("req.body:", req.body);
     const {fullName, email, password, profileImageUrl} = req.body;
 
     if(!fullName || !email || !password){
