@@ -46,7 +46,7 @@ const LandingAboutus = () => {
       description: "Use AI to instantly generate concise summaries from your long notes for quick revision"
     },
     {
-      icon: <FaUserTie className="text-3xl text-gray-400" />,
+      icon: <FaGamepad className="text-3xl text-gray-400" />,
       title: "Coding Games",
       description: "Sharpen your coding skills with fun mini coding games designed to match your learning goals."
     }
