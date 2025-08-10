@@ -26,23 +26,24 @@ axiosInstance.interceptors.request.use(
 
 //Response interceptor
 axiosInstance.interceptors.response.use(
-    (response) => {
-        return response;
-    },
-    (error) => {
-        //handle common errors globally
-        if(error.response) {
-            if(error.response.status === 401){
-                //redirect to login page
-                window.location.href = "/login";
-            }else if(error.response.status === 500){
-                console.error("Server error. Please try again later.");
-            }
-        }else if(error.code === "ECONNABORTED"){
-            console.error("Request timeout. Please try again.");
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      if (error.response.status === 401) {
+        // Check request URL and skip redirect if it's delete-account
+        const requestUrl = error.config.url || "";
+        if (!requestUrl.includes('/api/auth/delete-account')) {
+          window.location.href = "/login";
         }
-        return Promise.reject(error);
+        // Else just reject error (no redirect)
+      } else if (error.response.status === 500) {
+        console.error("Server error. Please try again later.");
+      }
+    } else if (error.code === "ECONNABORTED") {
+      console.error("Request timeout. Please try again.");
     }
+    return Promise.reject(error);
+  }
 );
 
 export default axiosInstance;
