@@ -7,7 +7,7 @@ import {
   FaChartLine,
   FaKeyboard,
   FaStickyNote,
-  FaUserTie
+  FaGamepad
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import LandingNavbar from './LandingNavbar';
@@ -120,7 +120,7 @@ const LandingAboutus = () => {
         </section>
 
         {/* Features */}
-        <section className="py-20 bg-gray-100">
+        <section className="py-20 bg-white">
           <div className="container mx-auto px-6">
             <h2 className="text-3xl font-bold text-center text-gray-800 mb-16">How Mapito Helps You Grow</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
