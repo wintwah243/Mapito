@@ -21,6 +21,11 @@ import {
     useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import useSound from 'use-sound';
+import correctSound from '../assets/sounds/correct.mp3';
+import clickSound from '../assets/sounds/click.mp3';
+import dragSound from '../assets/sounds/coin.mp3';
+import loseSound from '../assets/sounds/lose.mp3';
 
 const originalCode = [
     "function greet(name) {",
@@ -125,6 +130,12 @@ const CodeOrderGame = () => {
     const [activeId, setActiveId] = useState(null);
     const navigate = useNavigate();
 
+    //sound effect
+    const [playCorrect] = useSound(correctSound, { volume: 0.5 });
+    const [playClick] = useSound(clickSound, { volume: 0.3 });
+    const [playDrag] = useSound(dragSound, { volume: 0.2 });
+    const [playLose] = useSound(loseSound, { volume: 0.7 });
+
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
@@ -149,6 +160,7 @@ const CodeOrderGame = () => {
                 if (prev <= 1) {
                     clearInterval(timerId);
                     setGameStatus('lost');
+                    playLose();
                     return 0;
                 }
                 return prev - 1;
@@ -177,11 +189,13 @@ const CodeOrderGame = () => {
 
     const handleDragStart = (event) => {
         setActiveId(event.active.id);
+        playDrag();
     };
 
     const handleDragEnd = (event) => {
         const { active, over } = event;
         setActiveId(null);
+        playClick();
 
         if (gameStatus !== 'playing') return;
         if (!over || active.id === over.id) return;
@@ -197,6 +211,7 @@ const CodeOrderGame = () => {
         setAttempts(prev => prev + 1);
 
         if (isCorrectOrder) {
+            playCorrect();
             setScore(prev => prev + levels[currentLevel].reward - (attempts * 5) - (hintUsed ? 20 : 0));
             setGameStatus('won');
             setShowConfetti(true);
@@ -207,6 +222,7 @@ const CodeOrderGame = () => {
 
     const useHint = () => {
         if (hintUsed) return;
+        playClick();
 
         const correctOrder = levels[currentLevel].code;
         const currentOrder = codeLines.map(line => line.text);
@@ -249,19 +265,23 @@ const CodeOrderGame = () => {
     };
 
     const startGame = () => {
+        playClick();
         setGameStatus('playing');
     };
 
     const stopGame = () => {
+        playClick();
         if (timer) clearInterval(timer);
         setGameStatus('paused');
     };
 
     const resumeGame = () => {
+        playClick();
         setGameStatus('playing');
     };
 
     const resetGame = () => {
+        playClick();
         if (timer) clearInterval(timer);
         setCurrentLevel(0);
         setScore(0);
@@ -458,10 +478,10 @@ const CodeOrderGame = () => {
                                     {currentLevel < levels.length - 1 ? 'Next Level ' : 'Play Again'}
                                 </button>
                                 <button
-                                    onClick={retryLevel}
+                                    onClick={resetGame}
                                     className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold transition-all transform hover:scale-105"
                                 >
-                                    Replay Level 
+                                    Stop Game
                                 </button>
                             </div>
                         </div>
