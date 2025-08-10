@@ -7,7 +7,7 @@ import {
   FaChartLine,
   FaKeyboard,
   FaStickyNote,
-  FaUserTie
+  FaGamepad
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
@@ -44,9 +44,9 @@ const AboutUs = () => {
       description: "Use AI to instantly generate concise summaries from your long notes for quick revision"
     },
     {
-      icon: <FaUserTie className="text-3xl text-gray-400" />,
-      title: "Mock Interview",
-      description: "Practice job interviews with AI-powered questions tailored to your career goals"
+      icon: <FaGamepad className="text-3xl text-gray-400" />,
+      title: "Coding games",
+      description: "Sharpen your coding skills with fun mini coding games designed to match your learning goals."
     }
   ];
 
@@ -108,7 +108,7 @@ const AboutUs = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-white">AI-generated learning path</p>
-                        <p className="text-xs text-white">Provide from a roadmap to interview stage</p>
+                        <p className="text-xs text-white">Provide from a roadmap to job-ready stage</p>
                       </div>
                     </div>
                   </div>
@@ -119,7 +119,7 @@ const AboutUs = () => {
         </section>
 
         {/* Features */}
-        <section className="py-20 bg-gray-100">
+        <section className="py-20 bg-white">
           <div className="container mx-auto px-6">
             <h2 className="text-3xl font-bold text-center text-gray-800 mb-16">How Mapito Helps You Grow</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
