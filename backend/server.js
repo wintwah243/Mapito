@@ -17,6 +17,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import Roadmap from './models/Roadmap.js';
 import { roadmapDetails } from './utils/data.js';
+import { protect } from './middleware/authMiddleware.js';
 import User from './models/User.js';
 import bcrypt from 'bcrypt';
 
