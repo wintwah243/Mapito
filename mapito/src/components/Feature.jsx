@@ -44,7 +44,7 @@ const features = [
     title: 'Mini Coding Games',
     description: 'Enjoy interactive coding challenges while having fun and unwinding.',
     icon: <FaGamepad className="text-blue-500 text-2xl" />,
-    link: '/mock-interview',
+    link: '/codinggame',
   },
 ];
 
