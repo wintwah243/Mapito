@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { FaHome, FaInfoCircle, FaClipboardList, FaCode, FaKeyboard, FaStickyNote, FaUserFriends, FaBook, FaBell } from 'react-icons/fa';
-import { ChevronDown } from "lucide-react";
+import { FaHome, FaInfoCircle, FaBook, FaBell } from 'react-icons/fa';
 
 export default function LandingNavbar() {
   const [isOpen, setIsOpen] = useState(false); //for toggle menu
