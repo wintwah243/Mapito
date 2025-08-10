@@ -35,7 +35,8 @@
     "react-tooltip": "^5.28.1",
     "react-use": "^17.6.0",
     "recharts": "^2.15.3",
-    "tailwindcss": "^4.1.4"
+    "tailwindcss": "^4.1.4",
+    "use-sound": "^5.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
