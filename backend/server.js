@@ -16,8 +16,9 @@ import authenticate from './middleware/authenticate.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import Roadmap from './models/Roadmap.js';
-import MockInterview from './models/MockInterview.js';
 import { roadmapDetails } from './utils/data.js';
+import User from './models/User.js';
+import bcrypt from 'bcrypt';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -243,224 +244,6 @@ function formatRoadmapResponse(text) {
     .trim();
 }
 
-// mock-interview
-async function saveMockInterview({ role, answer, history, response, source }) {
-  try {
-    await MockInterview.create({
-      role,
-      answer,
-      history,
-      response,
-      source
-    });
-  } catch (error) {
-    console.error('Failed to save mock interview:', error);
-  }
-};
-
-
-//api route for ai mock interview
-app.post('/api/mock-interview', async (req, res) => {
-  const { role, answer, history } = req.body;
-
-  // Validate inputs
-  if (!role || typeof role !== 'string') {
-    return res.status(400).json({
-      error: 'Invalid role',
-      details: 'Role must be a non-empty string'
-    });
-  }
-
-  try {
-    // we will use gemini first
-    const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
-    const prompt = `
-      You are a professional interviewer for ${role} positions.
-      ${history ? `Conversation history:\n${history}\n` : ''}
-      ${answer ?
-        `The candidate responded: "${answer.substring(0, 500)}"\n\n` +
-        `Provide constructive feedback (1-2 sentences) and ask a relevant follow-up question.` :
-        `Start the interview by asking the first technical question for a ${role} position.`
-      }
-      Keep responses professional and concise.
-    `;
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const nextMessage = response.text();
-
-    await saveMockInterview({ role, answer, history, response: nextMessage, source: 'gemini' });
-    return res.json({
-      message: nextMessage,
-      source: 'gemini'
-    });
-
-  } catch (geminiError) {
-    console.error('Gemini API error:', geminiError);
-
-    // backup plan 1: we will use Hugging Face API
-    try {
-      if (!process.env.HF_API_KEY) {
-        throw new Error('Hugging Face API key not configured');
-      }
-
-      const hfPrompt = `Act as a professional interviewer for ${role} position. ${answer ?
-        `The candidate said: "${answer.substring(0, 300)}". ` +
-        `Give brief feedback and ask a follow-up question.` :
-        `Ask the first technical interview question for ${role}.`
-        }`;
-
-      const hfResponse = await axios.post(
-        'https://api-inference.huggingface.co/models/google/flan-t5-xxl',
-        { inputs: hfPrompt },
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.HF_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          timeout: 10000
-        }
-      );
-
-      if (!hfResponse.data || !hfResponse.data[0] || !hfResponse.data[0].generated_text) {
-        throw new Error('Invalid response format from Hugging Face');
-      }
-
-      const hfMessage = cleanInterviewResponse(hfResponse.data[0].generated_text);
-
-      await saveMockInterview({ role, answer, history, response: hfMessage, source: 'huggingface' });
-      return res.json({
-        message: hfMessage,
-        source: 'huggingface',
-        warning: 'Using alternative interview service'
-      });
-
-
-    } catch (hfError) {
-      console.error('Hugging Face fallback failed:', hfError);
-
-      // backup plan 2: Predefined interview questions
-      try {
-        const predefinedResponse = getPredefinedInterviewResponse(role, answer, history);
-
-        await saveMockInterview({ role, answer, history, response: predefinedResponse, source: 'predefined' });
-        return res.json({
-          message: predefinedResponse,
-          source: 'predefined',
-          warning: 'Using generic interview questions'
-        });
-
-      } catch (finalError) {
-        console.error('All fallbacks failed:', finalError);
-        return res.status(500).json({
-          error: 'Failed to generate interview content',
-          details: {
-            geminiError: geminiError.message,
-            hfError: hfError.message
-          },
-          suggestion: 'Please try again later or refresh the interview'
-        });
-      }
-    }
-  }
-});
-
-// Clean up Hugging Face response
-function cleanInterviewResponse(text) {
-  return text
-    .replace(/<\/?s>/g, '') // Remove HTML tags
-    .replace(/\n+/g, '\n')  // Remove extra newlines
-    .replace(/^(Feedback|Question):?/i, '') // Remove labels
-    .trim();
-}
-
-// Predefined interview questions and responses
-function getPredefinedInterviewResponse(role, answer, history) {
-  const roles = {
-    'frontend': 'Frontend Developer',
-    'backend': 'Backend Developer',
-    'fullstack': 'Full Stack Developer',
-    'data': 'Data Scientist',
-    'devops': 'DevOps Engineer'
-  };
-
-  const normalizedRole = Object.keys(roles).find(key =>
-    role.toLowerCase().includes(key)) || 'technical';
-
-  const questions = {
-    'frontend': [
-      "Can you explain how the Virtual DOM works in React?",
-      "How would you optimize website performance?",
-      "Explain the difference between CSS Grid and Flexbox."
-    ],
-    'backend': [
-      "How would you design a RESTful API for a todo app?",
-      "Explain database indexing and when you'd use it.",
-      "Describe your approach to handling authentication."
-    ],
-    'fullstack': [
-      "Walk me through how you'd build a full stack application.",
-      "How would you handle state management across frontend and backend?",
-      "Describe your experience with API design."
-    ],
-    'data': [
-      "Explain the bias-variance tradeoff.",
-      "How would you clean a messy dataset?",
-      "Describe a machine learning project you've worked on."
-    ],
-    'devops': [
-      "Explain CI/CD pipelines and their benefits.",
-      "How would you troubleshoot a production outage?",
-      "Describe your experience with containerization."
-    ],
-    'technical': [
-      "Tell me about a challenging technical problem you solved.",
-      "How do you stay updated with technology trends?",
-      "Describe your experience with version control systems."
-    ]
-  };
-
-  const followUpPrompt = "Do you have any questions for me about this role?";
-  const closingStatement = "Thanks for the great conversation. That concludes our mock interview session. Good luck!";
-
-  // If no answer provided, return first question
-  if (!answer) {
-    return questions[normalizedRole][0];
-  }
-
-  const usedQuestions = history
-    ? questions[normalizedRole].filter(q => history.includes(q))
-    : [];
-
-  const availableQuestions = questions[normalizedRole].filter(
-    q => !usedQuestions.includes(q)
-  );
-
-  // If all questions have been asked and follow-up was already sent, end the interview
-  if (availableQuestions.length === 0 && history?.includes(followUpPrompt)) {
-    return closingStatement;
-  }
-
-  // If all technical questions are done, send follow-up prompt
-  if (availableQuestions.length === 0) {
-    return followUpPrompt;
-  }
-
-  // Otherwise, continue with next question
-  const nextQuestion = availableQuestions[0];
-  const feedbacks = [
-    "That's an interesting perspective.",
-    "Good approach to the problem.",
-    "Thanks for explaining your thought process.",
-    "That's a valid way to look at it.",
-    "I appreciate your detailed response."
-  ];
-
-  return `Thanks for your answer. ${
-    feedbacks[Math.floor(Math.random() * feedbacks.length)]
-  } Next question: ${nextQuestion}`;
-};
-
 //api route for summarize note
 app.post('/api/summarize-note', async (req, res) => {
   const { note } = req.body;
@@ -638,6 +421,30 @@ app.get('/api/roadmaps/latest', authenticate, async (req, res) => {
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/api/auth/delete-account', protect, async (req, res) => {
+  try {
+    const { password } = req.body;
+    const userId = req.user.id;
+
+    if (!password) {
+      return res.status(400).json({ message: 'Password is required' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ message: 'Incorrect password' });
+
+    await User.findByIdAndDelete(userId);
+
+    res.json({ message: 'Account deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
