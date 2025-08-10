@@ -9,18 +9,18 @@ const processSteps = [
   },
   {
     id: 2,
-    title: 'Generate Personalized Roadmap',
+    title: 'Generate AI-Powered Roadmap',
     description: 'Use Mapito AI to build a learning path tailored to you.', 
   },
   {
     id: 3,
-    title: 'Start Practicing & Take Quizzes',
+    title: 'Start Practicing with Various Tools',
     description: 'Complete tasks, code challenges, and quizzes.',
   },
   {
     id: 4,
-    title: 'Take Mock Interview & Improve',
-    description: 'Monitor your growth and achieve your roadmap.',
+    title: 'Play Fun Coding Games & Relax',
+    description: 'Improve your coding skills while having fun.',
   }
 ];
 
