@@ -121,27 +121,6 @@ const SignUp = () => {
           Sign in with Google
         </button>
 
-       {/* GitHub Sign In */}
-        <button
-          onClick={() => window.location.href = 'https://mapito.onrender.com/api/auth/github'}
-          className="w-full flex items-center justify-center gap-2 bg-gray-900 border border-gray-900 rounded-md py-2 px-4 text-sm font-medium text-white hover:bg-gray-800 hover:shadow-lg transition duration-150 mb-6"
-        >
-          <svg
-            className="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M12 0C5.372 0 0 5.373 0 12c0 5.303 3.438 9.8 8.205 11.387.6.11.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 17.07 3.633 16.7 3.633 16.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.237 1.838 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.76-1.605-2.665-.304-5.466-1.334-5.466-5.933 0-1.31.468-2.38 1.235-3.22-.124-.304-.535-1.527.117-3.176 0 0 1.008-.322 3.3 1.23a11.52 11.52 0 013.003-.404c1.02.004 2.045.138 3.003.404 2.29-1.552 3.296-1.23 3.296-1.23.654 1.65.244 2.873.12 3.176.77.84 1.232 1.91 1.232 3.22 0 4.61-2.807 5.625-5.48 5.922.43.37.823 1.096.823 2.21 0 1.595-.015 2.877-.015 3.267 0 .32.216.694.824.576C20.565 21.796 24 17.3 24 12c0-6.627-5.373-12-12-12z"
-            />
-          </svg>
-          Sign in with GitHub
-        </button>
-
        {/* Separator */}
         <div className="flex items-center my-4">
           <hr className="flex-grow border-gray-300" />
