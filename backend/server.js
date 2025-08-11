@@ -54,86 +54,87 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Google OAuth
+// google oauth
 passport.use(
+  "google",
   new GoogleStrategy(
     {
-      clientID: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "https://mapito.onrender.com/api/auth/google/callback",
-      scope: ["profile", "email"],
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
-        if (!email) return done(new Error("No email found in Google profile"), null);
+        const email = profile.emails?.[0]?.value;
+        if (!email) return done(new Error("Google email missing"), null);
 
-        let user = await User.findOne({ email });
+        // Check for existing user by email or googleId
+        let user = await User.findOne({ 
+          $or: [{ email }, { googleId: profile.id }] 
+        });
 
         if (user) {
+          // Update googleId if missing (e.g., user signed up via GitHub first)
           if (!user.googleId) {
             user.googleId = profile.id;
             await user.save();
           }
         } else {
-          user = new User({
+          // Create new user
+          user = await User.create({
             googleId: profile.id,
-            fullName: profile.displayName,
             email,
-            profileImageUrl: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null,
+            name: profile.displayName,
+            profileImageUrl: profile.photos?.[0]?.value,
           });
-          await user.save();
         }
-
-        return done(null, user);
-      } catch (error) {
-        console.error("Google OAuth error:", error);
-        return done(error, null);
+        done(null, user);
+      } catch (err) {
+        console.error("Google strategy error:", err);
+        done(err, null);
       }
     }
   )
 );
 
-// GitHub OAuth
 passport.use(
+  "github",
   new GitHubStrategy(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       callbackURL: "https://mapito.onrender.com/api/auth/github/callback",
-      scope: ['user:email'],
+      scope: ["user:email"],
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
-        if (!email) return done(new Error("No email found in GitHub profile"), null);
+        const email = profile.emails?.[0]?.value;
+        if (!email) return done(new Error("GitHub email missing"), null);
 
-        let user = await User.findOne({ email });
+        // Check for existing user by email or githubId
+        let user = await User.findOne({
+          $or: [{ email }, { githubId: profile.id }],
+        });
 
         if (user) {
+          // Update githubId if missing (e.g., user signed up via Google first)
           if (!user.githubId) {
             user.githubId = profile.id;
-            // update avatar if changed
-            const avatarUrl = profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null;
-            if (avatarUrl && user.profileImageUrl !== avatarUrl) {
-              user.profileImageUrl = avatarUrl;
-            }
             await user.save();
           }
         } else {
-          user = new User({
+          // Create new user
+          user = await User.create({
             githubId: profile.id,
-            name: profile.displayName || profile.username,
             email,
-            profileImageUrl: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null,
+            name: profile.displayName || profile.username,
+            profileImageUrl: profile.photos?.[0]?.value,
           });
-          await user.save();
         }
-
-        return done(null, user);
-      } catch (error) {
-        console.error("GitHub OAuth error:", error);
-        return done(error, null);
+        done(null, user);
+      } catch (err) {
+        console.error("GitHub strategy error:", err);
+        done(err, null);
       }
     }
   )
