@@ -195,9 +195,10 @@ return (
           <div className="bg-gradient-to-r from-gray-600 to-blue-700 p-6">
             <div className="flex flex-col sm:flex-row items-center">
               <div className="relative group mb-4 sm:mb-0">
+                
                 {user?.profileImageUrl ? (
                   <img
-                    src={user.profileImageUrl}
+                    src={`${user.profileImageUrl}${user.profileImageUrl.includes('?') ? '&' : '?'}t=${Date.now()}`}
                     alt="Profile"
                     className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
                   />
@@ -210,6 +211,7 @@ return (
                     className="border-4 border-white shadow-md"
                   />
                 )}
+                
                 <button
                   onClick={() => setEditingProfilePic(true)}
                   className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-sm hover:bg-gray-50 transition-all duration-200"
