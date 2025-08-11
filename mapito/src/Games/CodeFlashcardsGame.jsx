@@ -3,6 +3,9 @@ import { motion } from "framer-motion";
 import { FaArrowLeft, FaArrowRight, FaRedo} from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
+import useSound from 'use-sound';
+import clickSound from '../assets/sounds/click.mp3';
+import acradeSound from '../assets/sounds/acrade.mp3'
 
 const flashcards = [
   {
@@ -29,9 +32,29 @@ const CodeFlashcardsGame = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const navigate = useNavigate();
 
+  //sound effect
+  const [playClick] = useSound(clickSound, { volume: 0.3 });
+
+  // Add stop function from useSound
+    const [playAcrade, { stop }] = useSound(acradeSound, { 
+      volume: 0.7,
+      interrupt: true // Allows the sound to be interrupted
+    });
+  
+    // Play sound when component mounts (user enters game)
+    React.useEffect(() => {
+      playAcrade();
+      
+      // Cleanup function to stop sound when component unmounts
+      return () => {
+        stop();
+      };
+    }, [playAcrade, stop]);
+
   const handleFlip = () => {
     if (gameStarted) {
       setFlipped(!flipped);
+      playClick();
     }
   };
 
