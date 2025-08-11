@@ -21,6 +21,7 @@ import { protect } from './middleware/authMiddleware.js';
 import User from './models/User.js';
 import bcrypt from 'bcrypt';
 import { Strategy as GitHubStrategy } from 'passport-github2';
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -55,7 +56,7 @@ app.use(passport.session());
 
 // Google OAuth
 passport.use(
-  new OAuthStrategy(
+  new GoogleStrategy(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
