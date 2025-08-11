@@ -53,90 +53,86 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Google OAuth
 passport.use(
-  new OAuthStrategy({
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://mapito.onrender.com/api/auth/google/callback",
-    scope: ["profile", "email"]
-  },
+  new GoogleStrategy(
+    {
+      clientID: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      callbackURL: "https://mapito.onrender.com/api/auth/google/callback",
+      scope: ["profile", "email"],
+    },
     async (accessToken, refreshToken, profile, done) => {
-
       try {
-        let user = await userdb.findOne({ email });
+        const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
+        if (!email) return done(new Error("No email found in Google profile"), null);
+
+        let user = await User.findOne({ email });
 
         if (user) {
-          // Link googleId if not linked yet
           if (!user.googleId) {
             user.googleId = profile.id;
             await user.save();
           }
         } else {
-          // Create new user
-          user = new userdb({
+          user = new User({
             googleId: profile.id,
             fullName: profile.displayName,
             email,
-            profileImageUrl: profile.photos[0].value,
+            profileImageUrl: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null,
           });
           await user.save();
         }
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-          expiresIn: "1d",
-        });
 
         return done(null, user);
       } catch (error) {
+        console.error("Google OAuth error:", error);
         return done(error, null);
       }
     }
   )
 );
 
+// GitHub OAuth
 passport.use(
   new GitHubStrategy(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: 'https://mapito.onrender.com/api/auth/github/callback',
-      scope: ['user:email']
+      callbackURL: "https://mapito.onrender.com/api/auth/github/callback",
+      scope: ['user:email'],
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // Get email (some profiles may lack emails)
-        const email =
-          profile.emails && profile.emails.length > 0
-            ? profile.emails[0].value
-            : null;
+        const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
+        if (!email) return done(new Error("No email found in GitHub profile"), null);
 
-        // Get avatar URL from GitHub profile photos
-        const avatarUrl =
-          profile.photos && profile.photos.length > 0
-            ? profile.photos[0].value
-            : null;
-
-        // Find user by email
         let user = await User.findOne({ email });
 
-        if (!user) {
-          // Create new user with avatar URL
-          user = await User.create({
-            email,
-            githubId: profile.id,
-            name: profile.displayName || profile.username,
-            profileImageUrl: avatarUrl
-          });
-        } else {
-          // update avatar URL if it changed
-          if (user.profileImageUrl !== avatarUrl) {
-            user.profileImageUrl = avatarUrl;
+        if (user) {
+          if (!user.githubId) {
+            user.githubId = profile.id;
+            // update avatar if changed
+            const avatarUrl = profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null;
+            if (avatarUrl && user.profileImageUrl !== avatarUrl) {
+              user.profileImageUrl = avatarUrl;
+            }
             await user.save();
           }
+        } else {
+          user = new User({
+            githubId: profile.id,
+            name: profile.displayName || profile.username,
+            email,
+            profileImageUrl: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null,
+          });
+          await user.save();
         }
 
         return done(null, user);
-      } catch (err) {
-        return done(err, null);
+      } catch (error) {
+        console.error("GitHub OAuth error:", error);
+        return done(error, null);
       }
     }
   )
