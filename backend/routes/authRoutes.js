@@ -323,6 +323,8 @@ router.get("/google", passport.authenticate("google", { scope: ["profile", "emai
 router.get("/google/callback", passport.authenticate("google", {
     session: false, 
 }), (req, res) => {
+    console.log('Google auth successful for user:', req.user);
+    console.log('Generated token:', token);
     const token = jwt.sign(
         { id: req.user._id },
         process.env.JWT_SECRET,
