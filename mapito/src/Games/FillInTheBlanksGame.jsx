@@ -2,10 +2,35 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti';
 import Navbar from "../components/Navbar";
-import owl from "../assets/images/fillintheblank.png"
+import owl from "../assets/images/fillintheblank.png";
+import useSound from 'use-sound';
+import correctSound from '../assets/sounds/correct.mp3';
+import clickSound from '../assets/sounds/click.mp3';
+import buzzSound from '../assets/sounds/buzz.mp3';
+import retroSound from '../assets/sounds/retro.mp3';
 
 const FillInTheBlanksGame = () => {
     const navigate = useNavigate();
+    //sound effect
+    const [playCorrect] = useSound(correctSound, { volume: 0.5 });
+    const [playClick] = useSound(clickSound, { volume: 0.3 });
+    const [playBuzz] = useSound(buzzSound, { volume: 0.7 });
+
+    // Add stop function from useSound
+    const [playRetro, { stop }] = useSound(retroSound, {
+        volume: 0.7,
+        interrupt: true // Allows the sound to be interrupted
+    });
+
+    // Play sound when component mounts (user enters game)
+    React.useEffect(() => {
+        playRetro();
+
+        // Cleanup function to stop sound when component unmounts
+        return () => {
+            stop();
+        };
+    }, [playRetro, stop]);
 
     const questions = [
         {
@@ -47,6 +72,8 @@ const doubled = numbers.map(num => ____ * 2);`,
     });
 
     const startGame = () => {
+        playClick();
+        stop();
         setGameState(prev => ({
             ...prev,
             started: true,
@@ -61,6 +88,8 @@ const doubled = numbers.map(num => ____ * 2);`,
     };
 
     const stopQuiz = () => {
+        playRetro();
+        playClick()
         setGameState(prev => ({
             ...prev,
             started: false,
@@ -79,6 +108,12 @@ const doubled = numbers.map(num => ____ * 2);`,
             timerActive: false
         }));
 
+        if (isCorrect) {
+            playCorrect();
+        } else {
+            playBuzz();
+        }
+
         if (isCorrect && gameState.currentQuestion === questions.length - 1) {
             setGameState(prev => ({
                 ...prev,
@@ -90,6 +125,7 @@ const doubled = numbers.map(num => ____ * 2);`,
     };
 
     const nextQuestion = () => {
+        playClick();
         if (gameState.currentQuestion < questions.length - 1) {
             setGameState(prev => ({
                 ...prev,
@@ -104,10 +140,12 @@ const doubled = numbers.map(num => ____ * 2);`,
     };
 
     const handlePlayAgain = () => {
+        playClick();
         startGame();
     };
 
     const toggleHint = () => {
+        playClick();
         setGameState(prev => ({ ...prev, showHint: !prev.showHint }));
     };
 
