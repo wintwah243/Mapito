@@ -21,7 +21,7 @@ import { protect } from './middleware/authMiddleware.js';
 import User from './models/User.js';
 import bcrypt from 'bcrypt';
 import { Strategy as GitHubStrategy } from 'passport-github2';
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
