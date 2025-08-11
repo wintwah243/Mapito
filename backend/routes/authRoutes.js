@@ -332,6 +332,27 @@ router.get("/google/callback", passport.authenticate("google", {
     res.redirect(`https://mapito-df8g.onrender.com/google-auth?token=${token}`);
 });
 
+// github login
+router.get('/github',
+  passport.authenticate('github', { session: false })
+);
+
+router.get('/github/callback',
+  passport.authenticate('github', { session: false }),
+  (req, res) => {
+    // user is in req.user
+    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 3600 * 1000
+    });
+    res.redirect(`https://mapito-df8g.onrender.com/home?token=${token}`);
+  }
+);
+
 // Save roadmap to DB
 router.post('/api/save-roadmap', async (req, res) => {
   try {
