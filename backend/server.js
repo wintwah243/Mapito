@@ -63,14 +63,21 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
 
       try {
-        let user = await userdb.findOne({ googleId: profile.id });
+        let user = await userdb.findOne({ email });
 
-        if (!user) {
+        if (user) {
+          // Link googleId if not linked yet
+          if (!user.googleId) {
+            user.googleId = profile.id;
+            await user.save();
+          }
+        } else {
+          // Create new user
           user = new userdb({
             googleId: profile.id,
             fullName: profile.displayName,
-            email: profile.emails[0].value,
-            profileImageUrl: profile.photos[0].value
+            email,
+            profileImageUrl: profile.photos[0].value,
           });
           await user.save();
         }
