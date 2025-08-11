@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import useSound from 'use-sound';
+import cuteSound from '../assets/sounds/cute_sound.mp3';
+import clickSound from '../assets/sounds/click.mp3';
+import correctSound from '../assets/sounds/correct.mp3';
+import wahwahsadSound from '../assets/sounds/wahwahsad.mp3';
 
 const owlIdle = 'https://cdn-icons-png.flaticon.com/512/616/616408.png';
 const owlHappy = 'https://i.pinimg.com/1200x/74/ef/ef/74efefaaa3a01bc8cc9250dda5a5bc61.jpg';
@@ -70,14 +75,37 @@ const TrueOrFalseGame = () => {
   const [expression, setExpression] = useState('idle');
   const [progress, setProgress] = useState(0);
 
+  // sound effect
+  const [playClick] = useSound(clickSound, { volume: 0.3 });
+  const [playCorrect] = useSound(correctSound, { volume: 0.5 });
+  const [playWrong] = useSound(wahwahsadSound, { volume: 0.5 });
+
+  // Add stop function from useSound
+  const [playCute, { stop }] = useSound(cuteSound, { 
+    volume: 0.7,
+    interrupt: true // Allows the sound to be interrupted
+  });
+
+  // Play sound when component mounts (user enters game)
+  React.useEffect(() => {
+    playCute();
+    
+    // Cleanup function to stop sound when component unmounts
+    return () => {
+      stop();
+    };
+  }, [playCute, stop]);
+
   const handleAnswer = (choice) => {
     setShowExplanation(false);
     const correct = questions[current].answer === choice;
     if (correct) {
+      playCorrect();
       setScore(score + 1);
       setFeedback('Correct! 🎉');
       setExpression('happy');
     } else {
+      playWrong();
       setFeedback('Oops! ❌');
       setExpression('sad');
     }
@@ -101,6 +129,7 @@ const TrueOrFalseGame = () => {
   };
   
   const restart = () => {
+    playCute();
     setStarted(false);
     setCurrent(0);
     setScore(0);
@@ -109,6 +138,12 @@ const TrueOrFalseGame = () => {
     setFinished(false);
     setProgress(0);
     setShowExplanation(false);
+  };
+
+  const handleStartGame = () => {
+    playClick();
+    stop(); 
+    setStarted(true);
   };
 
   if (!started) {
@@ -134,7 +169,7 @@ const TrueOrFalseGame = () => {
           </div>
           <div className="flex flex-col gap-3">
             <motion.button
-              onClick={() => setStarted(true)}
+              onClick={handleStartGame}
               className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition text-lg font-semibold shadow-md"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
