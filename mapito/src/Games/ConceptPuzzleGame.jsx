@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
+import useSound from 'use-sound';
+import correctSound from '../assets/sounds/correct.mp3';
+import wrongSound from '../assets/sounds/wrong.mp3';
+import clickSound from '../assets/sounds/click.mp3';
+import retroSound from '../assets/sounds/retro.mp3';
 
 const codingPuzzles = [
     {
@@ -88,6 +93,36 @@ export default function CodingPuzzleAdventure() {
     const [showNextButton, setShowNextButton] = useState(false);
     const navigate = useNavigate();
 
+    //sound effect
+    const [playCorrect] = useSound(correctSound, {
+        volume: 0.5,
+        interrupt: false  
+    });
+    const [playWrong] = useSound(wrongSound, {
+        volume: 0.5,
+        interrupt: false
+    });
+    const [playClick] = useSound(clickSound, {
+        volume: 0.3,
+        interrupt: false
+    });
+
+    // Add stop function from useSound
+    const [playRetro, { stop }] = useSound(retroSound, {
+        volume: 0.7,
+        interrupt: true // Allows the sound to be interrupted
+    });
+
+    // Play sound when component mounts (user enters game)
+    React.useEffect(() => {
+        playRetro();
+
+        // Cleanup function to stop sound when component unmounts
+        return () => {
+            stop();
+        };
+    }, [playRetro, stop]);
+
     useEffect(() => {
         if (gameState === 'playing') {
             const puzzle = codingPuzzles[currentPuzzle];
@@ -106,6 +141,8 @@ export default function CodingPuzzleAdventure() {
     }, [currentPuzzle, gameState]);
 
     const startGame = () => {
+        playClick();
+        stop();
         setGameState('playing');
         setCurrentPuzzle(0);
         setScore(0);
@@ -124,9 +161,11 @@ const runCode = () => {
                 setCharacter('🎉');
                 setScore(prev => prev + 100);
                 setShowNextButton(true);
+                playCorrect();
             } else {
                 setFeedback('Not quite right. Try again!');
                 setCharacter('😕');
+                playWrong();
             }
             return;
         }
@@ -190,11 +229,13 @@ const runCode = () => {
         setOutput(testResults);
         
         if (allTestsPassed) {
+            playCorrect();
             setFeedback('All tests passed! Great job!');
             setCharacter('🎉');
             setScore(prev => prev + 100 - Math.min(attempts * 10, 50));
             setShowNextButton(true);
         } else {
+            playWrong();
             setFeedback('Some tests failed. Keep trying!');
             setCharacter('😕');
         }
@@ -207,6 +248,7 @@ const runCode = () => {
 };
 
     const nextPuzzle = () => {
+        playClick();
         if (currentPuzzle + 1 < codingPuzzles.length) {
             setCurrentPuzzle(prev => prev + 1);
             setAttempts(0);
@@ -218,6 +260,8 @@ const runCode = () => {
     };
 
     const stopGame = () => {
+        playClick();
+        playRetro();
         setGameState('menu');
         setCurrentPuzzle(0);
         setUserCode('');
