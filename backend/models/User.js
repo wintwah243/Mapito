@@ -6,10 +6,6 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: null,
     },
-    githubId: { 
-        type: String,
-        default: null,
-    },
     fullName: {
         type: String,
         required: true,
@@ -22,7 +18,7 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: function () {
-            return !this.googleId && !this.githubId;
+            return !this.googleId;
         },
     },
     bio: {
