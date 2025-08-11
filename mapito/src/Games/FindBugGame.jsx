@@ -3,6 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import Navbar from '../components/Navbar';
+import useSound from 'use-sound';
+import wrongSound from '../assets/sounds/wrong.mp3';
+import winSound from '../assets/sounds/win.mp3';
+import clickSound from '../assets/sounds/click.mp3';
+import gameIntroSound from '../assets/sounds/puzzle_game_intro.mp3';
+
 
 const BugGame = () => {
     const navigate = useNavigate();
@@ -17,6 +23,27 @@ const BugGame = () => {
     const [timer, setTimer] = useState(null);
     const [wrongAnswerFeedback, setWrongAnswerFeedback] = useState(null);
     const [attempts, setAttempts] = useState(0);
+
+    //sound effect
+    const [playWrong] = useSound(wrongSound, { volume: 0.5 });
+    const [playWin] = useSound(winSound, { volume: 0.7 });
+    const [playClick] = useSound(clickSound, { volume: 0.3 });
+
+    // Add stop function from useSound
+    const [playIntro, { stop }] = useSound(gameIntroSound, {
+        volume: 0.7,
+        interrupt: true // Allows the sound to be interrupted
+    });
+
+    // Play sound when component mounts (user enters game)
+    React.useEffect(() => {
+        playIntro();
+
+        // Cleanup function to stop sound when component unmounts
+        return () => {
+            stop();
+        };
+    }, [playIntro, stop]);
 
     // Game levels with increasing difficulty
     const levels = [
@@ -84,6 +111,8 @@ const BugGame = () => {
 
     // Start a new game
     const startGame = () => {
+        playIntro();
+        playClick();
         setGameState('playing');
         setCurrentLevel(0);
         setScore(0);
@@ -94,6 +123,7 @@ const BugGame = () => {
 
     // Start a specific level
     const startLevel = (levelIndex) => {
+        stop();
         setSelectedLines([]);
         setHintUsed(false);
         setAttempts(0);
@@ -142,6 +172,7 @@ const BugGame = () => {
             selectedLines.every(line => correctLines.includes(line));
 
         if (isCorrect) {
+            playWin();
             // Calculate score with time bonus and hint penalty
             const timeBonus = Math.floor(timeLeft / 5);
             const hintPenalty = hintUsed ? 30 : 0;
@@ -156,6 +187,7 @@ const BugGame = () => {
             setWrongAnswerFeedback(null);
         } else {
             // Wrong answer handling
+            playWrong();
             setAttempts(prev => prev + 1);
             setScore(prev => Math.max(0, prev - 20));
 
@@ -195,6 +227,7 @@ const BugGame = () => {
 
     // Use hint
     const useHint = () => {
+        playClick();
         if (hintUsed || gameState !== 'playing') return;
 
         const currentLevelData = levels[currentLevel];
@@ -215,6 +248,7 @@ const BugGame = () => {
 
     // Next level
     const nextLevel = () => {
+        playClick();
         const nextLevelIndex = currentLevel + 1;
         if (nextLevelIndex < levels.length) {
             setCurrentLevel(nextLevelIndex);
@@ -228,12 +262,16 @@ const BugGame = () => {
 
     // Pause game
     const pauseGame = () => {
+        playIntro();
+        playClick();
         clearInterval(timer);
         setGameState('paused');
     };
 
     // Resume game
     const resumeGame = () => {
+        stop();
+        playClick();
         setGameState('playing');
 
         // Restart timer
