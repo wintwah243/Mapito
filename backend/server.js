@@ -20,6 +20,7 @@ import { roadmapDetails } from './utils/data.js';
 import { protect } from './middleware/authMiddleware.js';
 import User from './models/User.js';
 import bcrypt from 'bcrypt';
+import { Strategy as GitHubStrategy } from 'passport-github2';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -80,6 +81,55 @@ passport.use(
         return done(null, user);
       } catch (error) {
         return done(error, null);
+      }
+    }
+  )
+);
+
+passport.use(
+  new GitHubStrategy(
+    {
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: 'https://mapito.onrender.com/api/auth/github/callback',
+      scope: ['user:email']
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        // Get email (some profiles may lack emails)
+        const email =
+          profile.emails && profile.emails.length > 0
+            ? profile.emails[0].value
+            : null;
+
+        // Get avatar URL from GitHub profile photos
+        const avatarUrl =
+          profile.photos && profile.photos.length > 0
+            ? profile.photos[0].value
+            : null;
+
+        // Find user by email
+        let user = await User.findOne({ email });
+
+        if (!user) {
+          // Create new user with avatar URL
+          user = await User.create({
+            email,
+            githubId: profile.id,
+            name: profile.displayName || profile.username,
+            profileImageUrl: avatarUrl
+          });
+        } else {
+          // update avatar URL if it changed
+          if (user.profileImageUrl !== avatarUrl) {
+            user.profileImageUrl = avatarUrl;
+            await user.save();
+          }
+        }
+
+        return done(null, user);
+      } catch (err) {
+        return done(err, null);
       }
     }
   )
