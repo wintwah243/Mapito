@@ -26,6 +26,7 @@ import correctSound from '../assets/sounds/correct.mp3';
 import clickSound from '../assets/sounds/click.mp3';
 import dragSound from '../assets/sounds/coin.mp3';
 import loseSound from '../assets/sounds/lose.mp3';
+import retroIntroSound from '../assets/sounds/retro_intro.mp3';
 
 const originalCode = [
     "function greet(name) {",
@@ -135,6 +136,22 @@ const CodeOrderGame = () => {
     const [playClick] = useSound(clickSound, { volume: 0.3 });
     const [playDrag] = useSound(dragSound, { volume: 0.2 });
     const [playLose] = useSound(loseSound, { volume: 0.7 });
+
+    // Add stop function from useSound
+    const [playRetroIntro, { stop }] = useSound(retroIntroSound, {
+        volume: 0.7,
+        interrupt: true // Allows the sound to be interrupted
+    });
+
+    // Play sound when component mounts (user enters game)
+    React.useEffect(() => {
+        playRetroIntro();
+
+        // Cleanup function to stop sound when component unmounts
+        return () => {
+            stop();
+        };
+    }, [playRetroIntro, stop]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -265,22 +282,26 @@ const CodeOrderGame = () => {
     };
 
     const startGame = () => {
+        stop();
         playClick();
         setGameStatus('playing');
     };
 
     const stopGame = () => {
+        playRetroIntro();
         playClick();
         if (timer) clearInterval(timer);
         setGameStatus('paused');
     };
 
     const resumeGame = () => {
+        stop();
         playClick();
         setGameStatus('playing');
     };
 
     const resetGame = () => {
+        playRetroIntro();
         playClick();
         if (timer) clearInterval(timer);
         setCurrentLevel(0);
