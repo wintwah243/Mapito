@@ -20,8 +20,6 @@ import { roadmapDetails } from './utils/data.js';
 import { protect } from './middleware/authMiddleware.js';
 import User from './models/User.js';
 import bcrypt from 'bcrypt';
-import { Strategy as GitHubStrategy } from 'passport-github2';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -54,105 +52,53 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// google oauth
 passport.use(
-  "google",
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://mapito.onrender.com/api/auth/google/callback",
-      scope: ["profile", "email"], 
-    },
+  new OAuthStrategy({
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: "https://mapito.onrender.com/api/auth/google/callback",
+    scope: ["profile", "email"]
+  },
     async (accessToken, refreshToken, profile, done) => {
-      try {
-        const email = profile.emails?.[0]?.value;
-        if (!email) return done(new Error("Google email missing"), null);
 
-        // Check for existing user by email or googleId
-        let user = await User.findOne({ 
-          $or: [{ email }, { googleId: profile.id }] 
-        });
+      try {
+        let user = await userdb.findOne({ email });
 
         if (user) {
-          // Update googleId if missing (e.g., user signed up via GitHub first)
           if (!user.googleId) {
             user.googleId = profile.id;
             await user.save();
           }
         } else {
           // Create new user
-          user = await User.create({
+          user = new userdb({
             googleId: profile.id,
+            fullName: profile.displayName,
             email,
-            name: profile.displayName,
-            profileImageUrl: profile.photos?.[0]?.value,
+            profileImageUrl: profile.photos[0].value,
           });
+          await user.save();
         }
-        done(null, user);
-      } catch (err) {
-        console.error("Google strategy error:", err);
-        done(err, null);
-      }
-    }
-  )
-);
-
-passport.use(
-  "github",
-  new GitHubStrategy(
-    {
-      clientID: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "https://mapito.onrender.com/api/auth/github/callback",
-      scope: ["user:email"],
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        const email = profile.emails?.[0]?.value;
-        if (!email) return done(new Error("GitHub email missing"), null);
-
-        // Check for existing user by email or githubId
-        let user = await User.findOne({
-          $or: [{ email }, { githubId: profile.id }],
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+          expiresIn: "1d",
         });
 
-        if (user) {
-          // Update githubId if missing (e.g., user signed up via Google first)
-          if (!user.githubId) {
-            user.githubId = profile.id;
-            await user.save();
-          }
-        } else {
-          // Create new user
-          user = await User.create({
-            githubId: profile.id,
-            email,
-            name: profile.displayName || profile.username,
-            profileImageUrl: profile.photos?.[0]?.value,
-          });
-        }
-        done(null, user);
-      } catch (err) {
-        console.error("GitHub strategy error:", err);
-        done(err, null);
+        return done(null, user);
+      } catch (error) {
+        return done(error, null);
       }
     }
   )
 );
 
 passport.serializeUser((user, done) => {
-  done(null, user._id); 
+  done(null, user);
 });
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id);
-    done(null, user); 
-  } catch (err) {
-    done(err);
-  }
+passport.deserializeUser((user, done) => {
+  done(null, user);
 });
+
 
 app.use("/api/auth", authRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
