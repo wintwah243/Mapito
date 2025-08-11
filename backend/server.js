@@ -55,7 +55,7 @@ app.use(passport.session());
 
 // Google OAuth
 passport.use(
-  new GoogleStrategy(
+  new OAuthStrategy(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
