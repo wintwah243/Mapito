@@ -62,20 +62,14 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
 
       try {
-        let user = await userdb.findOne({ email });
+        let user = await userdb.findOne({ googleId: profile.id });
 
-        if (user) {
-          if (!user.googleId) {
-            user.googleId = profile.id;
-            await user.save();
-          }
-        } else {
-          // Create new user
+        if (!user) {
           user = new userdb({
             googleId: profile.id,
             fullName: profile.displayName,
-            email,
-            profileImageUrl: profile.photos[0].value,
+            email: profile.emails[0].value,
+            profileImageUrl: profile.photos[0].value
           });
           await user.save();
         }
