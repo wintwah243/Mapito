@@ -12,6 +12,9 @@ const GoogleAuthCallback = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        console.log("Full URL:", window.location.href);
+        console.log("Search params:", window.location.search);
+        console.log("Hash params:", window.location.hash);
         const params = new URLSearchParams(window.location.search);
         const token = params.get("token");
 
