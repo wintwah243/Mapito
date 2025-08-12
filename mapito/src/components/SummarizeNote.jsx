@@ -181,18 +181,6 @@ function SummarizeNote() {
               </button>
             </header>
             <article className="p-6 text-gray-800 whitespace-pre-wrap leading-relaxed text-base">{summary}</article>
-
-            {warning && (
-              <div className="px-6 pb-4 text-sm text-yellow-700 font-semibold">
-                ⚠️ <em>{warning}</em>
-              </div>
-            )}
-
-            {summarySource && (
-              <footer className="px-6 pb-6 text-xs text-blue-600 italic">
-                Source: <strong>{summarySource}</strong>
-              </footer>
-            )}
           </section>
         )}
 
