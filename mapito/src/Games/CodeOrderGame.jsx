@@ -131,6 +131,32 @@ const CodeOrderGame = () => {
     const [activeId, setActiveId] = useState(null);
     const navigate = useNavigate();
 
+    // modal css
+    const modalStyles = {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 1000,
+        backgroundColor: 'rgba(31, 41, 55, 0.9)',
+        padding: '2rem',
+        borderRadius: '0.5rem',
+        border: '1px solid rgba(55, 65, 81, 1)',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+        maxWidth: '32rem',
+        width: '90%',
+    };
+
+    const overlayStyles = {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        zIndex: 999,
+    };
+
     //sound effect
     const [playCorrect] = useSound(correctSound, { volume: 0.5 });
     const [playClick] = useSound(clickSound, { volume: 0.3 });
@@ -260,6 +286,7 @@ const CodeOrderGame = () => {
     };
 
     const nextLevel = () => {
+        playClick();
         if (currentLevel < levels.length - 1) {
             setCurrentLevel(prev => prev + 1);
         } else {
@@ -269,6 +296,7 @@ const CodeOrderGame = () => {
     };
 
     const retryLevel = () => {
+        stop();
         const withIds = levels[currentLevel].code.map((line, index) => ({
             id: `line-${index}-${line.substring(0, 10).replace(/\s/g, '_')}`,
             text: line,
@@ -288,7 +316,6 @@ const CodeOrderGame = () => {
     };
 
     const stopGame = () => {
-        playRetroIntro();
         playClick();
         if (timer) clearInterval(timer);
         setGameStatus('paused');
@@ -360,53 +387,52 @@ const CodeOrderGame = () => {
                 )}
 
                 {/* Game */}
-                {gameStatus === 'playing' && (
+                {(gameStatus === 'playing' || gameStatus === 'paused' || gameStatus === 'won' || gameStatus === 'lost') && (
                     <div className="max-w-3xl mx-auto p-6 bg-gray-800 bg-opacity-80 rounded-xl shadow-2xl border border-gray-700">
-                        {(gameStatus === 'playing' || gameStatus === 'paused') && (
-                    <div className="flex justify-end mb-4 space-x-2">
-                        {gameStatus === 'playing' ? (
-                            <button
-                                onClick={stopGame}
-                                className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-bold transition-all"
-                            >
-                                Pause Game
-                            </button>
-                        ) : (
-                            <button
-                                onClick={resumeGame}
-                                className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-bold transition-all"
-                            >
-                                Resume Game
-                            </button>
-                        )}
-                        <button
-                            onClick={resetGame}
-                            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg font-bold transition-all"
-                        >
-                            Reset Game
-                        </button>
-                    </div>
-                )}
-
-                        {gameStatus !== 'intro' && (
-                    <div className="flex justify-between items-center mb-6 p-4 bg-transparent bg-opacity-50 rounded-lg">
-                        <div className="text-center">
-                            <h2 className="text-lg text-white">Score:{score}</h2>
-                        </div>
-                        <div className="text-center">
-                            <h1 className="text-xl font-extrabold bg-clip-text text-transparent bg-white">
-                                {levels[currentLevel].name}
-                            </h1>
-                        </div>
-                        <div className="text-center">
-                            {gameStatus === 'playing' && (
-                                <div className="text-lg font-bold flex items-center justify-center">
-                                     <span className={timeLeft < 10 ? 'text-red-500 animate-pulse' : 'text-green-400'}>{timeLeft}s</span>
-                                </div>
+                        {/* Game controls and header */}
+                        <div className="flex justify-end mb-4 space-x-2">
+                            {gameStatus === 'playing' ? (
+                                <button
+                                    onClick={stopGame}
+                                    className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-bold transition-all"
+                                >
+                                    Pause Game
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={resumeGame}
+                                    className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-bold transition-all"
+                                >
+                                    Resume Game
+                                </button>
                             )}
+                            <button
+                                onClick={resetGame}
+                                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg font-bold transition-all"
+                            >
+                                Reset Game
+                            </button>
                         </div>
-                    </div>
-                )}
+                        
+                        {gameStatus !== 'intro' && (
+                            <div className="flex justify-between items-center mb-6 p-4 bg-transparent bg-opacity-50 rounded-lg">
+                                <div className="text-center">
+                                    <h2 className="text-lg text-white">Score:{score}</h2>
+                                </div>
+                                <div className="text-center">
+                                    <h1 className="text-xl font-extrabold bg-clip-text text-transparent bg-white">
+                                        {levels[currentLevel].name}
+                                    </h1>
+                                </div>
+                                <div className="text-center">
+                                    {gameStatus === 'playing' && (
+                                        <div className="text-lg font-bold flex items-center justify-center">
+                                            <span className={timeLeft < 10 ? 'text-red-500 animate-pulse' : 'text-green-400'}>{timeLeft}s</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                         <div className="flex justify-between mb-4">
                             <span className="px-3 py-1 bg-blue-600 rounded-full text-xs font-bold">
                                 Level {currentLevel + 1} of {levels.length}
@@ -462,41 +488,46 @@ const CodeOrderGame = () => {
 
                 {/* Paused Screen */}
                 {gameStatus === 'paused' && (
-                    <div className="max-w-3xl mx-auto p-8 bg-gray-800 bg-opacity-80 rounded-xl shadow-2xl border border-gray-700 text-center">
-                        <h2 className="text-3xl font-bold text-yellow-400 mb-4">Game Paused</h2>
-                        <p className="text-xl mb-8">Your current progress has been saved.</p>
-                        <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-                            <button
-                                onClick={resumeGame}
-                                className="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg transition-all transform hover:scale-105"
-                            >
-                                Resume Game 
-                            </button>
-                            <button
-                                onClick={resetGame}
-                                className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg transition-all transform hover:scale-105"
-                            >
-                                Quit Game 
-                            </button>
+                    <>
+                        <div style={overlayStyles} onClick={resumeGame} />
+                        <div style={modalStyles}>
+                            <h2 className="text-3xl font-bold text-yellow-400 mb-4">Game Paused</h2>
+                            <p className="text-xl mb-8">Your current progress has been saved.</p>
+                            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                                <button
+                                    onClick={resumeGame}
+                                    className="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg transition-all transform hover:scale-105"
+                                >
+                                    Resume Game
+                                </button>
+                                <button
+                                    onClick={resetGame}
+                                    className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg transition-all transform hover:scale-105"
+                                >
+                                    Quit Game
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    </>
                 )}
 
                 {/* Won Screen */}
                 {gameStatus === 'won' && (
-                    <div className="max-w-3xl mx-auto p-6 bg-gray-800 bg-opacity-80 rounded-xl shadow-2xl border border-gray-700">
-                        <div className="text-center py-8">
-                            <div className="text-6xl mb-4">🎉</div>
-                            <h2 className="text-3xl font-bold text-green-400 mb-2">Level Complete!</h2>
-                            <p className="text-xl mb-6">
-                                You earned <span className="font-bold text-yellow-400">{levels[currentLevel].reward - (attempts * 5) - (hintUsed ? 20 : 0)} points</span>
+                    <div style={overlayStyles}>
+                        <div style={modalStyles}>
+                            <div className="text-6xl mb-4 text-center">🎉</div>
+                            <h2 className="text-3xl font-bold text-green-400 mb-2 text-center">Level Complete!</h2>
+                            <p className="text-xl mb-6 text-center">
+                                You earned <span className="font-bold text-yellow-400">
+                                    {levels[currentLevel].reward - (attempts * 5) - (hintUsed ? 20 : 0)} points
+                                </span>
                             </p>
-                            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                            <div className="grid grid-cols-2 gap-4">
                                 <button
                                     onClick={nextLevel}
                                     className="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-bold transition-all transform hover:scale-105"
                                 >
-                                    {currentLevel < levels.length - 1 ? 'Next Level ' : 'Play Again'}
+                                    {currentLevel < levels.length - 1 ? 'Next Level' : 'Play Again'}
                                 </button>
                                 <button
                                     onClick={resetGame}
@@ -511,8 +542,8 @@ const CodeOrderGame = () => {
 
                 {/* Lost Screen */}
                 {gameStatus === 'lost' && (
-                    <div className="max-w-3xl mx-auto p-6 bg-gray-800 bg-opacity-80 rounded-xl shadow-2xl border border-gray-700">
-                        <div className="text-center py-8">
+                    <div className="absolute inset-0 flex items-center justify-center z-10 bg-gray-900/70 rounded-xl">
+                        <div className="bg-gray-800 p-8 rounded-xl border-2 border-red-500 max-w-md w-full mx-4 text-center shadow-lg">
                             <div className="text-6xl mb-4">💀</div>
                             <h2 className="text-3xl font-bold text-red-400 mb-2">Time's Up!</h2>
                             <p className="text-xl mb-6">
@@ -523,13 +554,13 @@ const CodeOrderGame = () => {
                                     onClick={retryLevel}
                                     className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-bold transition-all transform hover:scale-105"
                                 >
-                                    Try Again 
+                                    Try Again
                                 </button>
                                 <button
                                     onClick={resetGame}
                                     className="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg font-bold transition-all transform hover:scale-105"
                                 >
-                                    Main Menu 
+                                    Main Menu
                                 </button>
                             </div>
                         </div>
