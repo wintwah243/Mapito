@@ -9,7 +9,6 @@ import winSound from '../assets/sounds/win.mp3';
 import clickSound from '../assets/sounds/click.mp3';
 import gameIntroSound from '../assets/sounds/puzzle_game_intro.mp3';
 
-
 const BugGame = () => {
     const navigate = useNavigate();
     const { width, height } = useWindowSize();
@@ -23,6 +22,32 @@ const BugGame = () => {
     const [timer, setTimer] = useState(null);
     const [wrongAnswerFeedback, setWrongAnswerFeedback] = useState(null);
     const [attempts, setAttempts] = useState(0);
+
+    // modal css
+    const modalStyles = {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 1000,
+        backgroundColor: 'rgba(31, 41, 55, 0.9)',
+        padding: '2rem',
+        borderRadius: '0.5rem',
+        border: '1px solid rgba(55, 65, 81, 1)',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+        maxWidth: '32rem',
+        width: '90%',
+    };
+
+    const overlayStyles = {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        zIndex: 999,
+    };
 
     //sound effect
     const [playWrong] = useSound(wrongSound, { volume: 0.5 });
@@ -262,7 +287,6 @@ const BugGame = () => {
 
     // Pause game
     const pauseGame = () => {
-        playIntro();
         playClick();
         clearInterval(timer);
         setGameState('paused');
@@ -295,6 +319,11 @@ const BugGame = () => {
             if (timer) clearInterval(timer);
         };
     }, [timer]);
+
+    const goMainMenu = () => {
+        setGameState('intro');
+        playIntro();
+    }
 
     return (
         <div className="min-h-screen bg-white text-white mt-10">
@@ -357,15 +386,15 @@ const BugGame = () => {
                 )}
 
                 {/* Game Screen */}
-                {gameState === 'playing' && (
-                    <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-2xl">
+                {(gameState === 'playing' || gameState === 'won' || gameState === 'paused' || gameState === 'lost' || gameState === 'completed') && (
+                    <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-2xl mt-10">
                         {(gameState === 'playing' || gameState === 'paused') && (
                             <div className="flex items-center space-x-4">
-                                <div className="flex items-center bg-gray-700 px-3 py-1 rounded-full">
+                                <div className="flex items-center px-3 py-1">
                                     <span className="text-yellow-400 mr-1">Trophy-</span>
                                     <span className="font-bold">{score}</span>
                                 </div>
-                                <div className="flex items-center bg-gray-700 px-3 py-1 rounded-full">
+                                <div className="flex items-center px-3 py-1">
                                     <span className="text-red-400 mr-1">Time-</span>
                                     <span className={`font-bold ${timeLeft < 10 ? 'text-red-400 animate-pulse' : 'text-green-400'}`}>
                                         {timeLeft}s
@@ -378,7 +407,7 @@ const BugGame = () => {
                                 <h2 className="text-2xl font-bold text-blue-400">{levels[currentLevel].title}</h2>
                                 <p className="text-gray-300">{levels[currentLevel].description}</p>
                             </div>
-                            <span className="bg-blue-600 text-xs font-bold px-3 py-1 rounded-full">
+                            <span className="text-xs font-bold px-3 py-1">
                                 Level {currentLevel + 1} of {levels.length}
                             </span>
                         </div>
@@ -460,145 +489,164 @@ const BugGame = () => {
 
                 {/* Paused Screen */}
                 {gameState === 'paused' && (
-                    <div className="bg-gray-800 rounded-xl p-8 border border-gray-700 shadow-2xl text-center">
-                        <h2 className="text-3xl font-bold text-yellow-400 mb-4">Game Paused</h2>
-                        <p className="text-xl mb-8">Your progress has been saved.</p>
-
-                        <div className="flex justify-center space-x-4">
-                            <button
-                                onClick={resumeGame}
-                                className="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-bold flex items-center"
-                            >
-                                Resume Game
-                            </button>
-
-                            <button
-                                onClick={() => setGameState('intro')}
-                                className="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg font-bold flex items-center"
-                            >
-                                Main Menu
-                            </button>
+                    <>
+                        <div style={overlayStyles} onClick={resumeGame} />
+                        <div style={modalStyles}>
+                            <h2 className="text-3xl font-bold text-yellow-400 mb-4">Game Paused</h2>
+                            <p className="text-xl mb-8">Your current progress has been saved.</p>
+                            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                                <button
+                                    onClick={resumeGame}
+                                    className="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg transition-all transform hover:scale-105"
+                                >
+                                    Resume Game
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setGameState('intro');
+                                        playIntro();
+                                    }}
+                                    className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg transition-all transform hover:scale-105"
+                                >
+                                    Quit Game
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    </>
                 )}
 
                 {/* Level Complete Screen */}
                 {gameState === 'won' && (
-                    <div className="bg-gray-800 rounded-xl p-8 border border-gray-700 shadow-2xl text-center mt-20">
-                        <div className="text-6xl mb-4">🎉</div>
-                        <h2 className="text-3xl font-bold text-green-400 mb-2">Level Complete!</h2>
-                        <p className="text-xl mb-6">
-                            You found all the bugs!
-                        </p>
+                    <div style={overlayStyles}>
+                        <div style={modalStyles}>
+                            <div className="text-6xl mb-4 text-center">🎉</div>
+                            <h2 className="text-3xl font-bold text-green-400 mb-2 text-center">Level Complete!</h2>
+                            <p className="text-xl mb-6 text-center">
+                                You found all the bugs!
+                            </p>
 
-                        <div className="bg-gray-900 rounded-lg p-4 mb-6 max-w-md mx-auto border border-gray-700">
-                            <h3 className="text-lg font-bold text-blue-400 mb-2">Bug Explanation:</h3>
-                            <p className="text-gray-300">{levels[currentLevel].explanation}</p>
-                        </div>
+                            <div className="bg-gray-900 rounded-lg p-4 mb-6 border border-gray-700">
+                                <h3 className="text-lg font-bold text-blue-400 mb-2 text-center">Bug Explanation:</h3>
+                                <p className="text-gray-300 text-center">{levels[currentLevel].explanation}</p>
+                            </div>
 
-                        <div className="flex justify-center space-x-4">
-                            {currentLevel < levels.length - 1 ? (
+                            <div className="grid grid-cols-2 gap-4">
+                                {currentLevel < levels.length - 1 ? (
+                                    <button
+                                        onClick={nextLevel}
+                                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold flex items-center justify-center transition-all transform hover:scale-105"
+                                    >
+                                        Next Level
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                        </svg>
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => setGameState('completed')}
+                                        className="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-bold flex items-center justify-center transition-all transform hover:scale-105"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+                                        </svg>
+                                        View Results
+                                    </button>
+                                )}
                                 <button
-                                    onClick={nextLevel}
-                                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold flex items-center"
+                                    onClick={goMainMenu}
+                                    className="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg font-bold transition-all transform hover:scale-105"
                                 >
-                                    Next Level
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                                    </svg>
+                                    Stop Game
                                 </button>
-                            ) : (
-                                <button
-                                    onClick={() => setGameState('completed')}
-                                    className="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-bold flex items-center"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
-                                    </svg>
-                                    View Results
-                                </button>
-                            )}
+                            </div>
                         </div>
                     </div>
                 )}
 
                 {/* Time's Up Screen */}
                 {gameState === 'lost' && (
-                    <div className="bg-gray-800 rounded-xl p-8 border border-gray-700 shadow-2xl text-center">
-                        <div className="text-6xl mb-4">⏰</div>
-                        <h2 className="text-3xl font-bold text-red-400 mb-2">Time's Up!</h2>
-                        <p className="text-xl mb-6">
-                            You ran out of time on this level.
-                        </p>
+                    <div style={overlayStyles}>
+                        <div style={modalStyles}>
+                            <div className="text-6xl mb-4 text-center">⏰</div>
+                            <h2 className="text-3xl font-bold text-red-400 mb-2 text-center">Time's Up!</h2>
+                            <p className="text-xl mb-6 text-center">
+                                You ran out of time on this level.
+                            </p>
 
-                        <div className="bg-gray-900 rounded-lg p-4 mb-6 max-w-md mx-auto border border-gray-700">
-                            <h3 className="text-lg font-bold text-blue-400 mb-2">The bug was on:</h3>
-                            <div className="font-mono text-sm">
-                                {levels[currentLevel].code
-                                    .filter(line => line.hasBug)
-                                    .map(line => (
-                                        <div key={line.line} className="px-3 py-2 bg-gray-800 rounded mb-1">
-                                            <span className="text-gray-500 mr-4">{line.line} |</span>
-                                            <span className="text-gray-300">{line.text}</span>
-                                        </div>
-                                    ))}
+                            <div className="bg-gray-900 rounded-lg p-4 mb-6 border border-gray-700">
+                                <h3 className="text-lg font-bold text-blue-400 mb-2 text-center">The bug was on:</h3>
+                                <div className="font-mono text-sm">
+                                    {levels[currentLevel].code
+                                        .filter(line => line.hasBug)
+                                        .map(line => (
+                                            <div key={line.line} className="px-3 py-2 bg-gray-800 rounded mb-1 text-center">
+                                                <span className="text-gray-500 mr-4">{line.line} |</span>
+                                                <span className="text-gray-300">{line.text}</span>
+                                            </div>
+                                        ))}
+                                </div>
+                                <p className="mt-2 text-gray-300 text-center">{levels[currentLevel].explanation}</p>
                             </div>
-                            <p className="mt-2 text-gray-300">{levels[currentLevel].explanation}</p>
-                        </div>
 
-                        <div className="flex justify-center space-x-4">
-                            <button
-                                onClick={() => startLevel(currentLevel)}
-                                className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-bold flex items-center"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
-                                </svg>
-                                Try Again
-                            </button>
+                            <div className="grid grid-cols-2 gap-4">
+                                <button
+                                    onClick={() => startLevel(currentLevel)}
+                                    className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-bold flex items-center justify-center transition-all transform hover:scale-105"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                                    </svg>
+                                    Try Again
+                                </button>
 
-                            <button
-                                onClick={() => setGameState('intro')}
-                                className="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg font-bold flex items-center"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 100-2H9V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                                </svg>
-                                Main Menu
-                            </button>
+                                <button
+                                    onClick={() => {
+                                        setGameState('intro');
+                                        playIntro();
+                                    }}
+                                    className="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg font-bold flex items-center justify-center transition-all transform hover:scale-105"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 100-2H9V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                    Main Menu
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
 
-                {/* Game Completed Screen */}
+               {/* Game Completed Screen */}
                 {gameState === 'completed' && (
-                    <div className="bg-gray-800 rounded-xl p-8 border border-gray-700 shadow-2xl text-center mt-10">
-                        <div className="text-6xl mb-4">🏆</div>
-                        <h2 className="text-3xl font-bold text-yellow-400 mb-2">Challenge Complete!</h2>
-                        <p className="text-xl mb-6">
-                            You've finished all levels with a total score of:
-                        </p>
-                        <div className="text-5xl font-bold bg-gradient-to-r from-yellow-400 to-red-500 bg-clip-text text-transparent mb-8">
-                            {score} pts
-                        </div>
+                    <div style={overlayStyles}>
+                        <div style={modalStyles}>
+                            <div className="text-6xl mb-4 text-center">🏆</div>
+                            <h2 className="text-3xl font-bold text-yellow-400 mb-2 text-center">Challenge Complete!</h2>
+                            <p className="text-xl mb-6 text-center">
+                                You've finished all levels with a total score of:
+                            </p>
+                            <div className="text-5xl font-bold bg-gradient-to-r from-yellow-400 to-red-500 bg-clip-text text-transparent mb-8 text-center">
+                                {score} pts
+                            </div>
 
-                        <div className="flex justify-center space-x-4">
-                            <button
-                                onClick={startGame}
-                                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold flex items-center"
-                            >
-                                Play Again
-                            </button>
+                            <div className="grid grid-cols-2 gap-4">
+                                <button
+                                    onClick={startGame}
+                                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold flex items-center justify-center transition-all transform hover:scale-105"
+                                >
+                                    Play Again
+                                </button>
 
-                            <button
-                                onClick={() => setGameState('intro')}
-                                className="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg font-bold flex items-center"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 100-2H9V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                                </svg>
-                                Back to Home
-                            </button>
+                                <button
+                                    onClick={goMainMenu}
+                                    className="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg font-bold flex items-center justify-center transition-all transform hover:scale-105"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 100-2H9V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                    Back to Home
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
