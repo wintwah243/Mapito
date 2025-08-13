@@ -423,24 +423,47 @@ const runCode = () => {
                                                 <pre className="text-gray-300 text-sm whitespace-pre-wrap">{output}</pre>
                                             </div>
                                         )}
+                                        
                                         {feedback && (
-                                            <div className={`p-3 rounded-lg border ${feedback.includes('Correct') || feedback.includes('passed') ?
-                                                'bg-green-900/30 border-green-700 text-green-300' :
-                                                'bg-red-900/30 border-red-700 text-red-300'
-                                                }`}>
-                                                <p>{feedback}</p>
+                                            <div className={`p-4 rounded-lg border-2 ${feedback.includes('Correct') || feedback.includes('passed') ?
+                                                'bg-green-900/20 border-green-500 text-green-100' :
+                                                'bg-red-900/20 border-red-500 text-red-100'
+                                                } shadow-lg`}>
+                                                <div className="flex items-start">
+                                                    {feedback.includes('Correct') || feedback.includes('passed') ? (
+                                                        <svg className="w-5 h-5 mr-2 mt-0.5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    ) : (
+                                                        <svg className="w-5 h-5 mr-2 mt-0.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    )}
+                                                    <p className="text-black font-medium">{feedback}</p>
+                                                </div>
+
+                                            {/* answer Explanation banner */}
                                                 {codingPuzzles[currentPuzzle].explanation && (
-                                                    <p className="mt-2 text-sm text-gray-400">
-                                                        <span className="font-bold">Explanation:</span> {codingPuzzles[currentPuzzle].explanation}
-                                                    </p>
+                                                    <div className="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                                                        <p className="text-sm text-gray-300">
+                                                            <span className="font-bold text-yellow-300">Explanation:</span> {codingPuzzles[currentPuzzle].explanation}
+                                                        </p>
+                                                    </div>
                                                 )}
+                                                
+                                            {/* next button after puzzle */}
                                                 {showNextButton && (
-                                                    <button
+                                                    <motion.button
                                                         onClick={nextPuzzle}
-                                                        className="mt-3 px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg font-bold transition"
+                                                        className="mt-4 px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg font-bold transition flex items-center justify-center gap-2 w-full"
+                                                        whileHover={{ scale: 1.02 }}
+                                                        whileTap={{ scale: 0.98 }}
                                                     >
                                                         Next Puzzle
-                                                    </button>
+                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                                                        </svg>
+                                                    </motion.button>
                                                 )}
                                             </div>
                                         )}
