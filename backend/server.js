@@ -426,6 +426,7 @@ app.get('/api/roadmaps/latest', authenticate, async (req, res) => {
   }
 });
 
+// user delete account 
 app.post('/api/auth/delete-account', protect, async (req, res) => {
   try {
     const { password } = req.body;
@@ -447,6 +448,41 @@ app.post('/api/auth/delete-account', protect, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// AI Mentor Chat Endpoint
+app.post('/api/ai-mentor', async (req, res) => {
+  const { message } = req.body;
+
+  if (!message || typeof message !== 'string') {
+    return res.status(400).json({
+      error: 'Invalid input',
+      details: 'Message must be a non-empty string'
+    });
+  }
+
+  try {
+    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
+    const prompt = `
+You are an AI programming mentor for beginners. 
+Answer clearly and concisely to the following programming-related question:
+
+${message}
+    `;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const aiText = response.text();
+
+    return res.json({ reply: aiText });
+
+  } catch (error) {
+    console.error('AI Mentor API error:', error.message);
+    return res.status(500).json({
+      error: 'Failed to get AI Mentor reply',
+      details: error.message
+    });
   }
 });
 
