@@ -63,7 +63,7 @@ export default function AIMentorChat() {
         try {
             const token = localStorage.getItem("token");
             const res = await axios.post(
-                "http://localhost:8000/api/ai-mentor",
+                "https://mapito.onrender.com/api/ai-mentor",
                 { message: input },
                 {
                     headers: {
