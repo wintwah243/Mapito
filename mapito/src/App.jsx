@@ -37,6 +37,7 @@ import FillInTheBlanksGame from './Games/FillInTheBlanksGame'
 import TrueOrFalseGame from './Games/TrueOrFalseGame'
 import CodeFlashcardsGame from './Games/CodeFlashcardsGame'
 import ConceptPuzzleGame from './Games/ConceptPuzzleGame'
+import AIMentorChat from './components/AIMentor'
 
 const Home = () => (
 <>
@@ -80,6 +81,7 @@ return (
     <Route path='/games/game5' element={<TrueOrFalseGame />} />
     <Route path='/games/game6' element={<CodeFlashcardsGame />} />
     <Route path='/games/game7' element={<ConceptPuzzleGame />} />
+    <Route path='/ai-mentor' element={<AIMentorChat />} />
   </Routes>
 </Router>
 </UserProvider>
