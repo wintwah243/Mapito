@@ -95,7 +95,7 @@ export default function AIMentorChat() {
     };
 
     return (
-        <div className="flex flex-col h-screen bg-white">
+        <div className="flex flex-col h-screen bg-white mt-10">
             <Navbar />
 
             {/* Chat Messages Area */}
