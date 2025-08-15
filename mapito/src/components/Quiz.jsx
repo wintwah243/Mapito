@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { quizData } from '../utils/data';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
 const Quiz = () => {
+    const [selectedCategory, setSelectedCategory] = useState('');
     const [selectedLanguage, setSelectedLanguage] = useState('');
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState('');
@@ -13,8 +14,10 @@ const Quiz = () => {
     const [userAnswers, setUserAnswers] = useState([]); 
     const [isReviewMode, setIsReviewMode] = useState(false);
     const [reviewIndex, setReviewIndex] = useState(0);
+    const quizHeaderRef = useRef(null);
 
     const handleStopQuiz = () => {
+        setSelectedCategory('');
         setSelectedLanguage('');
         setCurrentQuestionIndex(0);
         setScore(0);
@@ -26,7 +29,8 @@ const Quiz = () => {
         setReviewIndex(0);
     };
 
-    const handleLanguageSelect = (language) => {
+    const handleLanguageSelect = (category, language) => {
+        setSelectedCategory(category);
         setSelectedLanguage(language);
         setCurrentQuestionIndex(0);
         setScore(0);
@@ -36,9 +40,16 @@ const Quiz = () => {
         setUserAnswers([]);
         setIsReviewMode(false);
         setReviewIndex(0);
+
+       setTimeout(() => {
+        quizHeaderRef.current?.scrollIntoView({
+            behavior: 'auto',
+            block: 'start'
+        });
+    }, 0);
     };
 
-    const currentQuestion = quizData[selectedLanguage]?.[currentQuestionIndex];
+    const currentQuestion = quizData[selectedCategory]?.[selectedLanguage]?.[currentQuestionIndex];
 
     const handleAnswerSelect = (answer) => {
         setSelectedAnswer(answer);
@@ -67,7 +78,7 @@ const Quiz = () => {
         ]));
 
         // move to next or end
-        if (currentQuestionIndex < quizData[selectedLanguage]?.length - 1) {
+        if (currentQuestionIndex < quizData[selectedCategory]?.[selectedLanguage]?.length - 1) {
             setCurrentQuestionIndex(prev => prev + 1);
             setSelectedAnswer('');
         } else {
@@ -119,7 +130,43 @@ const Quiz = () => {
         return () => clearInterval(timer);
     }, [selectedLanguage, quizEnded, isReviewMode]);
 
-    return (
+    const quizCategories = [
+        {
+            name: "Beginner",
+            quizzes: [
+                { label: 'JavaScript', emoji: '🌟', key: 'javascript' },
+                { label: 'Python', emoji: '🤖', key: 'python' },
+                { label: 'HTML', emoji: '🖥️', key: 'html' },
+                { label: 'CSS', emoji: '🎨', key: 'css' },
+                { label: 'Git', emoji: '🔄', key: 'git' },
+                { label: 'Command Line', emoji: '💻', key: 'cli' }
+            ]
+        },
+        {
+            name: "Intermediate",
+            quizzes: [
+                { label: 'React', emoji: '⚛️', key: 'react' },
+                { label: 'Node.js', emoji: '🟢', key: 'node' },
+                { label: 'TypeScript', emoji: '🔵', key: 'typescript' },
+                { label: 'Express', emoji: '🚂', key: 'express' },
+                { label: 'MongoDB', emoji: '🍃', key: 'mongodb' },
+                { label: 'SQL', emoji: '🗃️', key: 'sql' }
+            ]
+        },
+        {
+            name: "Advanced",
+            quizzes: [
+                { label: 'Docker', emoji: '🐳', key: 'docker' },
+                { label: 'Kubernetes', emoji: '☸️', key: 'kubernetes' },
+                { label: 'AWS', emoji: '☁️', key: 'aws' },
+                { label: 'GraphQL', emoji: '📊', key: 'graphql' },
+                { label: 'Machine Learning', emoji: '🧠', key: 'ml' },
+                { label: 'Blockchain', emoji: '⛓️', key: 'blockchain' }
+            ]
+        }
+    ];
+
+      return (
         <div className="min-h-screen bg-white mt-20">
             <Navbar />
 
@@ -135,31 +182,31 @@ const Quiz = () => {
             </div>
 
             {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-white min-h-screen">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-white min-h-screen" ref={quizHeaderRef}>
                 {!selectedLanguage && (
-                    <div className="max-w-4xl mx-auto text-center">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            {[
-                                { label: 'JavaScript', emoji: '🌟', key: 'javascript' },
-                                { label: 'React', emoji: '⚛️', key: 'react' },
-                                { label: 'Python', emoji: '🤖', key: 'python' },
-                                { label: 'Java', emoji: '☕', key: 'java' },
-                                { label: 'PHP', emoji: '🐘', key: 'php' },
-                                { label: 'AI', emoji: '🧠', key: 'ai' },
-                            ].map(({ label, emoji, key }) => (
-                                <button
-                                    key={key}
-                                    onClick={() => handleLanguageSelect(key)}
-                                    className="flex items-start bg-white border border-gray-200 hover:border-blue-500 hover:shadow-lg rounded-2xl p-6 space-x-4 transition duration-300 ease-in-out"
-                                >
-                                    <div className="text-4xl">{emoji}</div>
-                                    <div className="text-left">
-                                        <h3 className="text-lg font-semibold text-gray-800">{label}</h3>
-                                        <p className="text-sm text-gray-500">Explore challenges and sharpen your skills in {label}.</p>
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
+                    <div className="max-w-4xl mx-auto">
+                        {quizCategories.map((category) => (
+                            <div key={category.name} className="mb-12">
+                                <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">
+                                    {category.name} Level
+                                </h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                    {category.quizzes.map(({ label, emoji, key }) => (
+                                        <button
+                                            key={key}
+                                            onClick={() => handleLanguageSelect(category.name.toLowerCase(), key)}
+                                            className="flex items-start bg-white border border-gray-200 hover:border-blue-500 hover:shadow-lg rounded-2xl p-6 space-x-4 transition duration-300 ease-in-out"
+                                        >
+                                            <div className="text-4xl">{emoji}</div>
+                                            <div className="text-left">
+                                                <h3 className="text-lg font-semibold text-gray-800">{label}</h3>
+                                                <p className="text-sm text-gray-500">Explore challenges and sharpen your skills in {label}.</p>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 )}
 
@@ -178,7 +225,7 @@ const Quiz = () => {
                                         {!isReviewMode && (
                                             <div className="bg-blue-700 text-white px-3 py-1 rounded-full text-sm font-medium">
                                                 {!quizEnded
-                                                    ? `Question ${currentQuestionIndex + 1}/${quizData[selectedLanguage].length}`
+                                                    ? `Question ${currentQuestionIndex + 1}/${quizData[selectedCategory]?.[selectedLanguage]?.length}`
                                                     : `Completed`}
                                             </div>
                                         )}
@@ -238,7 +285,7 @@ const Quiz = () => {
                                                 disabled={!selectedAnswer}
                                                 className={`px-6 py-2 rounded-md font-medium ${!selectedAnswer ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-900 hover:bg-blue-700 text-white'}`}
                                             >
-                                                {currentQuestionIndex === quizData[selectedLanguage].length - 1 ? 'Finish' : 'Next'}
+                                                {currentQuestionIndex === quizData[selectedCategory]?.[selectedLanguage]?.length - 1 ? 'Finish' : 'Next'}
                                             </button>
                                         </div>
                                     </>
@@ -254,7 +301,7 @@ const Quiz = () => {
                                         </div>
                                         <h3 className="text-2xl font-bold text-gray-800 mb-2">Quiz Completed!</h3>
                                         <p className="text-gray-600 mb-6">
-                                            You scored {score} out of {quizData[selectedLanguage].length}
+                                            You scored {score} out of {quizData[selectedCategory]?.[selectedLanguage]?.length}
                                         </p>
                                         <div className="flex flex-col sm:flex-row justify-center gap-3">
                                             <button
