@@ -3,7 +3,6 @@ import Editor from "@monaco-editor/react";
 import axios from "axios";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import { quizQuestions } from "../utils/data";
 
 const languageMap = {
   javascript: 63,
@@ -11,110 +10,80 @@ const languageMap = {
   java: 62,
 };
 
-const CodeCompiler = () => {
-  const [selectedQuestion, setSelectedQuestion] = useState(quizQuestions[0]);
-  const [language, setLanguage] = useState("javascript");
-  const [code, setCode] = useState(quizQuestions[0].starterCode["javascript"]);
-  const [output, setOutput] = useState("");
+const starterCode = {
+  javascript: "// Write your JavaScript code here\nconsole.log('Hello World!');",
+  python: "# Write your Python code here\nprint('Hello World!')",
+  java: `// Write your Java code here
+public class Main {
+  public static void main(String[] args) {
+    System.out.println("Hello World!");
+  }
+}`
+};
 
-  const handleQuestionChange = (e) => {
-    const question = quizQuestions.find((q) => q.id === parseInt(e.target.value));
-    setSelectedQuestion(question);
-    setCode(question.starterCode[language]);
-    setOutput("");
-  };
+const CodeCompiler = () => {
+  const [language, setLanguage] = useState("javascript");
+  const [code, setCode] = useState(starterCode["javascript"]);
+  const [output, setOutput] = useState("");
+  const [isRunning, setIsRunning] = useState(false);
 
   const handleLanguageChange = (e) => {
     const newLang = e.target.value;
     setLanguage(newLang);
-    setCode(selectedQuestion.starterCode[newLang]);
+    setCode(starterCode[newLang]);
     setOutput("");
   };
 
   const runCode = async () => {
-    setOutput("Running tests...");
-    const results = [];
-
-    for (const testCase of selectedQuestion.testCases) {
-      let fullCode = "";
-
-      if (language === "javascript") {
-        fullCode = `${code}\nconsole.log(greet("${testCase.input}"));`;
-      } else if (language === "python") {
-        fullCode = `${code}\nprint(greet("${testCase.input}"))`;
-      } else if (language === "java") {
-        const mainCode = code.replace(
-          "// Test code will be injected",
-          `System.out.println(greet("${testCase.input}"));`
-        );
-        fullCode = mainCode;
-      }
-
-      try {
-        const submission = await axios.post(
-          "https://judge0-ce.p.rapidapi.com/submissions",
-          {
-            source_code: fullCode,
-            language_id: languageMap[language],
+    setIsRunning(true);
+    setOutput("Running code...");
+    
+    try {
+      const submission = await axios.post(
+        "https://judge0-ce.p.rapidapi.com/submissions",
+        {
+          source_code: code,
+          language_id: languageMap[language],
+        },
+        {
+          headers: {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": import.meta.env.VITE_JUDGE0_API,
+            "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
           },
-          {
-            headers: {
-              "content-type": "application/json",
-              "X-RapidAPI-Key": import.meta.env.VITE_JUDGE0_API,
-              "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
-            },
-          }
-        );
+        }
+      );
 
-        const token = submission.data.token;
-        await new Promise((res) => setTimeout(res, 2000));
+      const token = submission.data.token;
+      await new Promise((res) => setTimeout(res, 2000));
 
-        const result = await axios.get(
-          `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
-          {
-            headers: {
-              "X-RapidAPI-Key": import.meta.env.VITE_JUDGE0_API,
-              "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
-            },
-          }
-        );
+      const result = await axios.get(
+        `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
+        {
+          headers: {
+            "X-RapidAPI-Key": import.meta.env.VITE_JUDGE0_API,
+            "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
+          },
+        }
+      );
 
-        let userOutput = (result.data.stdout || "").trim();
-        let expectedOutput = String(testCase.expectedOutput).trim();
-
-        const normalize = (str) => str.replace(/\r\n/g, "\n").replace(/\s+/g, " ").trim();
-        const normalizedUserOutput = normalize(userOutput);
-        const normalizedExpected = normalize(expectedOutput);
-
-        const pass = normalizedUserOutput === normalizedExpected;
-
-        results.push({
-          input: testCase.input,
-          expected: expectedOutput,
-          output: userOutput,
-          pass,
-        });
-      } catch (error) {
-        results.push({
-          input: testCase.input,
-          expected: String(testCase.expectedOutput),
-          output: "Error: " + (error.response?.data?.message || "Unknown error"),
-          pass: false,
-        });
-      }
+      const stdout = result.data.stdout || "";
+      const stderr = result.data.stderr || "";
+      const compileOutput = result.data.compile_output || "";
+      
+      let finalOutput = "";
+      if (stdout) finalOutput += `Output:\n${stdout}\n`;
+      if (stderr) finalOutput += `Error:\n${stderr}\n`;
+      if (compileOutput) finalOutput += `Compilation:\n${compileOutput}\n`;
+      
+      if (!finalOutput) finalOutput = "No output generated";
+      
+      setOutput(finalOutput);
+    } catch (error) {
+      setOutput("Error: " + (error.response?.data?.message || "Unknown error"));
+    } finally {
+      setIsRunning(false);
     }
-
-    const finalOutput = results
-      .map(
-        (r, i) => `Test Case ${i + 1}:
-  Input: ${r.input}
-  Expected: ${r.expected}
-  Output: ${r.output}
-  Result: ${r.pass ? "✅ Passed" : "❌ Failed"}\n`
-      )
-      .join("\n");
-
-    setOutput(finalOutput);
   };
 
   return (
@@ -126,7 +95,7 @@ const CodeCompiler = () => {
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-gray-900 mb-3">Interactive Code Playground</h1>
           <p className="text-gray-600 text-md max-w-2xl mx-auto">
-            Write, run, and test your code directly in the browser. Learn, debug, and challenge yourself with real-time coding problems.
+            Write, run, and test your code directly in our code editor. Learn, test, and challenge yourself with real-time code compiler.
           </p>
         </div>
 
@@ -134,91 +103,39 @@ const CodeCompiler = () => {
         <div className="flex flex-wrap justify-center gap-3 mb-8">
           {["JavaScript", "Python", "Java"].map((tech) => (
             <span key={tech} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-               {tech} Supported
+              {tech} Supported
             </span>
           ))}
         </div>
 
-        {/* Guidelines / Tips */} 
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-  <div className="bg-white p-4 shadow rounded-lg">
-    <h2 className="font-semibold text-lg mb-2 text-blue-700"> Tips & Guidelines</h2>
-    <ul className="list-disc ml-6 text-sm text-gray-700 space-y-1">
-      <li>Select a coding question and preferred language below.</li>
-      <li>The starter code is pre-filled based on language selection.</li>
-      <li>Click "Run Code" to test your function against test cases.</li>
-      <li>Check output and passed/failed results below the editor.</li>
-    </ul>
-  </div>
-
-  <div className="bg-white p-4 shadow rounded-lg">
-    <h2 className="font-semibold text-lg mb-2 text-blue-700"> Environment Info</h2>
-    <ul className="list-disc ml-6 text-sm text-gray-700 space-y-1">
-      <li>Runs on Judge0 API with real-time output.</li>
-      <li>Supports JavaScript, Python, and Java.</li>
-      <li>Each test case is evaluated independently.</li>
-      <li>Errors and output are shown below the editor.</li>
-    </ul>
-  </div>
-</div>
-
-
-        {/* Question + Language Selector */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label className="block font-medium text-sm mb-1"> Choose a Question:</label>
-            <select
-              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
-              value={selectedQuestion.id}
-              onChange={handleQuestionChange}
-            >
-              {quizQuestions.map((q) => (
-                <option key={q.id} value={q.id}>
-                  {q.title}
-                </option>
-              ))}
-            </select>
-            <p className="mt-2 text-sm text-gray-600">{selectedQuestion.description}</p>
-            <div className="text-sm mt-2">
-              <strong>Difficulty:</strong>{" "}
-              {selectedQuestion.difficulty === "Easy" ? (
-                <span className="bg-green-200 text-green-800 px-2 py-1 rounded text-xs ml-1">Easy</span>
-              ) : (
-                <span className="bg-red-200 text-red-800 px-2 py-1 rounded text-xs ml-1">Difficult</span>
-              )}
-            </div>
-            <div className="text-sm mt-1">
-              <strong>Tags:</strong>{" "}
-              {selectedQuestion.tags.map((tag, idx) => (
-                <span key={idx} className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs mr-1">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label className="block font-medium text-sm mb-1"> Choose Language:</label>
-            <select
-              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
-              value={language}
-              onChange={handleLanguageChange}
-            >
-              <option value="javascript">JavaScript</option>
-              <option value="python">Python</option>
-              <option value="java">Java</option>
-            </select>
-          </div>
+        {/* Language Selector */}
+        <div className="mb-6">
+          <label className="block font-medium text-sm mb-1">Choose Language:</label>
+          <select
+            className="w-full border border-gray-300 rounded px-3 py-2 bg-white max-w-xs"
+            value={language}
+            onChange={handleLanguageChange}
+          >
+            <option value="javascript">JavaScript</option>
+            <option value="python">Python</option>
+            <option value="java">Java</option>
+          </select>
         </div>
 
         {/* Editor */}
         <div className="border border-gray-300 rounded-lg shadow mb-6 overflow-hidden">
           <Editor
-            height="300px"
+            height="400px"
             language={language}
             value={code}
             onChange={(val) => setCode(val)}
             theme="vs-dark"
+            options={{
+              minimap: { enabled: false },
+              fontSize: 14,
+              wordWrap: "on",
+              scrollBeyondLastLine: false
+            }}
           />
         </div>
 
@@ -226,16 +143,29 @@ const CodeCompiler = () => {
         <div className="flex justify-end mb-6">
           <button
             onClick={runCode}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md shadow"
+            disabled={isRunning}
+            className={`bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md shadow ${
+              isRunning ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
-            ▶️ Run Code
+            {isRunning ? "Running..." : "▶️ Run Code"}
           </button>
         </div>
 
         {/* Output Panel */}
         <div className="bg-black text-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-2">Output</h3>
-          <pre className="whitespace-pre-wrap text-sm">{output}</pre>
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-lg font-semibold">Output</h3>
+            <button 
+              onClick={() => setOutput("")} 
+              className="text-gray-300 hover:text-white text-sm"
+            >
+              Clear
+            </button>
+          </div>
+          <pre className="whitespace-pre-wrap text-sm font-mono overflow-auto max-h-64">
+            {output || "Your output will appear here..."}
+          </pre>
         </div>
       </div>
 
