@@ -520,7 +520,7 @@ const Hero = () => {
             {selectedStep && (
               <div className="fixed inset-y-0 right-0 z-50 flex">
                 {/* Sidebar Panel */}
-                <div className="relative bg-white shadow-lg w-80 max-w-xs h-full flex flex-col">
+                <div className="relative bg-white shadow-lg w-85 max-w-lg h-full flex flex-col">
 
                   {/* Close Button */}
                   <button
