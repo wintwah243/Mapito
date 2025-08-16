@@ -166,8 +166,9 @@ function getGenericFallbackSteps(goal) {
     `Get feedback and improve your work`,
     `Prepare a final project to showcase your ${goal} skills`
   ];
-}
+};
 
+// generate roadmap based on user's goal
 app.post('/api/generate-roadmap', authenticate, async (req, res) => {
   const { goal } = req.body;
 
@@ -178,73 +179,45 @@ app.post('/api/generate-roadmap', authenticate, async (req, res) => {
     });
   }
 
-  const processedGoal = goal.trim().substring(0, 100).toLowerCase();
+  const processedGoal = goal.trim().toLowerCase();
 
   try {
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
-    const prompt = `
-Create an 8-step learning roadmap for becoming a ${processedGoal}.
-For each step, include:
-- A title
-- A brief description of what should be learned at this step and time duration to complete this step and resource (e.g., w3school)
+    // Find a matching predefined roadmap
+    const matchedKey = Object.keys(roadmapDetails).find(key =>
+      processedGoal.includes(key)
+    );
 
-Format it like this:
-1. Step Title - Description
-...
-    `;
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const roadmapText = response.text();
+    // Use predefined roadmap or generic fallback
+    const details = matchedKey
+      ? roadmapDetails[matchedKey]
+      : getGenericFallbackSteps(processedGoal);
 
+    const roadmap = getPredefinedRoadmap(matchedKey || processedGoal);
+
+    // Save to database
     await new Roadmap({
-      userId: req.user?._id,
+      userId: req.user._id,
       goal: processedGoal,
-      content: roadmapText,
-      source: 'gemini'
+      content: roadmap,
+      source: 'predefined',
+      details: JSON.stringify(details)
     }).save();
 
+    return res.json({
+      roadmap,
+      source: 'predefined',
+      details
+    });
 
-    return res.json({ roadmap: roadmapText, source: 'gemini' });
+  } catch (error) {
+    console.error('Error generating roadmap:', error.message);
 
-  } catch (geminiError) {
-    console.error('Gemini API error:', geminiError.message);
-
-    try {
-      const matchedKey = Object.keys(roadmapDetails).find(key =>
-        processedGoal.includes(key)
-      );
-
-      const details = matchedKey
-        ? roadmapDetails[matchedKey]
-        : getGenericFallbackSteps(processedGoal);
-
-      const roadmap = getPredefinedRoadmap(matchedKey || processedGoal);
-
-      await new Roadmap({
-        userId: req.user._id,
-        goal: processedGoal,
-        content: roadmap,
-        source: 'predefined',
-        details: JSON.stringify(details)
-      }).save();
-
-      return res.json({
-        roadmap,
-        source: 'predefined',
-        details,
-        warning: 'Using predefined fallback roadmap'
-      });
-    } catch (finalError) {
-      console.error('All fallbacks failed:', finalError.message);
-      return res.status(500).json({
-        error: 'Failed to generate roadmap',
-        details: {
-          geminiError: geminiError.message,
-          finalError: finalError.message
-        },
-        suggestion: 'Please try again later or with a different goal description'
-      });
-    }
+    // Handle database or other unexpected errors
+    return res.status(500).json({
+      error: 'Failed to generate roadmap',
+      details: error.message,
+      suggestion: 'Please try again later or with a different goal'
+    });
   }
 });
 
