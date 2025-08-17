@@ -6,10 +6,10 @@ import { Link } from 'react-router-dom';
 const features = [
   {
     id: 1,
-    title: 'Documentation Resources',
-    description: 'Various resources all in one place.',
+    title: 'AI Mentor',
+    description: 'Ask instant programming related questions to our AI.',
     icon: <FaBrain className="text-blue-500 text-2xl" />,
-    link: '/documentation',
+    link: '/ai-mentor',
   },
   {
     id: 2,
@@ -67,7 +67,7 @@ const Feature = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Everything you need to learn, practice, and get job-ready — all in one place.
+            Everything you need to learn, practice, and have fun — all in one place.
           </motion.p>
         </div>
 
