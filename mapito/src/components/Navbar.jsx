@@ -107,7 +107,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
               <NavDropdownItem
                 to="/code"
                 isAuthenticated={isAuthenticated}
-                text="Problems"
+                text="Code Editor"
                 icon={<FaCode className="w-5 h-5" />}
               />
               <NavDropdownItem
@@ -247,7 +247,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
             className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
           >
             <FaCode size={20} className="text-gray-600" />
-            Problems
+            Code Editor
           </button>
 
           <button
