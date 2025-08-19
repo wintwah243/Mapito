@@ -10,12 +10,12 @@ const processSteps = [
   {
     id: 2,
     title: 'Generate Roadmap based on goals',
-    description: 'Use our Mapito tool to build a learning path tailored to you.', 
+    description: 'Use our Mapito tool to generate a learning path tailored to you.', 
   },
   {
     id: 3,
     title: 'Start Practicing with Various Tools',
-    description: 'Ask our AI mentor, run code to practice, and take quizzes.',
+    description: 'Ask our AI mentor, run code to practice, and take quizzes to improve.',
   },
   {
     id: 4,
