@@ -393,9 +393,9 @@ const Hero = () => {
           </p>
         </motion.div>
 
-        {/* Input */}
+       {/* Input */}
         <motion.div
-          className="w-full max-w-md mb-12"
+          className="w-full max-w-md mb-12 relative"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -412,6 +412,8 @@ const Hero = () => {
                   setShowSuggestions(false);
                 }}
                 onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
+                onFocus={() => setShowSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
               />
               {speechSupported && (
                 <button
@@ -512,7 +514,7 @@ const Hero = () => {
               </div>
             </div>
           )}
-          
+
           {isListening && (
             <div className="flex items-center justify-center gap-2 text-sm text-blue-600 mt-2">
               <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
