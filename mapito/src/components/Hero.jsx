@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaDownload, FaMicrophone, FaCheck } from 'react-icons/fa';
+import { FaDownload, FaMicrophone, FaCheck, FaPlus, FaTimes } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { jsPDF } from "jspdf";
 import { useNavigate, useLocation } from 'react-router-dom';
