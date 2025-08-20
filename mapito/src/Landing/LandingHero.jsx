@@ -23,7 +23,7 @@ export default function Hero() {
                 {/* Header */}
                 <div className="w-full max-w-3xl text-center mb-8 px-4">
                     <h1 className="text-3xl sm:text-4xl font-bold mb-4">
-                        Get your AI-Powered <span className="text-blue-600">Roadmap</span>
+                        Generate your <span className="text-blue-600">Roadmap </span> Here.
                     </h1>
                     <p className="text-base sm:text-lg text-gray-600">
                         Mapito empowers beginner developers to transform complex visions into structured,
