@@ -407,7 +407,10 @@ const Hero = () => {
                 className="w-full border border-gray-300 rounded-lg p-3 text-sm sm:text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-12"
                 placeholder="Enter your goal (e.g., Web Developer)"
                 value={goal}
-                onChange={(e) => setGoal(e.target.value)}
+                onChange={(e) => {
+                  setGoal(e.target.value);
+                  setShowSuggestions(false);
+                }}
                 onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
               />
               {speechSupported && (
