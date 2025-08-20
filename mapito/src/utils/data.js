@@ -1,87 +1,36 @@
-//for code compiler
-export const quizQuestions = [
-  {
-    id: 1,
-    title: "Greet Function",
-    description: "Write a function greet(name) that returns 'Hello, name!'",
-    difficulty: "Easy",
-    tags: ["String", "Function"],
-    testCases: [
-      { input: "Alice", expectedOutput: "Hello, Alice!" },
-      { input: "Bob", expectedOutput: "Hello, Bob!" },
-    ],
-    starterCode: {
-      javascript: `function greet(name) {
-  // Your code here
-}`,
-      python: `def greet(name):
-    # Your code here`,
-      java: `public class Main {
-    public static String greet(String name) {
-        // Your code here
-    }
-
-    public static void main(String[] args) {
-        // Test code will be injected
-    }
-}`,
-    },
-  },
-  {
-    id: 2,
-    title: "Add Two Numbers",
-    description: "Write a function that returns the sum of two numbers.",
-    difficulty: "Easy",
-    tags: ["Math", "Function"],
-    testCases: [
-      { input: "3,5", expectedOutput: "8" },
-      { input: "10,20", expectedOutput: "30" },
-    ],
-    starterCode: {
-      javascript: `function add(a, b) {
-  // Your code here
-}`,
-      python: `def add(a, b):
-    # Your code here`,
-      java: `public class Main {
-    public static int add(int a, int b) {
-        // Your code here
-    }
-
-    public static void main(String[] args) {
-        // Test code will be injected
-    }
-}`,
-    },
-  },
-  {
-    id: 3,
-    title: "Check Even or Odd",
-    description: "Write a function that checks if a number is even or odd.",
-    difficulty: "Diffcult",
-    tags: ["Conditionals", "Math"],
-    testCases: [
-      { input: "4", expectedOutput: "Even" },
-      { input: "7", expectedOutput: "Odd" },
-    ],
-    starterCode: {
-      javascript: `function checkEvenOdd(n) {
-  // Your code here
-}`,
-      python: `def check_even_odd(n):
-    # Your code here`,
-      java: `public class Main {
-    public static String checkEvenOdd(int n) {
-        // Your code here
-    }
-
-    public static void main(String[] args) {
-        // Test code will be injected
-    }
-}`,
-    },
-  },
-];
+// Available roadmap suggestions
+  export const roadmapSuggestions = [
+    "AI Engineer",
+    "Business Analyst",
+    "Data Scientist",
+    "Software Engineer",
+    "Frontend Developer",
+    "Backend Developer",
+    "Full Stack Developer",
+    "DevOps Engineer",
+    "QA Engineer",
+    "Cloud Engineer",
+    "Cybersecurity Specialist",
+    "Blockchain Developer",
+    "Mobile App Developer",
+    "UIUX Designer",
+    "Data Analyst",
+    "Project Manager",
+    "Game Developer",
+    "Software Developer",
+    "Web Developer",
+    "Full Stack Developer",
+    "UI Designer",
+    "UX Designer",
+    "Solution Architect",
+    "Data Engineer",
+    "Android Developer",
+    "IOS Developer",
+    "Software Architect",
+    "IT techinician",
+    "Network Engineer",
+    "System Engineer",
+  ];
 
 //for quiz feature
 export const quizData = {
