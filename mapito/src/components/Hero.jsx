@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaDownload, FaMicrophone, FaCheck } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { jsPDF } from "jspdf";
 import { useNavigate, useLocation } from 'react-router-dom';
 import Bot from './Bot';
+import { roadmapSuggestions } from '../utils/data';
 
 const Hero = () => {
   const [goal, setGoal] = useState('');
@@ -15,6 +16,10 @@ const Hero = () => {
   const [speechSupported, setSpeechSupported] = useState(false);
   const [selectedStep, setSelectedStep] = useState(null);
   const [completedSteps, setCompletedSteps] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false); // roadmap suggestions tag
+  const [showRoadmapList, setShowRoadmapList] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const roadmapListRef = useRef(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -350,6 +355,20 @@ const Hero = () => {
     }
   };
 
+  // helper to close expand roadmap list
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (roadmapListRef.current && !roadmapListRef.current.contains(event.target)) {
+        setShowRoadmapList(false); // hide when clicked outside
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <section id='hero' className="bg-white mt-20">
       <div className="flex flex-col items-center justify-center px-4 py-12 sm:p-6 lg:p-8">
@@ -421,6 +440,76 @@ const Hero = () => {
               ) : 'Generate'}
             </button>
           </div>
+
+          {/* Suggestion Tags */}
+          {showSuggestions && (
+            <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-10 p-3">
+              <div className="flex flex-wrap gap-2">
+                {roadmapSuggestions.slice(0, 13).map((suggestion, index) => (
+                  <button
+                    key={index}
+                    className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-1 rounded cursor-pointer transition-colors"
+                    onClick={() => {
+                      setGoal(suggestion);
+                      setShowSuggestions(false);
+                    }}
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+
+              {/* Available Roadmaps Toggle */}
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <button
+                  onClick={() => setShowRoadmapList(!showRoadmapList)}
+                  className="flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium cursor-pointer"
+                >
+                  <span>{showRoadmapList ? 'Hide' : 'Show'} all available roadmap topics</span>
+                  {showRoadmapList ? <FaTimes className="ml-1 text-xs" /> : <FaPlus className="ml-1 text-xs" />}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Expanded Roadmap List */}
+          {showRoadmapList && (
+            <div
+              ref={roadmapListRef}
+              className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-10 p-3 max-h-60 overflow-y-auto">
+              <div className="mb-2">
+                <input
+                  type="text"
+                  placeholder="Search roadmap topics..."
+                  className="w-full p-2 border rounded text-sm"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {roadmapSuggestions
+                  .filter(suggestion =>
+                    suggestion.toLowerCase().includes(searchTerm.toLowerCase())
+                  )
+                  .map((suggestion, index) => (
+                    <button
+                      key={index}
+                      className="bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-medium px-2.5 py-1 rounded cursor-pointer transition-colors text-left truncate"
+                      onClick={() => {
+                        setGoal(suggestion);
+                        setShowRoadmapList(false);
+                        setShowSuggestions(false);
+                      }}
+                      title={suggestion}
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+              </div>
+            </div>
+          )}
+          
           {isListening && (
             <div className="flex items-center justify-center gap-2 text-sm text-blue-600 mt-2">
               <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
