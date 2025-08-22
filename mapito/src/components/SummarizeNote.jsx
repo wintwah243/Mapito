@@ -103,8 +103,9 @@ function SummarizeNote() {
               <FaInfoCircle className="mr-2" /> Why It Helps
             </h2>
             <p className="text-gray-700 leading-relaxed">
-              Summaries save you time and boost productivity by focusing on key ideas without the clutter. This
-              tool is perfect for students, professionals, or anyone who needs quick insights from lengthy texts.
+            Our intention is to make developer documentations accessible and manageable. Whether you're studying or reading
+            documentations, our tool helps you cut through the noise and
+            focus on what truly matters. 
             </p>
           </div>
         </section>
@@ -183,17 +184,6 @@ function SummarizeNote() {
             <article className="p-6 text-gray-800 whitespace-pre-wrap leading-relaxed text-base">{summary}</article>
           </section>
         )}
-
-        {/* Intentions Section */}
-        <section className="mb-12 px-6 py-8 bg-white border border-gray-200 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-3 text-gray-900">Our Intentions</h2>
-          <p className="text-gray-700 leading-relaxed">
-            We aim to make complex information accessible and manageable. Whether you're studying for exams,
-            preparing reports, or just organizing your thoughts, our tool helps you cut through the noise and
-            focus on what truly matters. We continuously improve our algorithms to provide accurate, helpful
-            summaries while respecting your privacy and data security.
-          </p>
-        </section>
       </main>
 
       <Footer />
