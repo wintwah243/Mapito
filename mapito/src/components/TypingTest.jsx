@@ -17,9 +17,30 @@ const TypingTest = () => {
   const [wpmData, setWpmData] = useState([]);
   const [history, setHistory] = useState([]);
   const [showTimeUpBox, setShowTimeUpBox] = useState(false);
+  const [difficulty, setDifficulty] = useState("beginner");
 
   const inputRef = useRef();
   const timerRef = useRef(null);
+
+  // different levels
+  const practiceSentences = {
+    beginner: [
+      "aaaa bbbb cccc dddd eeee ffff gggg hhhh iiii jjjj uuuu rrrr iiii wwww ;;; tttt yyyy vvvv iiii pppp qqqq ffff llll nnnn cccc mmmm gggg ssss ,,,, 55555 oooo ffff qqqq dddd kkkk",
+      "kkkk llll mmmm nnnn oooo pppp qqqq rrrr ssss tttt aaaa gggg pppp ssss /// zzzz yyyy vvvv iiii kkkk dddd aaaa llll nnnn cccc mmmm gggg ssss ,,,, 55555 oooo ffff qqqq dddd kkkk",
+      "uuuu vvvv wwww xxxx yyyy zzzz aaaa bbbb cccc dddd tttt bbbbb zzzz qqqq ;;;; rrrr qqqq iiii rrrr ffff tttt yyyy qqqq nnnn eeee mmmm gggg ssss ,,,, 55555 oooo ffff qqqq dddd kkkk",
+    ],
+    intermediate: [
+      "fffdddd jjjkkk yyyyaa uuiiioo ppwwqq mmnnbb vvccxx ggggoooo wwwwzzzz bbbbcccc hhhhgggg uuuuiiii 7777aaaa ,,,,tttt aaaa5555 ;;;;ffff zzzzrrrr ggggpppp vvvvmmmm hhhhcccc bbbbqqqq ooooffff ,,,,1111",
+      "aaaajjjj uuuurrrr ;;;;dddd nnnncccc xxxxiiii ////qqqq zzzzqqqq hhhhssss xxxxpppp sssspppp aaaa5555 ;;;;ffff zzzzrrrr ggggpppp vvvvmmmm hhhhcccc bbbbqqqq ooooffff ,,,,1111 ggggnnnn bbbbzzzz eeeepppp",
+      "ddddpppp wwwwkkkk hhhhzzzz uuuuqqqq ppppssss nnnnrrrr ggggjjjj ffffaaaa ;;;;eeee ooooffff aaaa5555 ;;;;ffff zzzzrrrr ggggpppp vvvvmmmm hhhhcccc bbbbqqqq ooooffff ,,,,1111 eeeepppp qqqqnnnn wwwwkkkk",
+    ],
+    advanced: [
+      "The quintessential juxtaposition of extraordinary phenomena bewilders cosmological physicists examining quantum fluctuations in multidimensional string theory frameworks.",
+      "Exacerbated socioeconomic disparities perpetuate systemic inequities, necessitating comprehensive policy reforms to ameliorate institutionalized marginalization of underrepresented demographics.",
+      "Metaphysical contemplations regarding epistemological limitations of human cognition inevitably confront ontological paradoxes inherent in existential hermeneutics and phenomenological introspection.",
+      "Revolutionary technological advancements in artificial intelligence and machine learning algorithms facilitate unprecedented computational capabilities for predictive analytics and pattern recognition.",
+    ]
+  };
 
   const clearTimer = () => {
     if (timerRef.current) {
@@ -45,8 +66,9 @@ const TypingTest = () => {
   const fetchQuote = async () => {
     try {
       resetTest();
-      const res = await axios.get("https://api.quotable.io/random?minLength=100&maxLength=200");
-      setQuote(res.data.content);
+      const sentences = practiceSentences[difficulty];
+      const randomIndex = Math.floor(Math.random() * sentences.length);
+      setQuote(sentences[randomIndex]);
     } catch (error) {
       console.error("Error fetching quote:", error);
       setQuote("The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras jump!");
@@ -58,7 +80,7 @@ const TypingTest = () => {
     const storedHistory = JSON.parse(localStorage.getItem("typingHistory")) || [];
     setHistory(storedHistory);
     return () => clearTimer();
-  }, []);
+  }, [difficulty]); // Refetch when difficulty changes
 
   useEffect(() => {
     if (testActive && timeLeft > 0 && !testComplete) {
@@ -85,7 +107,6 @@ const TypingTest = () => {
   }, [testActive, timeLeft, testComplete]);
 
   const handleChange = (e) => {
-
     if (testComplete || timeLeft <= 0) return;
 
     const value = e.target.value;
@@ -113,37 +134,36 @@ const TypingTest = () => {
   };
 
   const finishTest = () => {
-  if (timeLeft === 0 && !testComplete) {
-    setShowTimeUpBox(true);
-    setTimeout(() => setShowTimeUpBox(false), 9000);
-  }
+    if (timeLeft === 0 && !testComplete) {
+      setShowTimeUpBox(true);
+      setTimeout(() => setShowTimeUpBox(false), 9000);
+    }
 
-  setTestActive(false);
-  clearTimer();
+    setTestActive(false);
+    clearTimer();
 
-  if (!startTime) {
-    setWpm(0);
-    setAccuracy(0);
-    return;
-  }
+    if (!startTime) {
+      setWpm(0);
+      setAccuracy(0);
+      return;
+    }
 
-  const endTime = Date.now();
-  const minutes = (endTime - startTime) / 1000 / 60;
-  const words = charStats.correct / 5;
-  const acc = userInput.length > 0 ? (charStats.correct / userInput.length) * 100 : 0;
-  const result = {
-    date: new Date().toLocaleString(),
-    wpm: Math.round(words / minutes),
-    accuracy: Math.round(acc),
+    const endTime = Date.now();
+    const minutes = (endTime - startTime) / 1000 / 60;
+    const words = charStats.correct / 5;
+    const acc = userInput.length > 0 ? (charStats.correct / userInput.length) * 100 : 0;
+    const result = {
+      date: new Date().toLocaleString(),
+      wpm: Math.round(words / minutes),
+      accuracy: Math.round(acc),
+      difficulty: difficulty
+    };
+    const updatedHistory = [result, ...history.slice(0, 9)];
+    localStorage.setItem("typingHistory", JSON.stringify(updatedHistory));
+    setHistory(updatedHistory);
+    setWpm(result.wpm);
+    setAccuracy(result.accuracy);
   };
-  const updatedHistory = [result, ...history.slice(0, 9)];
-  localStorage.setItem("typingHistory", JSON.stringify(updatedHistory));
-  setHistory(updatedHistory);
-  setWpm(result.wpm);
-  setAccuracy(result.accuracy);
-};
-
-
 
   const getCharClass = (char, i) => {
     if (!userInput[i]) return "text-gray-400";
@@ -152,17 +172,84 @@ const TypingTest = () => {
     return "text-gray-400";
   };
 
+  const handleDifficultyChange = (e, newDifficulty) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.target.blur();
+
+    if (newDifficulty !== difficulty) {
+      setDifficulty(newDifficulty);
+    }
+  };
+
   return (
     <section>
       <div className="min-h-screen bg-white mt-20">
         <Navbar />
         <div className="container mx-auto px-4 py-6 md:py-12 max-w-4xl">
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-bold text-gray-800 mb-1">Typing Speed Test</h1>
-            <p className="text-gray-600 text-sm md:text-base">Improve your typing skills with random quotes</p>
+            <h1 className="text-3xl font-bold text-gray-800 mb-1">
+              Challenge Yourself with the <span className="text-blue-600">Mapito Typing Speed Test</span>
+            </h1>
+            <p className="text-gray-600 text-sm md:text-base">
+              Boost your typing speed and accuracy by practicing with engaging and varied text exercises with different levels designed to sharpen your skills.
+            </p>
           </div>
 
-          {/* Guidelines */}
+          {/* Difficulty Selector */}
+          <div className="flex justify-center mb-6">
+            <div className="inline-flex rounded-md shadow-sm" role="group">
+              <button
+                type="button"
+                onClick={(e) => handleDifficultyChange(e, "beginner")}
+                onMouseDown={(e) => e.preventDefault()} 
+                className={`px-4 py-2 text-sm font-medium rounded-l-lg border ${difficulty === "beginner"
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
+                  }`}
+              >
+                Beginner
+              </button>
+              <button
+                type="button"
+                onClick={(e) => handleDifficultyChange(e, "intermediate")}
+                onMouseDown={(e) => e.preventDefault()} 
+                className={`px-4 py-2 text-sm font-medium border-t border-b ${difficulty === "intermediate"
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
+                  }`}
+              >
+                Intermediate
+              </button>
+              <button
+                type="button"
+                onClick={(e) => handleDifficultyChange(e, "advanced")}
+                onMouseDown={(e) => e.preventDefault()} 
+                className={`px-4 py-2 text-sm font-medium rounded-r-lg border ${difficulty === "advanced"
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
+                  }`}
+              >
+                Advanced
+              </button>
+            </div>
+          </div>
+
+          {/* Difficulty Description */}
+          <div className="bg-blue-50 p-4 rounded-lg mb-6">
+            <h3 className="font-semibold text-blue-800 mb-2">
+              {difficulty === "beginner" && "Beginner Level"}
+              {difficulty === "intermediate" && "Intermediate Level"}
+              {difficulty === "advanced" && "Advanced Level"}
+            </h3>
+            <p className="text-sm text-blue-700">
+              {difficulty === "beginner" && "Simple words and letter patterns to build fundamental typing skills."}
+              {difficulty === "intermediate" && "More complex words and patterns to improve your typing fluency."}
+              {difficulty === "advanced" && "Complex sentences with advanced vocabulary to challenge your typing skills."}
+            </p>
+          </div>
+
+          {/* Guidelines / Tips */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div className="bg-white p-4 shadow rounded-lg">
               <h2 className="font-semibold text-lg mb-2 text-blue-700">How It Works?</h2>
@@ -176,14 +263,13 @@ const TypingTest = () => {
             <div className="bg-white p-4 shadow rounded-lg">
               <h2 className="font-semibold text-lg mb-2 text-blue-700">Notice</h2>
               <ul className="list-disc ml-6 text-sm text-gray-700 space-y-1">
-                <li>Random quotes from quotable.io</li>
-                <li>if unexpected error occurs, default quote will appear.</li>
+                <li>All levels use predefined practice sentences</li>
+                <li>If unexpected error occurs, default quote will appear.</li>
               </ul>
             </div>
           </div>
+
           <div className="bg-gray-50 rounded-xl shadow-lg overflow-hidden p-4 md:p-6 space-y-6">
-
-
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
               <div className="bg-blue-50 rounded-lg p-3 text-center">
                 <p className="text-sm font-medium text-blue-600">Time Left</p>
@@ -231,14 +317,13 @@ const TypingTest = () => {
                 </ResponsiveContainer>
               </div>
             )}
-
           </div>
         </div>
         <Footer />
       </div>
 
       {showTimeUpBox && (
-        <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-transparent bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
             <h2 className="text-2xl font-bold text-red-600 mb-4">⏰ Time is up! Good luck next time!</h2>
             <p className="text-gray-700 mb-4">Your typing test has ended.</p>
@@ -251,7 +336,6 @@ const TypingTest = () => {
           </div>
         </div>
       )}
-
     </section>
   );
 };
