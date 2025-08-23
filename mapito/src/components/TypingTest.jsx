@@ -189,7 +189,7 @@ const TypingTest = () => {
         <div className="container mx-auto px-4 py-6 md:py-12 max-w-4xl">
           <div className="text-center mb-10">
             <h1 className="text-3xl font-bold text-gray-800 mb-1">
-              Challenge Yourself with the <span className="text-blue-600">Mapito Typing Speed Test</span>
+              Practice your Typing Speed Here.
             </h1>
             <p className="text-gray-600 text-sm md:text-base">
               Boost your typing speed and accuracy by practicing with engaging and varied text exercises with different levels designed to sharpen your skills.
