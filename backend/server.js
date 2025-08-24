@@ -448,7 +448,7 @@ app.post('/api/ai-mentor', async (req, res) => {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-pro" });
     const prompt = `
 You are an AI programming mentor for beginners. 
 Answer clearly and concisely to the following programming-related question:
