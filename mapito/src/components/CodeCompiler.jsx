@@ -8,6 +8,16 @@ const languageMap = {
   javascript: 63,
   python: 71,
   java: 62,
+  cpp: 54,       
+  c: 50,          
+  csharp: 51,     
+  php: 68,        
+  ruby: 72,       
+  go: 60,         
+  rust: 73,       
+  swift: 83,      
+  typescript: 74, 
+  kotlin: 78,    
 };
 
 const starterCode = {
@@ -18,7 +28,70 @@ public class Main {
   public static void main(String[] args) {
     System.out.println("Hello World!");
   }
+}`,
+  cpp: `// Write your C++ code here
+#include <iostream>
+using namespace std;
+
+int main() {
+  cout << "Hello World!";
+  return 0;
+}`,
+  c: `// Write your C code here
+#include <stdio.h>
+
+int main() {
+  printf("Hello World!");
+  return 0;
+}`,
+  csharp: `// Write your C# code here
+using System;
+
+class Program {
+  static void Main() {
+    Console.WriteLine("Hello World!");
+  }
+}`,
+  php: "<?php\n// Write your PHP code here\necho 'Hello World!';\n?>",
+  ruby: "# Write your Ruby code here\nputs 'Hello World!'",
+  go: `// Write your Go code here
+package main
+
+import "fmt"
+
+func main() {
+  fmt.Println("Hello World!")
+}`,
+  rust: `// Write your Rust code here
+fn main() {
+  println!("Hello World!");
+}`,
+  swift: `// Write your Swift code here
+import Swift
+
+print("Hello World!")`,
+  typescript: "// Write your TypeScript code here\nconsole.log('Hello World!');",
+  kotlin: `// Write your Kotlin code here
+fun main() {
+  println("Hello World!")
 }`
+};
+
+// Language display names for UI
+const languageDisplayNames = {
+  javascript: "JavaScript",
+  python: "Python",
+  java: "Java",
+  cpp: "C++",
+  c: "C",
+  csharp: "C#",
+  php: "PHP",
+  ruby: "Ruby",
+  go: "Go",
+  rust: "Rust",
+  swift: "Swift",
+  typescript: "TypeScript",
+  kotlin: "Kotlin"
 };
 
 const CodeCompiler = () => {
@@ -30,7 +103,7 @@ const CodeCompiler = () => {
   const handleLanguageChange = (e) => {
     const newLang = e.target.value;
     setLanguage(newLang);
-    setCode(starterCode[newLang]);
+    setCode(starterCode[newLang] || starterCode["javascript"]);
     setOutput("");
   };
 
@@ -86,6 +159,9 @@ const CodeCompiler = () => {
     }
   };
 
+  // Get supported languages for the badges
+  const supportedLanguages = Object.keys(languageMap);
+
   return (
     <section className="bg-gray-50 min-h-screen mt-10">
       <Navbar />
@@ -101,9 +177,9 @@ const CodeCompiler = () => {
 
         {/* Supported Technologies */}
         <div className="flex flex-wrap justify-center gap-3 mb-8">
-          {["JavaScript", "Python", "Java"].map((tech) => (
-            <span key={tech} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-              {tech} Supported
+          {supportedLanguages.map((langKey) => (
+            <span key={langKey} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+              {languageDisplayNames[langKey] || langKey}
             </span>
           ))}
         </div>
@@ -116,9 +192,11 @@ const CodeCompiler = () => {
             value={language}
             onChange={handleLanguageChange}
           >
-            <option value="javascript">JavaScript</option>
-            <option value="python">Python</option>
-            <option value="java">Java</option>
+            {supportedLanguages.map((langKey) => (
+              <option key={langKey} value={langKey}>
+                {languageDisplayNames[langKey] || langKey}
+              </option>
+            ))}
           </select>
         </div>
 
