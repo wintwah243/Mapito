@@ -91,6 +91,7 @@ passport.use(
 
       return done(null, user);
     } catch (error) {
+      console.error("Passport Google error:", err);
       return done(error, null);
     }
   })
