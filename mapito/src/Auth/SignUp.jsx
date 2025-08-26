@@ -69,7 +69,7 @@ const handleSignUp = async (e) => {
   };
  
   const loginWithGoogle = () => {
-      window.open("https://mapito.onrender.com/api/auth/google/callback", "_self");
+      window.open("https://mapito.onrender.com/api/auth/google", "_self");
     };
 
  // email confirmation
