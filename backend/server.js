@@ -61,34 +61,54 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log("Google profile:", profile);
+        console.log("Google profile received:", profile.id);
 
+        // First, try to find by googleId
         let user = await userdb.findOne({ googleId: profile.id });
 
-        if (!user) {
-          // New user
-          user = new userdb({
-            googleId: profile.id,
-            fullName: profile.displayName,
-            email: profile.emails?.[0]?.value || "",
-            profileImageUrl: profile.photos?.[0]?.value || "",
-            verified: true,             // Google users are auto-verified
-            confirmationCode: null,
-            verifytoken: null,
-          });
-
-          await user.save();
-          console.log("New Google user created:", user._id);
-        } else {
-          // Existing user: ensure verified
+        if (user) {
+          // Existing Google user - update and return
           user.verified = true;
           user.confirmationCode = null;
           user.verifytoken = null;
           await user.save();
           console.log("Existing Google user updated:", user._id);
+          return done(null, user);
         }
 
+        // If no user found by googleId, check if email already exists
+        const email = profile.emails?.[0]?.value;
+        if (email) {
+          user = await userdb.findOne({ email: email });
+          
+          if (user) {
+            // User exists with same email but different auth method
+            // Link Google account to existing user
+            user.googleId = profile.id;
+            user.verified = true;
+            user.confirmationCode = null;
+            user.verifytoken = null;
+            await user.save();
+            console.log("Linked Google account to existing user:", user._id);
+            return done(null, user);
+          }
+        }
+
+        // No existing user found - create new user
+        user = new userdb({
+          googleId: profile.id,
+          fullName: profile.displayName,
+          email: email || "",
+          profileImageUrl: profile.photos?.[0]?.value || "",
+          verified: true,
+          confirmationCode: null,
+          verifytoken: null,
+        });
+
+        await user.save();
+        console.log("New Google user created:", user._id);
         return done(null, user);
+
       } catch (err) {
         console.error("Error in Google strategy:", err);
         return done(err, null);
