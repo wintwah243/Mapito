@@ -2,7 +2,8 @@ import express from "express";
 import {
     registerUser,
     loginUser,
-    getUserInfo
+    getUserInfo,
+    verifyEmail
 } from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { upload } from "../middleware/uploadMiddleware.js";
@@ -23,6 +24,7 @@ const router = express.Router();
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/getUser", protect, getUserInfo);
+router.post("/verify", verifyEmail);
 
 router.post("/upload-image", upload.single("image"), (req,res) => {
     if(!req.file){
