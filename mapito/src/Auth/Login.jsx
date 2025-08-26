@@ -81,7 +81,7 @@ const Login = () => {
 
 
   const loginWithGoogle = () => {
-    window.open("https://mapito.onrender.com/api/auth/google/callback", "_self");
+    window.open("https://mapito.onrender.com/api/auth/google", "_self");
   };
 
   return (
