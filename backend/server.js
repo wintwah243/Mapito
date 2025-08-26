@@ -69,10 +69,19 @@ passport.use(
             googleId: profile.id,
             fullName: profile.displayName,
             email: profile.emails[0].value,
-            profileImageUrl: profile.photos[0].value
+            profileImageUrl: profile.photos[0].value,
+            verified: true,
+            confirmationCode: null,
+            verifytoken: null
           });
+            await user.save();
+        }else {
+          user.confirmed = true;
+          user.verifytoken = null;
+          user.confirmationCode = null;
           await user.save();
         }
+        
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
           expiresIn: "1d",
         });
