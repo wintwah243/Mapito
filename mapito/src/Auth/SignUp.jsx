@@ -9,7 +9,7 @@ import { UserContext } from '../utils/UserContext';
 import uploadImage from '../utils/updateImage';
 
 const SignUp = () => {
- 
+  const [profilePic, setProfilePic] = useState(null);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
