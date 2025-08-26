@@ -356,4 +356,21 @@ router.get('/api/roadmaps', async (req, res) => {
   }
 });
 
+// email confirmation
+router.get("/verify/:token", async (req, res) => {
+  try {
+    const token = req.params.token;
+    const user = await User.findOne({ verifytoken: token });
+
+    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+
+    user.verifytoken = null; // clear token
+    await user.save();
+
+    res.status(200).json({ message: "Email verified successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 export default router;
