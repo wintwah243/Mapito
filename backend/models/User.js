@@ -30,6 +30,13 @@ const UserSchema = new mongoose.Schema({
     },
     verifytoken:{
         type: String,
+    },
+    verified: {
+        type: Boolean,
+        default: false,
+    },
+    confirmationCode: {
+        type: String
     }
 }, { timestamps: true });
 
