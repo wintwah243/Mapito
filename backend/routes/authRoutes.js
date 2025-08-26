@@ -319,20 +319,34 @@ router.put("/update-profile", protect, async (req, res) => {
     }
   );
 
+// google login
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
 
-// Initial Google OAuth login
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
-router.get("/google/callback", passport.authenticate("google", {
-    session: false, 
-}), (req, res) => {
-    const token = jwt.sign(
-        { id: req.user._id },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
-    );
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { session: false, failureRedirect: "/login" }),
+  (req, res) => {
+    try {
+      if (!req.user) {
+        console.error("Google callback: req.user is null");
+        return res.status(500).send("User not found after Google auth");
+      }
 
-    res.redirect(`https://mapito-df8g.onrender.com/google-auth?token=${token}`);
-});
+      const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
+        expiresIn: "7d",
+      });
+
+      // Redirect to frontend with token
+      res.redirect(`https://mapito-df8g.onrender.com/google-auth?token=${token}`);
+    } catch (err) {
+      console.error("Error in Google callback:", err);
+      res.status(500).send("Internal server error");
+    }
+  }
+);
 
 // Save roadmap to DB
 router.post('/api/save-roadmap', async (req, res) => {
