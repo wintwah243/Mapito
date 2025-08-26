@@ -53,48 +53,48 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use(
-  new OAuthStrategy({
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://mapito.onrender.com/api/auth/google/callback",
-    scope: ["profile", "email"]
-  },
-  async (accessToken, refreshToken, profile, done) => {
-    try {
-      let user = await userdb.findOne({ googleId: profile.id });
+  new OAuthStrategy(
+    {
+      clientID: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      callbackURL: "https://mapito.onrender.com/api/auth/google/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        console.log("Google profile:", profile);
 
-      if (!user) {
-        user = new userdb({
-          googleId: profile.id,
-          fullName: profile.displayName,
-          email: profile.emails[0].value,
-          profileImageUrl: profile.photos[0].value,
-          verified: true,
-          confirmationCode: null,
-          verifytoken: null
-        });
-        await user.save();
-      } else {
-        user.confirmed = true;
-        user.verifytoken = null;
-        user.confirmationCode = null;
-        await user.save();
+        let user = await userdb.findOne({ googleId: profile.id });
+
+        if (!user) {
+          // New user
+          user = new userdb({
+            googleId: profile.id,
+            fullName: profile.displayName,
+            email: profile.emails?.[0]?.value || "",
+            profileImageUrl: profile.photos?.[0]?.value || "",
+            verified: true,             // Google users are auto-verified
+            confirmationCode: null,
+            verifytoken: null,
+          });
+
+          await user.save();
+          console.log("New Google user created:", user._id);
+        } else {
+          // Existing user: ensure verified
+          user.verified = true;
+          user.confirmationCode = null;
+          user.verifytoken = null;
+          await user.save();
+          console.log("Existing Google user updated:", user._id);
+        }
+
+        return done(null, user);
+      } catch (err) {
+        console.error("Error in Google strategy:", err);
+        return done(err, null);
       }
-
-      // generate JWT
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "1d",
-      });
-
-      // attach token to user object
-      user.jwtToken = token;
-
-      return done(null, user);
-    } catch (error) {
-      console.error("Passport Google error:", err);
-      return done(error, null);
     }
-  })
+  )
 );
 
 passport.serializeUser((user, done) => {
