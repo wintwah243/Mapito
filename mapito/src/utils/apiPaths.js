@@ -9,6 +9,7 @@ export const API_PATHS = {
         UPDATE_PROFILE: "/api/auth/update-profile",        
         UPDATE_PROFILE_PIC: "/api/auth/update-profile-pic", 
         DELETE_ACCOUNT: "/api/auth/delete-account",
+        VERIFY: "/api/auth/verify",
     },
     IMAGE: {
         UPLOAD_IMAGE: "/api/auth/upload-image"
