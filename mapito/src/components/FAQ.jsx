@@ -7,11 +7,11 @@ const FAQ = () => {
   const faqs = [
     {
       question: "What is Mapito?",
-      answer: "It's a developer-focused platform that offers AI-generated roadmaps and interactive tools to help you learn, practice, and grow."
+      answer: "It's a developer-focused platform that offers goal-based roadmaps and interactive tools to help you learn, practice, and grow."
     },
     {
       question: "Is Mapito free?",
-      answer: "Yes! Core features like roadmap generation, quizzes, and code practice are free."
+      answer: "Yes! Core features like roadmap generation, quizzes, note summarization, AI mentor and code practice are free."
     },
     {
       question: "Can I customize my roadmap?",
@@ -19,7 +19,7 @@ const FAQ = () => {
     },
     {
       question: "What makes Mapito different?",
-      answer: "Mapito blends AI-generated plans with hands-on tools like a live code editor, quiz engine, typing test, summarize notes and mini-coding games — all in one place."
+      answer: "Mapito blends various interactive practice ands-on tools like a live code editor, quiz engine, typing test, summarize notes, developer documentations and mini-coding games — all in one place."
     }
   ];
 
