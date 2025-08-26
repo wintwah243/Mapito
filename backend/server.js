@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import session from 'express-session';
 import passport from 'passport';
-import OAuthStrategy from 'passport-google-oauth2';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import jwt from 'jsonwebtoken';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import connectDB from './config/db.js';
@@ -53,7 +53,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use(
-  new OAuthStrategy(
+  new GoogleStrategy(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
