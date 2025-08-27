@@ -181,76 +181,86 @@ const Hero = () => {
   };
 
   const handleGenerate = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/signup');
+  const token = localStorage.getItem('token');
+  if (!token) {
+    navigate('/signup');
+    return;
+  }
+
+  if (!goal.trim()) return;
+  setLoading(true);
+  setCompletedSteps([]);
+  setError(null);
+
+  try {
+    const response = await fetch('https://mapito.onrender.com/api/generate-roadmap', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ goal }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok && data.error === "Roadmap topic is not available") {
+      setRoadmap([]);
+      setDetails([]);
+      setError(`Roadmap for "${goal}" is not available`);
       return;
     }
 
-    if (!goal.trim()) return;
-    setLoading(true);
-    setCompletedSteps([]);
-    setError(null); 
+    let newRoadmap = [];
+    let newDetails = [];
 
-    try {
-      const response = await fetch('https://mapito.onrender.com/api/generate-roadmap', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ goal }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok && data.error === "Roadmap topic is not available") {
-        setRoadmap([]);
-        setDetails([]);
-        setError(`Roadmap for "${goal}" is not available`);
-        return;
+    // If backend returns string roadmap, split it into steps
+    if (typeof data.roadmap === 'string') {
+      newRoadmap = data.roadmap.split('\n').map(step => step.trim());
+      if (Array.isArray(data.details)) {
+        newDetails = data.details.slice(0, newRoadmap.length);
+      } else {
+        newDetails = newRoadmap.map(() => "Detail not available");
       }
-
-      let newRoadmap = [];
-      let newDetails = [];
-
-      // Handle both predefined and fallback formats
-      if (Array.isArray(data.roadmap)) {
-        newRoadmap = data.roadmap.map(item => item.title || item);
-        newDetails = data.roadmap;
-      } else if (Array.isArray(data.details)) {
-        newRoadmap = data.details.map(item => item.title);
-        newDetails = data.details;
-      }
-
-      setRoadmap(newRoadmap);
-      setDetails(newDetails);
-
-      const userId = getUserId();
-      if (userId) {
-        saveRoadmapCache(userId, goal, newRoadmap, newDetails); 
-      }
-
-      await fetch('https://mapito.onrender.com/api/roadmaps', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          goal,
-          roadmap: newRoadmap.join('\n'),
-          details: newDetails
-        }),
-      });
-
-    } catch (error) {
-      console.error('Error generating roadmap:', error);
-      setError('Something went wrong. Please try again later.');
-    } finally {
-      setLoading(false);
+    } 
+    // If backend returns array of objects with title/detail
+    else if (Array.isArray(data.roadmap)) {
+      newRoadmap = data.roadmap.map(item => item.title || item);
+      newDetails = data.roadmap.map(item => item.detail || "Detail not available");
+    } 
+    else if (Array.isArray(data.details)) {
+      newRoadmap = data.details.map(item => item.title || "Step");
+      newDetails = data.details.map(item => item.detail || "Detail not available");
     }
-  };
+
+    setRoadmap(newRoadmap);
+    setDetails(newDetails);
+
+    const userId = getUserId();
+    if (userId) {
+      saveRoadmapCache(userId, goal, newRoadmap, newDetails);
+    }
+
+    await fetch('https://mapito.onrender.com/api/roadmaps', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        goal,
+        roadmap: newRoadmap.join('\n'),
+        details: newDetails
+      }),
+    });
+
+  } catch (error) {
+    console.error('Error generating roadmap:', error);
+    setError('Something went wrong. Please try again later.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const isTokenValid = (token) => {
     if (!token) return false;
