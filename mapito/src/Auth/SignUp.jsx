@@ -99,85 +99,94 @@ const handleSignUp = async (e) => {
   };
 
   return (
-    <AuthLayout>
-      <div className='lg:w-[100%] h-auto md:h-full mt-10 md:mt-0 flex flex-col justify-center'>
-          <h3 className='text-[40px] font-semibold text-black'>Create an account</h3>
-          <p className='text-xs text-slate-700 mt-[5px] mb-6'>
-            Let AI create your perfect path forward – welcome to Mapito, your intelligent learning platform.
-          </p>
+  <AuthLayout>
+    <div className="lg:w-[100%] h-auto md:h-full mt-10 md:mt-0 flex flex-col justify-center">
+      <h3 className="text-[40px] font-semibold text-black">Create an account</h3>
+      <p className="text-xs text-slate-700 mt-[5px] mb-6">
+        Let AI create your perfect path forward – Welcome to Mapito, your All-in-one practice platform.
+      </p>
 
-       {/* Google Sign In */}
-        <button
-          onClick={loginWithGoogle}
-          className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-md py-2 px-4 text-sm font-medium text-gray-700 hover:shadow-md transition duration-150 mb-6"
-        >
-          <img
-            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-            alt="Google logo"
-            className="w-5 h-5"
-          />
-          Sign in with Google
-        </button>
+      {step === 1 && (
+        <>
+          {/* Google Sign In */}
+          <button
+            onClick={loginWithGoogle}
+            className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-md py-2 px-4 text-sm font-medium text-gray-700 hover:shadow-md transition duration-150 mb-6"
+          >
+            <img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              alt="Google logo"
+              className="w-5 h-5"
+            />
+            Sign in with Google
+          </button>
 
-       {/* Separator */}
-        <div className="flex items-center my-4">
-          <hr className="flex-grow border-gray-300" />
-          <span className="mx-3 text-gray-500 text-sm font-medium">or</span>
-          <hr className="flex-grow border-gray-300" />
-        </div>
-       
-         {step === 1 ? (
-          <form onSubmit={handleSignUp}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                value={fullName}
-                onChange={({ target }) => setFullName(target.value)}
-                label="Full Name"
-                placeholder="Your name"
-                type="text"
-              />
-              <Input
-                value={email}
-                onChange={({ target }) => setEmail(target.value)}
-                label="Email Address"
-                placeholder="yourname@example.com"
-                type="text"
-              />
-              <div className="col-span-2">
-                <Input
-                  value={password}
-                  onChange={({ target }) => setPassword(target.value)}
-                  label="Password"
-                  placeholder="Min 6 characters"
-                  type="password"
-                />
-              </div>
-            </div>
-            {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
-            <button type="submit" className="btn-primary">Register</button>
-            <p className="text-[13px] text-slate-800 mt-3">
-              Already have an account?{" "}
-              <Link className="font-medium text-indigo-700 underline" to="/login">
-                Login
-              </Link>
-            </p>
-          </form>
-        ) : (
-          <form onSubmit={handleVerify}>
+          {/* Separator */}
+          <div className="flex items-center my-4">
+            <hr className="flex-grow border-gray-300" />
+            <span className="mx-3 text-gray-500 text-sm font-medium">or</span>
+            <hr className="flex-grow border-gray-300" />
+          </div>
+        </>
+      )}
+
+      {step === 1 ? (
+        <form onSubmit={handleSignUp}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              value={code}
-              onChange={({ target }) => setCode(target.value)}
-              label="Verification Code"
-              placeholder="Enter 6-digit code"
+              value={fullName}
+              onChange={({ target }) => setFullName(target.value)}
+              label="Full Name"
+              placeholder="Your name"
               type="text"
             />
-            {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
-            <button type="submit" className="btn-primary">Verify</button>
-          </form>
-        )}
-      </div>
-    </AuthLayout>
-  )
+            <Input
+              value={email}
+              onChange={({ target }) => setEmail(target.value)}
+              label="Email Address"
+              placeholder="yourname@example.com"
+              type="text"
+            />
+            <div className="col-span-2">
+              <Input
+                value={password}
+                onChange={({ target }) => setPassword(target.value)}
+                label="Create Password"
+                placeholder="Min 6 characters"
+                type="password"
+              />
+            </div>
+          </div>
+          {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
+          <button type="submit" className="btn-primary">Register</button>
+          <p className="text-[13px] text-slate-800 mt-3">
+            Already have an account?{" "}
+            <Link className="font-medium text-indigo-700 underline" to="/login">
+              Login
+            </Link>
+          </p>
+        </form>
+      ) : (
+        <>
+         <p className="mb-3 text-gray-700 text-sm">
+           Please enter the 6-digit verification code we sent to your email.
+         </p>
+        <form onSubmit={handleVerify}>
+          <Input
+            value={code}
+            onChange={({ target }) => setCode(target.value)}
+            label="Verification Code"
+            placeholder="Enter 6-digit code"
+            type="text"
+          />
+          {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
+          <button type="submit" className="btn-primary">Verify</button>
+        </form>
+      </>
+      )}
+    </div>
+  </AuthLayout>
+);
 }
 
 export default SignUp
