@@ -20,6 +20,7 @@ const Hero = () => {
   const [showRoadmapList, setShowRoadmapList] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const roadmapListRef = useRef(null);
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -188,7 +189,8 @@ const Hero = () => {
 
     if (!goal.trim()) return;
     setLoading(true);
-    setCompletedSteps([]); // Reset completed steps when generating a new roadmap
+    setCompletedSteps([]);
+    setError(null); 
 
     try {
       const response = await fetch('https://mapito.onrender.com/api/generate-roadmap', {
@@ -202,36 +204,31 @@ const Hero = () => {
 
       const data = await response.json();
 
-      const lines = (data.roadmap || '')
-        .split('\n')
-        .map(line => line.replace(/\*/g, '').trim())
-        .filter(line => line.length > 0);
+      if (!response.ok && data.error === "Roadmap topic is not available") {
+        setRoadmap([]);
+        setDetails([]);
+        setError(`Roadmap for "${goal}" is not available`);
+        return;
+      }
 
-      const steps = [];
-      const parsedDescriptions = [];
+      let newRoadmap = [];
+      let newDetails = [];
 
-      lines.forEach(line => {
-        const match = line.match(/^\d+\.\s*(.+?)\s*-\s*(.+)$/);
-        if (match) {
-          steps.push(match[1].trim());
-          parsedDescriptions.push(match[2].trim());
-        } else {
-          steps.push(line);
-          parsedDescriptions.push("No description available.");
-        }
-      });
+      // Handle both predefined and fallback formats
+      if (Array.isArray(data.roadmap)) {
+        newRoadmap = data.roadmap.map(item => item.title || item);
+        newDetails = data.roadmap;
+      } else if (Array.isArray(data.details)) {
+        newRoadmap = data.details.map(item => item.title);
+        newDetails = data.details;
+      }
 
-      const finalDescriptions =
-        Array.isArray(data.details) && data.details.length === steps.length
-          ? data.details
-          : parsedDescriptions;
-
-      setRoadmap(steps);
-      setDetails(finalDescriptions);
+      setRoadmap(newRoadmap);
+      setDetails(newDetails);
 
       const userId = getUserId();
       if (userId) {
-        saveRoadmapCache(userId, goal, steps, finalDescriptions);
+        saveRoadmapCache(userId, goal, newRoadmap, newDetails); 
       }
 
       await fetch('https://mapito.onrender.com/api/roadmaps', {
@@ -240,11 +237,16 @@ const Hero = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ goal, roadmap: steps.join('\n'), details: finalDescriptions }),
+        body: JSON.stringify({
+          goal,
+          roadmap: newRoadmap.join('\n'),
+          details: newDetails
+        }),
       });
 
     } catch (error) {
       console.error('Error generating roadmap:', error);
+      setError('Something went wrong. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -523,8 +525,21 @@ const Hero = () => {
           )}
         </motion.div>
 
+        {error && (
+          <div className="flex flex-col items-center mt-6 p-4 rounded-xl">
+            <img
+              src="https://i.pinimg.com/1200x/32/22/7e/32227e6675e29438bc4e72ecde3db707.jpg"
+              alt="Error illustration"
+              className="w-100 h-100 mb-3"
+            />
+            <p className="text-center text-red-600 font-semibold text-lg">
+              {/* {error} */}
+            </p>
+          </div>
+        )}
+
         {/* Roadmap */}
-        {roadmap.length > 0 && (
+        {!error && roadmap.length > 0 && (
           <div className="w-full max-w-4xl px-2 sm:px-6">
             <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
               <h2 className="text-2xl sm:text-3xl font-bold text-blue-600 text-center sm:text-left">
