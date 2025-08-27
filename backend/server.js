@@ -133,7 +133,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Add rate limiting middleware
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit each IP to 5 requests per window
+  max: 50, // Limit each IP to 50 requests per window
   message: 'Too many requests, please try again later'
 });
 
@@ -187,19 +187,6 @@ function getPredefinedRoadmap(goal) {
   return `Research ${goal} fundamentals\n Find quality learning resources\n Practice consistently\n Build small projects\n Seek feedback and iterate`;
 }
 
-function getGenericFallbackSteps(goal) {
-  return [
-    `Understand the basics of ${goal}`,
-    `Find quality tutorials or courses about ${goal}`,
-    `Practice core concepts regularly`,
-    `Start small projects using ${goal}`,
-    `Explore real-world use cases`,
-    `Join communities or forums around ${goal}`,
-    `Get feedback and improve your work`,
-    `Prepare a final project to showcase your ${goal} skills`
-  ];
-};
-
 // generate roadmap based on user's goal
 app.post('/api/generate-roadmap', authenticate, async (req, res) => {
   const { goal } = req.body;
@@ -219,12 +206,17 @@ app.post('/api/generate-roadmap', authenticate, async (req, res) => {
       processedGoal.includes(key)
     );
 
-    // Use predefined roadmap or generic fallback
-    const details = matchedKey
-      ? roadmapDetails[matchedKey]
-      : getGenericFallbackSteps(processedGoal);
-
-    const roadmap = getPredefinedRoadmap(matchedKey || processedGoal);
+    if (!matchedKey) {
+      // No roadmap available
+      return res.status(404).json({
+        error: 'Roadmap topic is not available',
+        details: `Sorry, we currently don’t have a roadmap for "${goal}".`
+      });
+    }
+    
+    // Use predefined roadmap
+    const details = roadmapDetails[matchedKey];
+    const roadmap = getPredefinedRoadmap(matchedKey);
 
     // Save to database
     await new Roadmap({
