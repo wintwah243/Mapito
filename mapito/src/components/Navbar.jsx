@@ -90,7 +90,6 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon, onClick }) => (
                 to="/ai-mentor"
                 isAuthenticated={isAuthenticated}
                 text="AI Mentor"
-                icon={<FaUserFriends className="w-5 h-5" />}
          />
 
         {/* dropdown for various tools */}
@@ -145,7 +144,6 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon, onClick }) => (
                 to="/codinggame"
                 isAuthenticated={isAuthenticated}
                 text="Coding Games"
-                icon={<FaGamepad className="w-5 h-5" />}
           />
 
       </div>
@@ -221,10 +219,27 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon, onClick }) => (
             Home
           </Link>
 
-          <Link to="/aboutus" onClick={toggleMenu} className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3">
-            <FaInfoCircle size={20} className="text-gray-600" />
-            About us
-          </Link>
+          <button
+            onClick={() => {
+              toggleMenu();
+              isAuthenticated ? navigate("/documentation") : navigate("/signup");
+            }}
+            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
+          >
+            <FaBook size={20} className="text-gray-600" />
+            Documentation
+          </button>
+
+          <button
+            onClick={() => {
+              toggleMenu();
+              isAuthenticated ? navigate("/ai-mentor") : navigate("/signup");
+            }}
+            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
+          >
+            <FaUserFriends size={20} className="text-gray-600" />
+            AI Mentor
+          </button>
 
           <button
             onClick={() => {
@@ -279,39 +294,6 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon, onClick }) => (
           >
             <FaGamepad size={20} className="text-gray-600" />
             Coding games
-          </button>
-
-          <button
-            onClick={() => {
-              toggleMenu();
-              isAuthenticated ? navigate("/ai-mentor") : navigate("/signup");
-            }}
-            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
-          >
-            <FaUserFriends size={20} className="text-gray-600" />
-            AI Mentor
-          </button>
-
-           <button
-            onClick={() => {
-              toggleMenu();
-              isAuthenticated ? navigate("/documentation") : navigate("/signup");
-            }}
-            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
-          >
-            <FaBook size={20} className="text-gray-600" />
-            Documentation
-          </button>
-
-          <button
-            onClick={() => {
-              toggleMenu();
-              navigate("/notice");
-            }}
-            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
-          >
-            <FaBell size={20} className="text-gray-600" />
-            Notice Board
           </button>
           
           {isAuthenticated ? (
