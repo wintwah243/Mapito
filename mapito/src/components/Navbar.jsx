@@ -53,12 +53,9 @@ export default function Navbar() {
   return () => document.removeEventListener('mousedown', handleClickOutside);
 }, []);
 
-const NavDropdownItem = ({ to, isAuthenticated, text, icon, onClick }) => (
+const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
   <button
-    onClick={() => {
-      navigate(isAuthenticated ? to : "/signup");
-      if (onClick) onClick(); 
-    }}
+    onClick={() => navigate(isAuthenticated ? to : "/signup")}
     className="flex items-center w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
   >
     <span className="mr-3 text-gray-400">{icon}</span>
@@ -79,20 +76,9 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon, onClick }) => (
       {/* Desktop Links */}
       <div className="hidden md:flex items-center gap-8 text-gray-700 font-semibold">
         <Link to="/home" className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">Home</Link>
+        <Link to="/aboutus" className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">About us</Link>
 
-         <Link 
-           to="/documentation" 
-           className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">
-           Documentations
-         </Link>
-
-        <NavDropdownItem
-                to="/ai-mentor"
-                isAuthenticated={isAuthenticated}
-                text="AI Mentor"
-         />
-
-        {/* dropdown for various tools */}
+        {/* dropdown for various features */}
         <div className="relative group" onMouseLeave={() => setDropdownOpen(false)}>
           <button
             className="flex items-center gap-1 hover:text-indigo-600 transition-all duration-300 py-2"
@@ -100,7 +86,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon, onClick }) => (
             aria-expanded={dropdownOpen}
             aria-haspopup="true"
           >
-            <span className="cursor-pointer">Tools</span>
+            <span className="cursor-pointer">Features</span>
             <ChevronDown
               className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
             />
@@ -113,16 +99,22 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon, onClick }) => (
               ref={dropdownRef}
             >
               <NavDropdownItem
-                to="/quiz"
+                to="/ai-mentor"
                 isAuthenticated={isAuthenticated}
-                text="Quizzes"
-                icon={<FaClipboardList className="w-5 h-5" />}
+                text="AI Mentor"
+                icon={<FaUserFriends className="w-5 h-5" />}
               />
               <NavDropdownItem
                 to="/code"
                 isAuthenticated={isAuthenticated}
                 text="Code Editor"
                 icon={<FaCode className="w-5 h-5" />}
+              />
+              <NavDropdownItem
+                to="/quiz"
+                isAuthenticated={isAuthenticated}
+                text="Quizzes"
+                icon={<FaClipboardList className="w-5 h-5" />}
               />
               <NavDropdownItem
                 to="/typing-test"
@@ -136,15 +128,27 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon, onClick }) => (
                 text="QuickNotes"
                 icon={<FaStickyNote className="w-5 h-5" />}
               />
+              <NavDropdownItem
+                to="/codinggame"
+                isAuthenticated={isAuthenticated}
+                text="Coding Games"
+                icon={<FaGamepad className="w-5 h-5" />}
+              />
             </div>
           )}
         </div>
 
-         <NavDropdownItem
-                to="/codinggame"
-                isAuthenticated={isAuthenticated}
-                text="Coding Games"
-          />
+         <Link 
+           to="/documentation" 
+           className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">
+           Documentations
+         </Link>
+
+         <Link 
+           to="/notice" 
+           className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">
+           Notice Board
+         </Link>
 
       </div>
 
@@ -219,27 +223,10 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon, onClick }) => (
             Home
           </Link>
 
-          <button
-            onClick={() => {
-              toggleMenu();
-              isAuthenticated ? navigate("/documentation") : navigate("/signup");
-            }}
-            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
-          >
-            <FaBook size={20} className="text-gray-600" />
-            Documentation
-          </button>
-
-          <button
-            onClick={() => {
-              toggleMenu();
-              isAuthenticated ? navigate("/ai-mentor") : navigate("/signup");
-            }}
-            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
-          >
-            <FaUserFriends size={20} className="text-gray-600" />
-            AI Mentor
-          </button>
+          <Link to="/aboutus" onClick={toggleMenu} className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3">
+            <FaInfoCircle size={20} className="text-gray-600" />
+            About us
+          </Link>
 
           <button
             onClick={() => {
@@ -295,6 +282,39 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon, onClick }) => (
             <FaGamepad size={20} className="text-gray-600" />
             Coding games
           </button>
+
+          <button
+            onClick={() => {
+              toggleMenu();
+              isAuthenticated ? navigate("/ai-mentor") : navigate("/signup");
+            }}
+            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
+          >
+            <FaUserFriends size={20} className="text-gray-600" />
+            AI Mentor
+          </button>
+
+           <button
+            onClick={() => {
+              toggleMenu();
+              isAuthenticated ? navigate("/documentation") : navigate("/signup");
+            }}
+            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
+          >
+            <FaBook size={20} className="text-gray-600" />
+            Documentation
+          </button>
+
+          <button
+            onClick={() => {
+              toggleMenu();
+              navigate("/notice");
+            }}
+            className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3"
+          >
+            <FaBell size={20} className="text-gray-600" />
+            Notice Board
+          </button>
           
           {isAuthenticated ? (
             <>
@@ -308,7 +328,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon, onClick }) => (
                 ) : (
                   <CharAvatar fullName={userName} width="w-12" height="h-12" />
                 )}
-                <p className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3">Account info</p>
+                <p className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3">Accout info</p>
               </div>
               <button
                 onClick={() => {
