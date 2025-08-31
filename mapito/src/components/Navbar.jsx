@@ -53,9 +53,12 @@ export default function Navbar() {
   return () => document.removeEventListener('mousedown', handleClickOutside);
 }, []);
 
-const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
+const NavDropdownItem = ({ to, isAuthenticated, text, icon, onClick }) => (
   <button
-    onClick={() => navigate(isAuthenticated ? to : "/signup")}
+    onClick={() => {
+      navigate(isAuthenticated ? to : "/signup");
+      if (onClick) onClick(); 
+    }}
     className="flex items-center w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
   >
     <span className="mr-3 text-gray-400">{icon}</span>
@@ -76,9 +79,21 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
       {/* Desktop Links */}
       <div className="hidden md:flex items-center gap-8 text-gray-700 font-semibold">
         <Link to="/home" className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">Home</Link>
-        <Link to="/aboutus" className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">About us</Link>
 
-        {/* dropdown for various features */}
+         <Link 
+           to="/documentation" 
+           className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">
+           Documentations
+         </Link>
+
+        <NavDropdownItem
+                to="/ai-mentor"
+                isAuthenticated={isAuthenticated}
+                text="AI Mentor"
+                icon={<FaUserFriends className="w-5 h-5" />}
+         />
+
+        {/* dropdown for various tools */}
         <div className="relative group" onMouseLeave={() => setDropdownOpen(false)}>
           <button
             className="flex items-center gap-1 hover:text-indigo-600 transition-all duration-300 py-2"
@@ -86,7 +101,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
             aria-expanded={dropdownOpen}
             aria-haspopup="true"
           >
-            <span className="cursor-pointer">Features</span>
+            <span className="cursor-pointer">Tools</span>
             <ChevronDown
               className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
             />
@@ -122,33 +137,16 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
                 text="QuickNotes"
                 icon={<FaStickyNote className="w-5 h-5" />}
               />
-              <NavDropdownItem
-                to="/codinggame"
-                isAuthenticated={isAuthenticated}
-                text="Coding Games"
-                icon={<FaGamepad className="w-5 h-5" />}
-              />
-              <NavDropdownItem
-                to="/ai-mentor"
-                isAuthenticated={isAuthenticated}
-                text="AI Mentor"
-                icon={<FaUserFriends className="w-5 h-5" />}
-              />
             </div>
           )}
         </div>
 
-         <Link 
-           to="/documentation" 
-           className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">
-           Documentations
-         </Link>
-
-         <Link 
-           to="/notice" 
-           className="hover:text-indigo-600 transition-all duration-300 py-2 cursor-pointer">
-           Notice Board
-         </Link>
+         <NavDropdownItem
+                to="/codinggame"
+                isAuthenticated={isAuthenticated}
+                text="Coding Games"
+                icon={<FaGamepad className="w-5 h-5" />}
+          />
 
       </div>
 
@@ -328,7 +326,7 @@ const NavDropdownItem = ({ to, isAuthenticated, text, icon }) => (
                 ) : (
                   <CharAvatar fullName={userName} width="w-12" height="h-12" />
                 )}
-                <p className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3">Accout info</p>
+                <p className="text-gray-700 hover:text-indigo-600 font-semibold flex items-center gap-3">Account info</p>
               </div>
               <button
                 onClick={() => {
