@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FaArrowLeft, FaArrowRight, FaRedo} from "react-icons/fa";
-import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import useSound from 'use-sound';
 import clickSound from '../assets/sounds/click.mp3';
@@ -95,8 +94,8 @@ const CodeFlashcardsGame = () => {
   const card = flashcards[currentIndex];
 
   return (
-    <section className="min-h-screen bg-white mt-20">
-      <Navbar />
+    <section className="min-h-screen bg-white mt-10">
+    {/*  <Navbar /> */}
       <div className="container mx-auto px-4 py-12 flex flex-col items-center shadow-xl">
         {/* Header with character */}
         <div className="flex flex-col items-center mb-8">
