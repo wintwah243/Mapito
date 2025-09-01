@@ -186,7 +186,7 @@ const GuessOutputGame = () => {
   if (reviewMode) {
     return (
       <section className="min-h-screen bg-white mt-10">
-        <Navbar />
+{/*         <Navbar /> */}
         <div className="max-w-6xl mx-auto p-8 flex flex-col md:flex-row gap-8">
           <div className="flex-1 bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
             <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">Review Your Answers</h2>
