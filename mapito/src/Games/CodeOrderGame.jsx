@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
@@ -339,9 +338,9 @@ const CodeOrderGame = () => {
     const activeItem = activeId ? codeLines.find(item => item.id === activeId) : null;
 
     return (
-        <section className="min-h-screen bg-white text-white mt-20">
+        <section className="min-h-screen bg-white text-white mt-10">
             {showConfetti && <Confetti width={width} height={height} recycle={false} />}
-            <Navbar />
+        {/*  <Navbar /> */}
             <div className="container mx-auto px-4 py-8">
                 {/* Intro Screen */}
                 {gameStatus === 'intro' && (
