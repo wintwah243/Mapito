@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 import useSound from 'use-sound';
 import cuteSound from '../assets/sounds/cute_sound.mp3';
 import clickSound from '../assets/sounds/click.mp3';
@@ -148,8 +147,8 @@ const TrueOrFalseGame = () => {
 
   if (!started) {
     return (
-      <section className="min-h-screen flex items-center justify-center px-4 mt-10">
-        <Navbar />
+      <section className="min-h-screen flex items-center justify-center px-4 mt-5">
+{/*         <Navbar /> */}
         <div className="bg-white bg-opacity-95 p-8 rounded-2xl shadow-2xl max-w-lg w-full text-center border-4 border-blue-100">
           <Owl expression="idle" size={140} />
           <h1 className="text-4xl font-bold my-4 text-gray-800 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -191,8 +190,8 @@ const TrueOrFalseGame = () => {
 
   if (finished) {
     return (
-      <section className="min-h-screen flex items-center justify-center px-4 mt-10">
-        <Navbar />
+      <section className="min-h-screen flex items-center justify-center px-4 mt-5">
+{/*         <Navbar /> */}
         <div className="bg-white bg-opacity-95 p-8 rounded-2xl shadow-2xl max-w-lg w-full text-center border-4 border-blue-100">
           <Owl expression={score >= 4 ? 'happy' : 'sad'} size={140} />
           <h2 className="text-3xl font-bold text-gray-800 my-4">
@@ -239,8 +238,8 @@ const TrueOrFalseGame = () => {
   }
 
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 mt-10">
-      <Navbar />
+    <section className="min-h-screen flex items-center justify-center px-4 mt-5">
+{/*       <Navbar /> */}
       <div className="bg-white bg-opacity-95 p-6 rounded-2xl shadow-2xl max-w-xl w-full text-center border-4 border-blue-100">
         <div className="mb-4 relative">
           <Owl expression={expression} size={100} />
