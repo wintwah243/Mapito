@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import useSound from 'use-sound';
 import correctSound from '../assets/sounds/correct.mp3';
@@ -272,8 +271,8 @@ const runCode = () => {
 
     return (
         <section>
-            <Navbar />
-            <div className="min-h-screen flex items-center justify-center bg-white p-4 font-mono mt-10">
+            {/*  <Navbar /> */}
+            <div className="min-h-screen flex items-center justify-center bg-white p-4 font-mono mt-5">
                 <div className="bg-white shadow-2xl rounded-xl p-6 max-w-4xl w-full relative overflow-hidden">
                     {/* Decorative elements */}
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500"></div>
