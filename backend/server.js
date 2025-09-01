@@ -140,7 +140,7 @@ const apiLimiter = rateLimit({
 app.use('/api/generate-roadmap', apiLimiter);
 
 // Initialize Gemini
-const genAIForAIMenor = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_AI_MENTOR);
+const genAIForAIMentor = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_AI_MENTOR);
 const genAIForSummarize = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_SUMMARIZE);
 
 function getPredefinedRoadmap(goal) {
@@ -473,7 +473,7 @@ app.post('/api/ai-mentor', async (req, res) => {
   }
 
   try {
-    const model = genAIForAIMenor.getGenerativeModel({ model: "models/gemini-1.5-pro" });
+    const model = genAIForAIMentor.getGenerativeModel({ model: "models/gemini-1.5-flash" });
     const prompt = `
 You are an AI programming mentor for beginners. 
 Answer clearly and concisely to the following programming-related question:
