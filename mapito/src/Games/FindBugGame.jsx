@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
-import Navbar from '../components/Navbar';
 import useSound from 'use-sound';
 import wrongSound from '../assets/sounds/wrong.mp3';
 import winSound from '../assets/sounds/win.mp3';
@@ -326,13 +325,10 @@ const BugGame = () => {
     }
 
     return (
-        <div className="min-h-screen bg-white text-white mt-10">
+        <div className="min-h-screen bg-white text-white mt-5">
             {showConfetti && <Confetti width={width} height={height} recycle={false} />}
-
             {/* Header */}
-            <Navbar />
-
-
+            {/*  <Navbar /> */}
             {/* Main Game Area */}
             <main className="container mx-auto px-4 py-8 max-w-4xl">
                 {/* Intro Screen */}
