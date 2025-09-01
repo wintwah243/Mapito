@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Confetti from 'react-confetti';
-import Navbar from "../components/Navbar";
 import owl from "../assets/images/fillintheblank.png";
 import useSound from 'use-sound';
 import correctSound from '../assets/sounds/correct.mp3';
@@ -171,8 +170,8 @@ const doubled = numbers.map(num => ____ * 2);`,
 
     return (
         <section>
-            <Navbar />
-            <div className="min-h-screen bg-white mt-20">
+        {/*  <Navbar /> */}
+            <div className="min-h-screen bg-white mt-10">
                 {gameState.showConfetti && <Confetti recycle={false} numberOfPieces={500} />}
 
                 <div className="w-full min-h-screen bg-white mt-20 flex justify-center items-center px-4">
