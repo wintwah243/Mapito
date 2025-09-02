@@ -16,7 +16,7 @@ const Quiz = () => {
     const [reviewIndex, setReviewIndex] = useState(0);
     const [isConfiguringQuiz, setIsConfiguringQuiz] = useState(false);
     const [quizConfig, setQuizConfig] = useState({
-        questionCount: 0,
+        questionCount: 1,
         countdownTime: 30
     });
     const [filteredQuestions, setFilteredQuestions] = useState([]);
