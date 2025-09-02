@@ -11,9 +11,15 @@ const Quiz = () => {
     const [score, setScore] = useState(0);
     const [quizEnded, setQuizEnded] = useState(false);
     const [timeLeft, setTimeLeft] = useState(60);
-    const [userAnswers, setUserAnswers] = useState([]); 
+    const [userAnswers, setUserAnswers] = useState([]);
     const [isReviewMode, setIsReviewMode] = useState(false);
     const [reviewIndex, setReviewIndex] = useState(0);
+    const [isConfiguringQuiz, setIsConfiguringQuiz] = useState(false);
+    const [quizConfig, setQuizConfig] = useState({
+        questionCount: 0,
+        countdownTime: 30
+    });
+    const [filteredQuestions, setFilteredQuestions] = useState([]);
     const quizHeaderRef = useRef(null);
 
     const handleStopQuiz = () => {
@@ -27,11 +33,13 @@ const Quiz = () => {
         setUserAnswers([]);
         setIsReviewMode(false);
         setReviewIndex(0);
+        setIsConfiguringQuiz(false);
     };
 
     const handleLanguageSelect = (category, language) => {
         setSelectedCategory(category);
         setSelectedLanguage(language);
+        setIsConfiguringQuiz(true); // Show configuration screen
         setCurrentQuestionIndex(0);
         setScore(0);
         setQuizEnded(false);
@@ -40,16 +48,27 @@ const Quiz = () => {
         setUserAnswers([]);
         setIsReviewMode(false);
         setReviewIndex(0);
-
-       setTimeout(() => {
-        quizHeaderRef.current?.scrollIntoView({
-            behavior: 'auto',
-            block: 'start'
-        });
-    }, 0);
+        setTimeout(() => {
+            quizHeaderRef.current?.scrollIntoView({
+                behavior: 'auto',
+                block: 'start'
+            });
+        }, 0);
     };
 
-    const currentQuestion = quizData[selectedCategory]?.[selectedLanguage]?.[currentQuestionIndex];
+    const handleConfigSubmit = () => {
+        // Get all questions for the selected language
+        const allQuestions = quizData[selectedCategory]?.[selectedLanguage] || [];
+        // Shuffle and select the requested number of questions
+        const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+        const selectedQuestions = shuffled.slice(0, quizConfig.questionCount);
+
+        setFilteredQuestions(selectedQuestions);
+        setTimeLeft(quizConfig.countdownTime);
+        setIsConfiguringQuiz(false);
+    };
+
+    const currentQuestion = filteredQuestions[currentQuestionIndex];
 
     const handleAnswerSelect = (answer) => {
         setSelectedAnswer(answer);
@@ -78,7 +97,7 @@ const Quiz = () => {
         ]));
 
         // move to next or end
-        if (currentQuestionIndex < quizData[selectedCategory]?.[selectedLanguage]?.length - 1) {
+        if (currentQuestionIndex < filteredQuestions.length - 1) {
             setCurrentQuestionIndex(prev => prev + 1);
             setSelectedAnswer('');
         } else {
@@ -88,11 +107,11 @@ const Quiz = () => {
     };
 
     const handleRestart = () => {
+        setIsConfiguringQuiz(true); 
         setCurrentQuestionIndex(0);
         setScore(0);
         setQuizEnded(false);
         setSelectedAnswer('');
-        setTimeLeft(60);
         setUserAnswers([]);
         setIsReviewMode(false);
         setReviewIndex(0);
@@ -114,12 +133,12 @@ const Quiz = () => {
 
     useEffect(() => {
         let timer;
-        if (selectedLanguage && !quizEnded && !isReviewMode) {
+        if (selectedLanguage && !quizEnded && !isReviewMode && !isConfiguringQuiz) {
             timer = setInterval(() => {
                 setTimeLeft((prev) => {
                     if (prev <= 1) {
                         clearInterval(timer);
-                        // On time up, end quiz and allow review of what they answered so far
+                        // On time up, end quiz and allow review of what they answered 
                         setQuizEnded(true);
                         return 0;
                     }
@@ -128,7 +147,7 @@ const Quiz = () => {
             }, 1000);
         }
         return () => clearInterval(timer);
-    }, [selectedLanguage, quizEnded, isReviewMode]);
+    }, [selectedLanguage, quizEnded, isReviewMode, isConfiguringQuiz]);
 
     const quizCategories = [
         {
@@ -166,7 +185,12 @@ const Quiz = () => {
         }
     ];
 
-      return (
+    // Get max available questions for the selected language
+    const maxQuestions = selectedLanguage
+        ? (quizData[selectedCategory]?.[selectedLanguage]?.length || 10)
+        : 10;
+
+    return (
         <div className="min-h-screen bg-white mt-20">
             <Navbar />
 
@@ -210,8 +234,106 @@ const Quiz = () => {
                     </div>
                 )}
 
-                {/* Quiz or Review Interface */}
-                {selectedLanguage && (
+                {/* Quiz Configuration */}
+                {isConfiguringQuiz && (
+                    <section className="max-w-3xl mx-auto">
+                        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                            <div className="bg-gray-900 px-6 py-4">
+                                <h2 className="text-xl font-bold text-white">
+                                    Configure Your {selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1)} Quiz
+                                </h2>
+                            </div>
+
+                            <div className="p-6">
+                                <div className="mb-6">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        How many questions do you want in your quiz?
+                                    </label>
+                                    <div className="relative">
+                                        <select
+                                            value={quizConfig.questionCount}
+                                            onChange={(e) => setQuizConfig({
+                                                ...quizConfig,
+                                                questionCount: parseInt(e.target.value)
+                                            })}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                                        >
+                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                                                <option key={num} value={num}>
+                                                    {num} question{num !== 1 ? 's' : ''}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                            <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="mb-8">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Please select countdown time for your quiz
+                                    </label>
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                        {[30, 60, 90, 120].map((time) => (
+                                            <button
+                                                key={time}
+                                                onClick={() => setQuizConfig({
+                                                    ...quizConfig,
+                                                    countdownTime: time
+                                                })}
+                                                className={`py-3 rounded-md text-center font-medium ${quizConfig.countdownTime === time
+                                                        ? 'bg-gray-900 text-white'
+                                                        : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                                                    }`}
+                                            >
+                                                {time}s
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div className="mt-4 flex items-center">
+                                        <span className="text-sm text-gray-600 mr-3">Custom:</span>
+                                        <input
+                                            type="number"
+                                            min="10"
+                                            max="300"
+                                            value={quizConfig.countdownTime}
+                                            onChange={(e) => setQuizConfig({
+                                                ...quizConfig,
+                                                countdownTime: parseInt(e.target.value) || 60
+                                            })}
+                                            className="w-20 px-3 py-2 border border-gray-300 rounded-md text-center"
+                                        />
+                                        <span className="ml-2 text-sm text-gray-600">seconds</span>
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-between">
+                                    <button
+                                        onClick={() => {
+                                            setIsConfiguringQuiz(false);
+                                            setSelectedLanguage('');
+                                        }}
+                                        className="px-6 py-2 bg-white text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                                    >
+                                        Back
+                                    </button>
+                                    <button
+                                        onClick={handleConfigSubmit}
+                                        className="px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-blue-700 transition-colors"
+                                    >
+                                        Start Quiz
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                )}
+
+                {/* Quiz or Review */}
+                {selectedLanguage && !isConfiguringQuiz && (
                     <section className="max-w-3xl mx-auto">
                         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
                             {/* Header */}
@@ -225,7 +347,7 @@ const Quiz = () => {
                                         {!isReviewMode && (
                                             <div className="bg-blue-700 text-white px-3 py-1 rounded-full text-sm font-medium">
                                                 {!quizEnded
-                                                    ? `Question ${currentQuestionIndex + 1}/${quizData[selectedCategory]?.[selectedLanguage]?.length}`
+                                                    ? `Question ${currentQuestionIndex + 1}/${filteredQuestions.length}`
                                                     : `Completed`}
                                             </div>
                                         )}
@@ -243,7 +365,7 @@ const Quiz = () => {
                                         <div className="w-full bg-blue-500 rounded-full h-2">
                                             <div
                                                 className="bg-white h-2 rounded-full"
-                                                style={{ width: `${(timeLeft / 60) * 100}%` }}
+                                                style={{ width: `${(timeLeft / quizConfig.countdownTime) * 100}%` }}
                                             ></div>
                                         </div>
                                         <p className="text-right text-xs text-blue-200 mt-1">
@@ -285,7 +407,7 @@ const Quiz = () => {
                                                 disabled={!selectedAnswer}
                                                 className={`px-6 py-2 rounded-md font-medium ${!selectedAnswer ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-900 hover:bg-blue-700 text-white'}`}
                                             >
-                                                {currentQuestionIndex === quizData[selectedCategory]?.[selectedLanguage]?.length - 1 ? 'Finish' : 'Next'}
+                                                {currentQuestionIndex === filteredQuestions.length - 1 ? 'Finish' : 'Next'}
                                             </button>
                                         </div>
                                     </>
@@ -301,7 +423,7 @@ const Quiz = () => {
                                         </div>
                                         <h3 className="text-2xl font-bold text-gray-800 mb-2">Quiz Completed!</h3>
                                         <p className="text-gray-600 mb-6">
-                                            You scored {score} out of {quizData[selectedCategory]?.[selectedLanguage]?.length}
+                                            You scored {score} out of {filteredQuestions.length}
                                         </p>
                                         <div className="flex flex-col sm:flex-row justify-center gap-3">
                                             <button
@@ -375,7 +497,7 @@ const Quiz = () => {
                                                                 className={`p-2 rounded border text-sm
                                                                     ${isCorrect ? 'border-green-500 bg-green-50' :
                                                                         isUser ? 'border-red-400 bg-red-50' :
-                                                                        'border-gray-200 bg-white'}`}
+                                                                            'border-gray-200 bg-white'}`}
                                                             >
                                                                 {opt}
                                                             </div>
