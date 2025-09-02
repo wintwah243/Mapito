@@ -49,6 +49,18 @@ const SignUp = () => {
 const handleSignUp = async (e) => {
     e.preventDefault();
 
+  if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setError("Password must be at least 6 characters long and include a special character.");
+      return;
+    }
+
+  setError("");
+
     try {
       const res = await fetch("https://mapito.onrender.com/api/auth/register", {
         method: "POST",
