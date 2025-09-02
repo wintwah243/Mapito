@@ -49,7 +49,7 @@ const Login = () => {
     }
 
     if (!validatePassword(password)) {
-      setError("Password must be at least 8 characters long.");
+      setError("Invalid credentials. Please try again!");
       return;
     }
 
