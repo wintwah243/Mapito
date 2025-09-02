@@ -14,11 +14,11 @@ export default function LandingIntro() {
             <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-7xl mx-auto pt-16 sm:pt-20 md:pt-0 pb-16 sm:pb-20 md:pb-0">
 
                 {/* Feature Tag */}
-                <div className="inline-flex items-center bg-gray-800 bg-opacity-70 text-blue-300 text-xs sm:text-sm md:text-base font-medium py-1.5 px-3 md:px-4 rounded-full mb-4 sm:mb-6 border border-blue-500/30 flex-wrap justify-center text-center max-w-xs sm:max-w-full">
+{/*                 <div className="inline-flex items-center bg-gray-800 bg-opacity-70 text-blue-300 text-xs sm:text-sm md:text-base font-medium py-1.5 px-3 md:px-4 rounded-full mb-4 sm:mb-6 border border-blue-500/30 flex-wrap justify-center text-center max-w-xs sm:max-w-full">
                     <span className="text-blue-400 mr-2 text-xs">●</span>
                     <span className="whitespace-nowrap">Pls read this before using - </span>
                     <Link to="/landingnotice" className="ml-1 underline whitespace-nowrap">notice board </Link>
-                </div>
+                </div> */}
 
                 {/* Main Heading */}
                 <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold leading-tight mb-4 sm:mb-6 max-w-2xl sm:max-w-4xl mx-auto">
