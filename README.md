@@ -68,11 +68,8 @@ https://mapito-df8g.onrender.com
 - Tailwind CSS installed
 - MongoDB installed
 
-### Installation
+### Achievement
+This project received a prize at the UCSY project show and Job fair 2025 :).
 
-```bash
-git clone https://github.com/wintwah243/Mapito.git
-cd Mapito
-npm install
 
 
