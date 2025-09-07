@@ -68,8 +68,11 @@ https://mapito-df8g.onrender.com
 - Tailwind CSS installed
 - MongoDB installed
 
-### Achievement
-This project received a prize at the UCSY project show and Job fair 2025 :).
+---
+
+# Achievement
+
+This project received a consolation prize at the UCSY project show and Job fair 2025 :).
 
 
 
